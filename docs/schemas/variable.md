@@ -1,6 +1,6 @@
-# variable.py: last updated 07:08 PM on April 13, 2025
+# variable.py: last updated 03:30 PM on April 14, 2025
 
-**File Path:** `/home/kylerose1946/claudes_toolbox/WIP/test_generator_mk2/schemas/variable.py`
+**File Path:** `WIP/test_generator/schemas/variable.py`
 
 ## Table of Contents
 
@@ -41,9 +41,9 @@ vary over time for each data unit (i.e. income can go up or down).
 
 **Methods:**
 
-- [`name_in_python`](#variable_name_in_python) (property)
-- [`reject_null`](#variable_reject_null) (property)
-- [`type_in_python`](#variable_type_in_python) (property)
+- [`name_in_python`](#name_in_python) (property)
+- [`reject_null`](#reject_null) (property)
+- [`type_in_python`](#type_in_python) (property)
 
 ### `name_in_python`
 

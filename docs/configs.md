@@ -1,6 +1,6 @@
-# configs.py: last updated 07:08 PM on April 13, 2025
+# configs.py: last updated 03:30 PM on April 14, 2025
 
-**File Path:** `/home/kylerose1946/claudes_toolbox/WIP/test_generator_mk2/configs.py`
+**File Path:** `WIP/test_generator/configs.py`
 
 ## Table of Contents
 
@@ -22,7 +22,7 @@ Validates and stores command-line arguments and settings.
 
 **Methods:**
 
-- [`validate_harness`](#configs_validate_harness)
+- [`validate_harness`](#validate_harness)
 
 ### `validate_harness`
 

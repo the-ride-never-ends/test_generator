@@ -19,7 +19,7 @@ if [ "$1" == "-q" ]; then
 fi
 
 # Run the tests
-echo "Running tests for Test Generator Mk2..."
+echo "Running tests for Test Generator..."
 python run_tests.py $VERBOSITY_ARG
 
 # Get the exit code

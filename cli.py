@@ -17,7 +17,6 @@ from __version__ import __version__
 from configs import Configs
 from generator import TestGenerator
 
-sys.path
 
 # Set up logging
 logging.basicConfig(

@@ -1,6 +1,6 @@
-# generator.py: last updated 07:08 PM on April 13, 2025
+# generator.py: last updated 03:30 PM on April 14, 2025
 
-**File Path:** `/home/kylerose1946/claudes_toolbox/WIP/test_generator_mk2/generator.py`
+**File Path:** `WIP/test_generator/generator.py`
 
 ## Module Description
 
@@ -32,13 +32,13 @@ from JSON into usable Python objects.
 
 **Methods:**
 
-- [`_parse_background`](#testfileparameters__parse_background)
-- [`_parse_control_variables`](#testfileparameters__parse_control_variables)
-- [`_parse_imports`](#testfileparameters__parse_imports)
-- [`_parse_materials`](#testfileparameters__parse_materials)
-- [`_parse_test_method`](#testfileparameters__parse_test_method)
-- [`_parse_test_title`](#testfileparameters__parse_test_title)
-- [`_parse_variable`](#testfileparameters__parse_variable)
+- [`_parse_background`](#_parse_background)
+- [`_parse_control_variables`](#_parse_control_variables)
+- [`_parse_imports`](#_parse_imports)
+- [`_parse_materials`](#_parse_materials)
+- [`_parse_test_method`](#_parse_test_method)
+- [`_parse_test_title`](#_parse_test_title)
+- [`_parse_variable`](#_parse_variable)
 
 ### `_parse_background`
 
@@ -121,13 +121,13 @@ and managing the generation process.
 
 **Methods:**
 
-- [`_get_template`](#testgenerator__get_template)
-- [`_initialize_template_engine`](#testgenerator__initialize_template_engine)
-- [`_load_json_file`](#testgenerator__load_json_file)
-- [`_parse_test_parameters`](#testgenerator__parse_test_parameters)
-- [`_render_template`](#testgenerator__render_template)
-- [`generate_test_file`](#testgenerator_generate_test_file)
-- [`write_test_file`](#testgenerator_write_test_file)
+- [`_get_template`](#_get_template)
+- [`_initialize_template_engine`](#_initialize_template_engine)
+- [`_load_json_file`](#_load_json_file)
+- [`_parse_test_parameters`](#_parse_test_parameters)
+- [`_render_template`](#_render_template)
+- [`generate_test_file`](#generate_test_file)
+- [`write_test_file`](#write_test_file)
 
 ### `_get_template`
 

@@ -1,6 +1,6 @@
-# test_cli.py: last updated 07:08 PM on April 13, 2025
+# test_cli.py: last updated 03:30 PM on April 14, 2025
 
-**File Path:** `/home/kylerose1946/claudes_toolbox/WIP/test_generator_mk2/tests/test_cli.py`
+**File Path:** `WIP/test_generator/tests/test_cli.py`
 
 ## Module Description
 
@@ -24,14 +24,14 @@ Test case for the CLI module.
 
 **Methods:**
 
-- [`setUp`](#testcli_setup)
-- [`tearDown`](#testcli_teardown)
-- [`test_parse_args`](#testcli_test_parse_args)
-- [`test_parser_creation`](#testcli_test_parser_creation)
-- [`test_run_failure`](#testcli_test_run_failure)
-- [`test_run_success`](#testcli_test_run_success)
-- [`test_validate_config_invalid`](#testcli_test_validate_config_invalid)
-- [`test_validate_config_valid`](#testcli_test_validate_config_valid)
+- [`setUp`](#setup)
+- [`tearDown`](#teardown)
+- [`test_parse_args`](#test_parse_args)
+- [`test_parser_creation`](#test_parser_creation)
+- [`test_run_failure`](#test_run_failure)
+- [`test_run_success`](#test_run_success)
+- [`test_validate_config_invalid`](#test_validate_config_invalid)
+- [`test_validate_config_valid`](#test_validate_config_valid)
 
 ### `setUp`
 

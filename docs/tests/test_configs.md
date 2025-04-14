@@ -1,6 +1,6 @@
-# test_configs.py: last updated 07:08 PM on April 13, 2025
+# test_configs.py: last updated 03:30 PM on April 14, 2025
 
-**File Path:** `/home/kylerose1946/claudes_toolbox/WIP/test_generator_mk2/tests/test_configs.py`
+**File Path:** `WIP/test_generator/tests/test_configs.py`
 
 ## Module Description
 
@@ -24,13 +24,13 @@ Test case for the Configs model.
 
 **Methods:**
 
-- [`setUp`](#testconfigs_setup)
-- [`tearDown`](#testconfigs_teardown)
-- [`test_default_values`](#testconfigs_test_default_values)
-- [`test_invalid_file_path`](#testconfigs_test_invalid_file_path)
-- [`test_invalid_harness`](#testconfigs_test_invalid_harness)
-- [`test_missing_required_fields`](#testconfigs_test_missing_required_fields)
-- [`test_valid_config`](#testconfigs_test_valid_config)
+- [`setUp`](#setup)
+- [`tearDown`](#teardown)
+- [`test_default_values`](#test_default_values)
+- [`test_invalid_file_path`](#test_invalid_file_path)
+- [`test_invalid_harness`](#test_invalid_harness)
+- [`test_missing_required_fields`](#test_missing_required_fields)
+- [`test_valid_config`](#test_valid_config)
 
 ### `setUp`
 

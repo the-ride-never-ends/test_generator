@@ -1,6 +1,6 @@
-# cli.py: last updated 07:08 PM on April 13, 2025
+# cli.py: last updated 03:30 PM on April 14, 2025
 
-**File Path:** `/home/kylerose1946/claudes_toolbox/WIP/test_generator_mk2/cli.py`
+**File Path:** `WIP/test_generator/cli.py`
 
 ## Module Description
 
@@ -44,10 +44,10 @@ Handles command-line arguments, configuration loading, and pipeline orchestratio
 
 **Methods:**
 
-- [`_create_parser`](#cli__create_parser)
-- [`parse_args`](#cli_parse_args)
-- [`run`](#cli_run)
-- [`validate_config`](#cli_validate_config)
+- [`_create_parser`](#_create_parser)
+- [`parse_args`](#parse_args)
+- [`run`](#run)
+- [`validate_config`](#validate_config)
 
 ### `_create_parser`
 

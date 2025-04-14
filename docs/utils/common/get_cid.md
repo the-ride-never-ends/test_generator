@@ -1,6 +1,6 @@
-# get_cid.py: last updated 07:08 PM on April 13, 2025
+# get_cid.py: last updated 03:30 PM on April 14, 2025
 
-**File Path:** `/home/kylerose1946/claudes_toolbox/WIP/test_generator_mk2/utils/common/get_cid.py`
+**File Path:** `WIP/test_generator/utils/common/get_cid.py`
 
 ## Table of Contents
 
@@ -66,9 +66,9 @@ This class provides methods to generate CIDs for files and content using the
 
 **Methods:**
 
-- [`get_cid`](#ipfsmultiformats_get_cid)
-- [`get_file_sha256`](#ipfsmultiformats_get_file_sha256)
-- [`get_multihash_sha256`](#ipfsmultiformats_get_multihash_sha256)
+- [`get_cid`](#get_cid)
+- [`get_file_sha256`](#get_file_sha256)
+- [`get_multihash_sha256`](#get_multihash_sha256)
 
 ### `get_cid`
 

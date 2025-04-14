@@ -1,6 +1,6 @@
-# test_generator.py: last updated 07:08 PM on April 13, 2025
+# test_generator.py: last updated 03:30 PM on April 14, 2025
 
-**File Path:** `/home/kylerose1946/claudes_toolbox/WIP/test_generator_mk2/tests/test_generator.py`
+**File Path:** `WIP/test_generator/tests/test_generator.py`
 
 ## Module Description
 
@@ -25,15 +25,15 @@ Test case for the TestFileParameters class.
 
 **Methods:**
 
-- [`test_parse_background`](#testtestfileparameters_test_parse_background)
-- [`test_parse_empty_json`](#testtestfileparameters_test_parse_empty_json)
-- [`test_parse_test_title_dict`](#testtestfileparameters_test_parse_test_title_dict)
-- [`test_parse_test_title_string`](#testtestfileparameters_test_parse_test_title_string)
+- [`test_parse_background`](#test_parse_background)
+- [`test_parse_empty_json`](#test_parse_empty_json)
+- [`test_parse_test_title_dict`](#test_parse_test_title_dict)
+- [`test_parse_test_title_string`](#test_parse_test_title_string)
 
 ### `test_parse_background`
 
 ```python
-def test_parse_background(self)
+def test_parse_background(self, mock_control_vars, mock_imports, mock_materials, mock_test_method, mock_parse_variable)
 ```
 
 Test parsing background information.
@@ -49,7 +49,7 @@ Test handling of empty JSON data.
 ### `test_parse_test_title_dict`
 
 ```python
-def test_parse_test_title_dict(self)
+def test_parse_test_title_dict(self, mock_control_vars, mock_imports, mock_materials, mock_test_method, mock_parse_variable)
 ```
 
 Test parsing test title from dictionary.
@@ -57,7 +57,7 @@ Test parsing test title from dictionary.
 ### `test_parse_test_title_string`
 
 ```python
-def test_parse_test_title_string(self)
+def test_parse_test_title_string(self, mock_control_vars, mock_imports, mock_materials, mock_test_method, mock_parse_variable)
 ```
 
 Test parsing test title from string.
@@ -72,16 +72,16 @@ Test case for the TestGenerator class.
 
 **Methods:**
 
-- [`setUp`](#testtestgenerator_setup)
-- [`tearDown`](#testtestgenerator_teardown)
-- [`test_generate_test_file`](#testtestgenerator_test_generate_test_file)
-- [`test_get_template_invalid`](#testtestgenerator_test_get_template_invalid)
-- [`test_get_template_pytest`](#testtestgenerator_test_get_template_pytest)
-- [`test_get_template_unittest`](#testtestgenerator_test_get_template_unittest)
-- [`test_load_json_file`](#testtestgenerator_test_load_json_file)
-- [`test_parse_test_parameters`](#testtestgenerator_test_parse_test_parameters)
-- [`test_render_template`](#testtestgenerator_test_render_template)
-- [`test_write_test_file`](#testtestgenerator_test_write_test_file)
+- [`setUp`](#setup)
+- [`tearDown`](#teardown)
+- [`test_generate_test_file`](#test_generate_test_file)
+- [`test_get_template_invalid`](#test_get_template_invalid)
+- [`test_get_template_pytest`](#test_get_template_pytest)
+- [`test_get_template_unittest`](#test_get_template_unittest)
+- [`test_load_json_file`](#test_load_json_file)
+- [`test_parse_test_parameters`](#test_parse_test_parameters)
+- [`test_render_template`](#test_render_template)
+- [`test_write_test_file`](#test_write_test_file)
 
 ### `setUp`
 
@@ -102,7 +102,7 @@ Clean up temporary files.
 ### `test_generate_test_file`
 
 ```python
-def test_generate_test_file(self)
+def test_generate_test_file(self, mock_render, mock_get_template, mock_parse, mock_load)
 ```
 
 Test generating test file.
@@ -142,7 +142,7 @@ Test loading JSON file.
 ### `test_parse_test_parameters`
 
 ```python
-def test_parse_test_parameters(self)
+def test_parse_test_parameters(self, mock_parse_variable, mock_variable)
 ```
 
 Test parsing test parameters.
@@ -150,7 +150,7 @@ Test parsing test parameters.
 ### `test_render_template`
 
 ```python
-def test_render_template(self, mock_get_template)
+def test_render_template(self, mock_test_file_params, mock_get_template)
 ```
 
 Test rendering template.

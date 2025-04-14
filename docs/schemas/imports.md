@@ -1,6 +1,6 @@
-# imports.py: last updated 07:08 PM on April 13, 2025
+# imports.py: last updated 03:30 PM on April 14, 2025
 
-**File Path:** `/home/kylerose1946/claudes_toolbox/WIP/test_generator_mk2/schemas/imports.py`
+**File Path:** `WIP/test_generator/schemas/imports.py`
 
 ## Table of Contents
 
@@ -20,10 +20,16 @@ Imports used in the test method.
 
 **Methods:**
 
-- [`import_string`](#imports_import_string) (property)
+- [`import_string`](#import_string) (property)
 
 ### `import_string`
 
 ```python
 def import_string(self)
 ```
+
+Format the import statement for the template.
+
+**Returns:**
+
+- `str`: Properly formatted import statement
