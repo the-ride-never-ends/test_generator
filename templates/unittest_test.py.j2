@@ -1,0 +1,110 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+{{ config.description }}
+
+Generated on: {{ "{{timestamp}}" }}
+"""
+import unittest
+import json
+import datetime
+{% for imp in imports %}
+{{ imp.import_string }}
+{% endfor %}
+
+class Test{{ test_class_name }}(unittest.TestCase):
+    """Test case for {{ test_title }}."""
+    
+    def setUp(self):
+        """Set up test fixtures."""
+        pass
+    
+    def tearDown(self):
+        """Tear down test fixtures."""
+        pass
+    
+    def test_{{ test_func_name }}(self):
+        """
+        Background: {{ background.orientation }}
+        Test Purpose: {{ background.purpose }}
+        Hypothesis: {{ background.hypothesis }}
+        
+        Args:
+            Independent Variable: 
+                {{ independent_variable.name }}: {{ independent_variable.description }}
+            Dependent Variable:
+                {{ dependent_variable.name }}: {{ dependent_variable.description }}
+            Control Variables:
+            {% for var in control_variables %}
+                {{ var.name }}: {{ var.description }}
+            {% endfor %}
+        """
+        # Set up independent variable
+        {{ independent_var_name }} = {{ independent_variable.value }}
+        
+        {% if is_exception_test %}
+        # This is an exception test that expects {{ expected_value }}
+        with self.assertRaises({{ expected_value }}):
+            {% for step in test_method.steps %}
+            # {{ step }}
+            {% endfor %}
+            # TODO: Implement code that will trigger {{ expected_value }}
+            pass
+        {% else %}
+        # Expected result
+        expected_value = {{ dependent_variable.expected_value.value }}
+        
+        # Test steps
+        {% for step in test_method.steps %}
+        # {{ step }}
+        {% endfor %}
+        
+        # Validate results
+        actual_value = None  # Replace with actual test result
+        self.assertEqual(actual_value, expected_value)
+        {% endif %}
+    
+    def dump_test_to_json(self):
+        """Dump test information to JSON file for record keeping."""
+        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        test_data = {
+            "test_title": "{{ test_title }}",
+            "test_class": "{{ test_class_name }}",
+            "test_function": "test_{{ test_func_name }}",
+            "hypothesis": "{{ background.hypothesis }}",
+            "independent_variable": {
+                "name": "{{ independent_variable.name }}",
+                "value": "{{ independent_variable.value }}"
+            },
+            "dependent_variable": {
+                "name": "{{ dependent_variable.name }}",
+                "expected": "{{ dependent_variable.expected_value.value }}"
+            },
+            "timestamp": timestamp,
+            "generated_on": timestamp
+        }
+        
+        filename = f"test_{{ test_func_name }}_results_{timestamp}.json"
+        with open(filename, "w") as f:
+            json.dump(test_data, f, indent=2)
+        return filename
+
+
+if __name__ == "__main__":
+    # Initialize the test suite
+    test_suite = unittest.TestSuite()
+    
+    # Add the test to the suite
+    test_case = Test{{ test_class_name }}("test_{{ test_func_name }}")
+    test_suite.addTest(test_case)
+    
+    # Create test runner
+    runner = unittest.TextTestRunner()
+    
+    # Run the test and dump results
+    result = runner.run(test_suite)
+    
+    # Save test results to JSON
+    if hasattr(test_case, 'dump_test_to_json'):
+        filename = test_case.dump_test_to_json()
+        print(f"Test results saved to {filename}")

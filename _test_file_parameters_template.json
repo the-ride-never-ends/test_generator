@@ -1,0 +1,105 @@
+{
+    "test_file_parameters": {
+        "background": {
+            "orientation": "Previous performance tests showed varying query performance with different connection pool sizes.",
+            "purpose": "Determine the optimal connection pool size for maximum database query performance.",
+            "citation_path": "path/to/citation1.md",
+            "citation": "Optimize connection pool size for PostgreSQL",
+            "hypothesis": "A larger connection pool will improve performance up to a certain threshold, after which contention for database resources will cause performance degradation."
+        },
+        "test_title": "The Effect of Connection Pool Size on Database Query Performance",
+        "independent_variable": {
+            "name": "Connection Pool Size",
+            "description": "Number of connections maintained in the database connection pool",
+            "statistical_type": "DISCRETE",
+            "unit": "connections",
+            "value": 10
+        },
+        "dependent_variable": {
+            "name": "Query Response Time",
+            "description": "Average time in milliseconds taken to execute a standard query",
+            "statistical_type": "CONTINUOUS",
+            "expected_value": {
+                "value": 100.0,
+                "validation_methods": [
+                    {
+                        "description": "Check if the response time is within expected range",
+                        "name": "range",
+                        "kwargs": {
+                            "min": 50.0,
+                            "max": 200.0
+                        },
+                        "steps": [
+                            "Run the benchmark query",
+                            "Measure the response time",
+                            "Compare with expected range"
+                        ]
+                    }
+                ]
+            }
+        },
+        "control_variables": [
+            {
+                "name": "Database Size",
+                "description": "Size of the test database",
+                "statistical_type": "CONTINUOUS",
+                "unit": "GB",
+                "value": 1.0
+            },
+            {
+                "name": "Query Complexity",
+                "description": "Complexity of the test query",
+                "statistical_type": "ORDINAL",
+                "unit": "level",
+                "value": "medium"
+            }
+        ],
+        "test_materials": [
+            {
+                "description": "Test database server",
+                "name": "PostgreSQL Database",
+                "type": "software",
+                "version": "14.1",
+                "configuration": {
+                    "max_connections": 100,
+                    "shared_buffers": "1GB",
+                    "work_mem": "64MB"
+                }
+            },
+            {
+                "description": "Client library used to connect to the database",
+                "name": "Database Client",
+                "type": "library",
+                "version": "2.9.3",
+                "configuration": {
+                    "timeout": 30,
+                    "retry_enabled": true
+                }
+            }
+        ],
+        "test_method": {
+            "steps": [
+                "Set up database with test data",
+                "Configure client with specified connection pool size",
+                "Run benchmark query suite 100 times",
+                "Record average query response time",
+                "Analyze results for statistical significance",
+                "Clean up test resources"
+            ],
+            "data_collection": "Automated benchmark metrics with detailed timing breakdown",
+            "analysis_technique": "Mean response time with 95% confidence intervals"
+        },
+        "imports": [
+            {
+                "name": "psycopg2"
+            },
+            {
+                "name": "numpy",
+                "import_funcs": ["mean", "std"]
+            },
+            {
+                "name": "pandas"
+            }
+        ]
+    }
+}

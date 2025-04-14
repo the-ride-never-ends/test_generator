@@ -1,0 +1,98 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+{{ config.description }}
+
+Generated on: {{ "{{timestamp}}" }}
+"""
+import pytest
+import json
+import datetime
+import sys
+{% for imp in imports %}
+{{ imp.import_string }}
+{% endfor %}
+
+# Test fixtures
+@pytest.fixture
+def setup_test():
+    """Set up test fixtures."""
+    # Setup code here
+    yield
+    # Teardown code here
+
+
+def test_{{ test_func_name }}(setup_test):
+    """
+    Background: {{ background.orientation }}
+    Test Purpose: {{ background.purpose }}
+    Hypothesis: {{ background.hypothesis }}
+    
+    Args:
+        Independent Variable: 
+            {{ independent_variable.name }}: {{ independent_variable.description }}
+        Dependent Variable:
+            {{ dependent_variable.name }}: {{ dependent_variable.description }}
+        Control Variables:
+            {%- for var in control_variables %}
+            {{ var.name }}: {{ var.description }}
+            {%- endfor %}
+    """
+    # Set up independent variable
+    {{ independent_var_name }} = {{ independent_variable.value }}
+    
+    {% if is_exception_test %}
+    # This is an exception test that expects {{ expected_value }}
+    with pytest.raises({{ expected_value }}):
+        {% for step in test_method.steps %}
+        # {{ step }}
+        {% endfor %}
+        # TODO: Implement code that will trigger {{ expected_value }}
+        pass
+    {% else %}
+    # Expected result
+    expected_value = {{ dependent_variable.expected_value.value }}
+    
+    # Test steps
+    {% for step in test_method.steps %}
+    # {{ step }}
+    {% endfor %}
+    
+    # Validate results
+    actual_value = None  # Replace with actual test result
+    assert actual_value == expected_value
+    {% endif %}
+
+
+def dump_test_to_json():
+    """Dump test information to JSON file for record keeping."""
+    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    test_data = {
+        "test_title": "{{ test_title }}",
+        "test_function": "test_{{ test_func_name }}",
+        "hypothesis": "{{ background.hypothesis }}",
+        "independent_variable": {
+            "name": "{{ independent_variable.name }}",
+            "value": "{{ independent_variable.value }}"
+        },
+        "dependent_variable": {
+            "name": "{{ dependent_variable.name }}",
+            "expected": "{{ dependent_variable.expected_value.value }}"
+        },
+        "timestamp": timestamp,
+        "generated_on": timestamp
+    }
+    
+    filename = f"test_{{ test_func_name }}_results_{timestamp}.json"
+    with open(filename, "w") as f:
+        json.dump(test_data, f, indent=2)
+    return filename
+
+
+if __name__ == "__main__":
+    # Save test results to JSON
+    filename = dump_test_to_json()
+    print(f"Test data saved to {filename}")
+    
+    # Run the test with pytest
+    sys.exit(pytest.main(["-v", __file__]))
