@@ -5,12 +5,15 @@ Core test generation logic for Test Generator Mk2.
 """
 from __future__ import annotations
 
+
 import logging
 from pathlib import Path
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Union
+
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from pydantic import ValidationError
+
 
 from configs import Configs
 from schemas.method import Method

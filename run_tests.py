@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Script to run all tests for Test Generator Mk2 and generate reports.
+Script to run all tests for Test Generator and generate reports.
 """
-import unittest
-import sys
-import json
-import time
 import datetime
+import json
 from pathlib import Path
+import sys
+import time
 from typing import Dict, Tuple, Any
+import unittest
 
 
 class TestResultCollector:

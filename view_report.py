@@ -5,8 +5,8 @@ Simple viewer for test reports.
 """
 import argparse
 import json
-import sys
 from pathlib import Path
+import sys
 
 
 def print_color(text, color=None):
