@@ -39,29 +39,32 @@ class Test{{ test_class_name }}(unittest.TestCase):
                 {{ var.name }}: {{ var.description }}
             {% endfor %}
         """
-        # Set up independent variable
+        # Define independent variable
         {{ independent_var_name }} = {{ independent_variable.value }}
-        
+
+        # Define dependent variable
+        {{ dependent_variable.name | lower | replace(' ', '_') }} = {{ expected_value }}
+
+        # Define control variable(s)
+        {% for var in control_variables %}
+        {{ var.name | lower | replace(' ', '_') }} = {{ var.value }}
+        {% endfor %}
+
         {% if is_exception_test %}
         # This is an exception test that expects {{ expected_value }}
-        with self.assertRaises({{ expected_value }}):
-            {% for step in test_method.steps %}
-            # {{ step }}
-            {% endfor %}
-            # TODO: Implement code that will trigger {{ expected_value }}
-            pass
+        {% for step in test_procedure.steps %}
+        # {{ step }}
+        {% endfor %}
+        # TODO: Implement code that does the above steps
+        raise NotImplementedError(f"Implementation for test 'test_{{ test_func_name }}' cannnot be created programmatically. Follow the steps in the docstring and function body to build a working test.")
         {% else %}
-        # Expected result
-        expected_value = {{ dependent_variable.expected_value.value }}
-        
         # Test steps
-        {% for step in test_method.steps %}
+        {% for step in test_procedure.steps %}
         # {{ step }}
         {% endfor %}
         
-        # Validate results
-        actual_value = None  # Replace with actual test result
-        self.assertEqual(actual_value, expected_value)
+        # TODO: Implement code that does the above steps
+        raise NotImplementedError(f"Implementation for test 'test_{{ test_func_name }}' cannnot be created programmatically. Follow the steps in the docstring and function body to build a working test.")
         {% endif %}
     
     def dump_test_to_json(self):
@@ -78,7 +81,8 @@ class Test{{ test_class_name }}(unittest.TestCase):
             },
             "dependent_variable": {
                 "name": "{{ dependent_variable.name }}",
-                "expected": "{{ dependent_variable.expected_value.value }}"
+                "expected": "{{ dependent_variable.expected_value.value }}",
+                "actual": "N/A" # TODO This needs to be updated with the actual result at runtime.
             },
             "timestamp": timestamp,
             "generated_on": timestamp
@@ -105,6 +109,5 @@ if __name__ == "__main__":
     result = runner.run(test_suite)
     
     # Save test results to JSON
-    if hasattr(test_case, 'dump_test_to_json'):
-        filename = test_case.dump_test_to_json()
-        print(f"Test results saved to {filename}")
+    filename = test_case.dump_test_to_json()
+    print(f"Test results saved to {filename}")

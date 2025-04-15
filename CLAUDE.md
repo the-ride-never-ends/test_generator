@@ -18,7 +18,7 @@ The system enforces strict validation to ensure high-quality test generation:
    - description (string)
    - statistical_type (must be one of: nominal, ordinal, continuous, discrete - case insensitive)
    - unit (string)
-   - For dependent variables: expected_value with validation_methods
+   - For dependent variables: expected_value with validation_procedures
 
 2. **Path Handling**:
    - Paths are properly compared regardless of object type (Path vs string)
@@ -71,7 +71,7 @@ cli.run()
 
 ## CRITICAL CODE WRITING AND MODIFICATION RULES
 
-1. NEVER replace or bypass code with placeholder comments (e.g. "in a real implementation", "For now, we'll just...", "For simplicity..."), "simplified" or partial implementations, or any other placeholder, until you explicitly ask and are given permission to do so.
+1. NEVER replace or bypass code with placeholder comments (e.g. "in a real implementation", "For now, we'll just...", "For simplicity...", "Fallback in case...), "simplified" or partial implementations, or any other placeholder, until you explicitly ask and are given permission to do so.
 2. If you are given permission for the placeholder, add TODO comments that MUST include:
 - What exactly is missing or bypassed
 - Why it's temporarily omitted

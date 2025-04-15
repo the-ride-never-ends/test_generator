@@ -21,7 +21,7 @@
             "statistical_type": "CONTINUOUS",
             "expected_value": {
                 "value": 100.0,
-                "validation_methods": [
+                "validation_procedures": [
                     {
                         "description": "Check if the response time is within expected range",
                         "name": "range",

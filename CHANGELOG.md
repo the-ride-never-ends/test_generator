@@ -19,6 +19,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Achieved 100% test success rate (38/38 tests passing)
 - Fixed recursive call in Variable.name_in_python property that would cause infinite recursion
 - Fixed _get_python_type_from_statistical_type function to properly handle StatisticalType enum values
+- Fixed template issue with test_procedure vs test_method in JSON schema
+- Updated unittest and pytest templates to include control variable definitions
+- Enhanced test file generation to use NotImplementedError with helpful message
+- Improved JSON output with actual result field and TODO comments
+- Fixed class naming by ensuring proper PascalCase conversion
+- Implemented proper pytest plugin system for test result collection
+- Added comprehensive error capture in pytest results JSON
+- Fixed plugin registration for pytest test runner
 
 ### Added
 - Design documentation (SAD.md, CLAUDE.md)

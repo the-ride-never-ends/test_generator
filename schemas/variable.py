@@ -1,11 +1,11 @@
 from typing import Any, Optional, Type
 
 
-from pydantic import BaseModel, computed_field, ValidationError
+from pydantic import BaseModel, computed_field
 
 
 from .statistical_type import StatisticalType
-from .expected_value import ExpectedValue, ValidationMethod
+from .expected_value import ExpectedValue
 from utils.common.convert_to_snake_case import convert_to_snake_case
 
 
@@ -74,32 +74,4 @@ class Variable(BaseModel):
         This is used to determine how to handle the variable in code.
         """
         return convert_to_snake_case(self.name)
-
-    @computed_field # type: ignore[prop-decorator]
-    @property
-    def reject_null(self) -> bool:
-        if self.value and self.expected_value:
-            # Verify if the value rejects the null hypothesis
-            try:
-                if self.expected_value.validation_methods:
-                    for method in self.expected_value.validation_methods:
-                        method: ValidationMethod
-                        
-
-
-                        # Assuming each validation method has a validate method
-                        if not method.validate_the_value(self.value):
-                            raise ValidationError(f"Validation failed for {self.name}")
-                else:
-                    # If no validation methods are provided, use the default validation
-                    if self.value != self.expected_value.value:
-                        raise ValidationError(f"Value '{self.value}' does not match expected value '{self.expected_value.value}' for {self.name_in_python}")
-
-
-                ExpectedValue(value=self.value, expected_value=self.expected_value)
-                return True
-            except ValidationError as e:
-                print(f"Cannot reject null hypothesis for {self.name}: {e}")
-                return False
-        return False
 

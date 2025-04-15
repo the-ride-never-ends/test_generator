@@ -146,12 +146,12 @@ class TestFileParameters:
     
     def _parse_test_method(self) -> Method:
         """Parse and validate the test method."""
-        method_data = self.raw_data.get("test_method", {})
+        method_data = self.raw_data.get("test_procedure", {})
         try:
             return Method(**method_data)
         except ValidationError as e:
-            logger.error(f"Error parsing test method: {e}")
-            raise ValueError("Invalid test method data") from e
+            logger.error(f"Error parsing test procedure: {e}")
+            raise ValueError("Invalid test procedure data") from e
     
     def _parse_imports(self) -> list[Imports]:
         """Parse and validate imports."""
@@ -304,7 +304,7 @@ class TestGenerator:
             "dependent_variable": self.test_file_params.dependent_variable,
             "control_variables": self.test_file_params.control_variables,
             "materials": self.test_file_params.materials,
-            "test_method": self.test_file_params.test_method,
+            "test_procedure": self.test_file_params.test_method,  # Pass as test_procedure to templates
             "imports": self.test_file_params.imports,
             "independent_var_name": independent_var_name,
             "is_exception_test": is_exception_test,
@@ -374,9 +374,12 @@ UNITTEST_TEMPLATE = '''#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 {config.description}
+
+Generated on: {{timestamp}}
 """
 import unittest
 import json
+import datetime
 {% for imp in imports %}
 {{ imp.import_string }}
 {% endfor %}
@@ -408,46 +411,117 @@ class Test{test_class_name}(unittest.TestCase):
                 {var.name}: {var.description}
             {% endfor %}
         """
-        # Set up independent variable
+        # Define independent variable
         {{ independent_var_name }} = {{ independent_variable.value }}
-        
+
+        # Define dependent variable
+        {{ dependent_variable.name | lower | replace(' ', '_') }} = {{ expected_value }}
+
+        # Define control variable(s)
+        {% for var in control_variables %}
+        {{ var.name | lower | replace(' ', '_') }} = {{ var.value }}
+        {% endfor %}
+
         {% if is_exception_test %}
         # This is an exception test that expects {{ expected_value }}
-        with self.assertRaises({{ expected_value }}):
-            {% for step in test_method.steps %}
-            # {{ step }}
-            {% endfor %}
-            # Add implementation to trigger the expected exception
-            pass
+        {% for step in test_procedure.steps %}
+        # {{ step }}
+        {% endfor %}
+        # TODO: Implement code that does the above steps
+        raise NotImplementedError(f"Implementation for test 'test_{test_func_name}' cannnot be created programmatically. Follow the steps in the docstring and function body to build a working test.")
         {% else %}
-        # Expected result
-        expected_value = {{ dependent_variable.expected_value.value }}
-        
         # Test steps
-        {% for step in test_method.steps %}
+        {% for step in test_procedure.steps %}
         # {{ step }}
         {% endfor %}
         
-        # Validate results
-        actual_value = None  # Replace with actual test result
-        self.assertEqual(actual_value, expected_value)
+        # TODO: Implement code that does the above steps
+        raise NotImplementedError(f"Implementation for test 'test_{test_func_name}' cannnot be created programmatically. Follow the steps in the docstring and function body to build a working test.")
         {% endif %}
+    
+    def dump_test_to_json(self):
+        """Dump test information to JSON file for record keeping."""
+        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        test_data = {
+            "test_title": "{test_title}",
+            "test_class": "{test_class_name}",
+            "test_function": "test_{test_func_name}",
+            "hypothesis": "{background.hypothesis}",
+            "independent_variable": {
+                "name": "{independent_variable.name}",
+                "value": "{independent_variable.value}"
+            },
+            "dependent_variable": {
+                "name": "{dependent_variable.name}",
+                "expected": "{dependent_variable.expected_value.value}",
+                "actual": "N/A" # TODO This needs to be updated with the actual result at runtime.
+            },
+            "timestamp": timestamp,
+            "generated_on": timestamp
+        }
+        
+        filename = f"test_{test_func_name}_results_{timestamp}.json"
+        with open(filename, "w") as f:
+            json.dump(test_data, f, indent=2)
+        return filename
 
 
 if __name__ == "__main__":
-    unittest.main()
+    # Initialize the test suite
+    test_suite = unittest.TestSuite()
+    
+    # Add the test to the suite
+    test_case = Test{test_class_name}("test_{test_func_name}")
+    test_suite.addTest(test_case)
+    
+    # Create test runner
+    runner = unittest.TextTestRunner()
+    
+    # Run the test and dump results
+    result = runner.run(test_suite)
+    
+    # Save test results to JSON
+    filename = test_case.dump_test_to_json()
+    print(f"Test results saved to {filename}")
 '''
 
 PYTEST_TEMPLATE = '''#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 {config.description}
+
+Generated on: {{timestamp}}
 """
 import pytest
 import json
+import datetime
+import sys
+import traceback
+from typing import Dict, Any, Optional
 {% for imp in imports %}
 {{ imp.import_string }}
 {% endfor %}
+
+# Global variables to store test results
+test_results = {
+    "test_title": "{test_title}",
+    "test_function": "test_{test_func_name}",
+    "hypothesis": "{background.hypothesis}",
+    "independent_variable": {
+        "name": "{independent_variable.name}",
+        "value": "{independent_variable.value}"
+    },
+    "dependent_variable": {
+        "name": "{dependent_variable.name}",
+        "expected": "{dependent_variable.expected_value.value}",
+        "actual": "N/A"  # Will be updated by test
+    },
+    "timestamp": datetime.datetime.now().strftime("%Y%m%d_%H%M%S"),
+    "generated_on": datetime.datetime.now().strftime("%Y%m%d_%H%M%S"),
+    "outcome": "not_run"
+}
+
+# No global hooks - we'll use a plugin instead
 
 # Test fixtures
 @pytest.fixture
@@ -457,8 +531,18 @@ def setup_test():
     yield
     # Teardown code here
 
+@pytest.fixture
+def result_logger():
+    """Fixture to capture and log test results."""
+    class ResultLogger:
+        def log_result(self, actual_value: Any) -> None:
+            """Log the actual test result."""
+            global test_results
+            test_results["dependent_variable"]["actual"] = str(actual_value)
+    
+    return ResultLogger()
 
-def test_{test_func_name}(setup_test):
+def test_{test_func_name}(setup_test, result_logger):
     """
     Background: {background.orientation}
     Test Purpose: {background.purpose}
@@ -474,28 +558,101 @@ def test_{test_func_name}(setup_test):
             {var.name}: {var.description}
         {% endfor %}
     """
-    # Set up independent variable
+    # Define independent variable
     {{ independent_var_name }} = {{ independent_variable.value }}
     
-    {% if is_exception_test %}
-    # This is an exception test that expects {{ expected_value }}
-    with pytest.raises({{ expected_value }}):
-        {% for step in test_method.steps %}
-        # {{ step }}
-        {% endfor %}
-        # Add implementation to trigger the expected exception
-        pass
-    {% else %}
-    # Expected result
-    expected_value = {{ dependent_variable.expected_value.value }}
-    
-    # Test steps
-    {% for step in test_method.steps %}
-    # {{ step }}
+    # Define dependent variable
+    {{ dependent_variable.name | lower | replace(' ', '_') }} = {{ expected_value }}
+
+    # Define control variable(s)
+    {% for var in control_variables %}
+    {{ var.name | lower | replace(' ', '_') }} = {{ var.value }}
     {% endfor %}
     
-    # Validate results
-    actual_value = None  # Replace with actual test result
-    assert actual_value == expected_value
-    {% endif %}
+    try:
+        {% if is_exception_test %}
+        # This is an exception test that expects {{ expected_value }}
+        {% for step in test_procedure.steps %}
+        # {{ step }}
+        {% endfor %}
+        # TODO: Implement code that does the above steps
+        
+        # Log the expected exception
+        result_logger.log_result("Expected {{ expected_value }} but none raised")
+        
+        # Raise NotImplementedError for now
+        raise NotImplementedError(f"Implementation for test 'test_{test_func_name}' cannnot be created programmatically. Follow the steps in the docstring and function body to build a working test.")
+        {% else %}
+        # Test steps
+        {% for step in test_procedure.steps %}
+        # {{ step }}
+        {% endfor %}
+        
+        # Log the actual result (to be filled in by implementation)
+        actual_value = "Not implemented yet"
+        result_logger.log_result(actual_value)
+        
+        # TODO: Implement code that does the above steps
+        raise NotImplementedError(f"Implementation for test 'test_{test_func_name}' cannnot be created programmatically. Follow the steps in the docstring and function body to build a working test.")
+        {% endif %}
+    except Exception as e:
+        # Capture any exceptions that occur during the test
+        if isinstance(e, {{ expected_value }}):
+            # If this is the expected exception, log it as success
+            result_logger.log_result(f"Raised expected {e.__class__.__name__}")
+            raise  # Re-raise for pytest to handle
+        else:
+            # If this is an unexpected exception, log it
+            result_logger.log_result(f"Unexpected {e.__class__.__name__}: {str(e)}")
+            raise  # Re-raise for pytest to handle
+
+
+def dump_test_to_json() -> str:
+    """Dump test information to JSON file for record keeping."""
+    global test_results
+    
+    filename = f"test_{test_func_name}_results_{test_results['timestamp']}.json"
+    with open(filename, "w") as f:
+        json.dump(test_results, f, indent=2)
+    return filename
+
+
+# Create a proper pytest plugin to handle our hooks
+class ResultCollectorPlugin:
+    """Pytest plugin to collect and save test results."""
+    
+    @pytest.hookimpl(tryfirst=True, hookwrapper=True)
+    def pytest_runtest_makereport(self, item, call):
+        """Capture test results."""
+        outcome = yield
+        report = outcome.get_result()
+        
+        if report.when == "call":
+            global test_results
+            if report.outcome == "passed":
+                test_results["outcome"] = "passed"
+            elif report.outcome == "failed":
+                test_results["outcome"] = "failed"
+                if hasattr(report, "longrepr"):
+                    test_results["error"] = str(report.longrepr)
+            elif report.outcome == "skipped":
+                test_results["outcome"] = "skipped"
+                if hasattr(report, "longrepr"):
+                    test_results["skip_reason"] = str(report.longrepr)
+                    
+    def pytest_sessionfinish(self, session):
+        """Save results after all tests complete."""
+        print("\\nSaving test results to JSON...")
+        filename = dump_test_to_json()
+        print(f"Test results saved to {filename}")
+
+
+if __name__ == "__main__":
+    # Create our plugin
+    result_collector = ResultCollectorPlugin()
+    
+    # Run the test with our plugin registered
+    exit_code = pytest.main(["-v", __file__], plugins=[result_collector])
+    
+    sys.exit(exit_code)
 '''

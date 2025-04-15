@@ -46,7 +46,7 @@ class TestIntegration(unittest.TestCase):
                     "unit": "milliseconds",
                     "expected_value": {
                         "value": 100.0,
-                        "validation_methods": [
+                        "validation_procedures": [
                             {
                                 "name": "equals",
                                 "description": "Check if the value equals expected",

@@ -1,13 +1,9 @@
 
-
-from typing import Any, Optional
-
+from typing import Any, Optional, List
 
 from pydantic import BaseModel
 
-
-from .validation_method import ValidationMethod
-
+from .validation_procedure import ValidationProcedure
 
 class ExpectedValue(BaseModel):
     """
@@ -15,8 +11,8 @@ class ExpectedValue(BaseModel):
     
     Attributes:
         value: The expected value or range
-        validation_method: Method or methods used to validate actual results
+        validation_procedures: Method or methods used to validate actual results
     """
     value: Any
-    validation_methods: Optional[list[ValidationMethod]] = None
+    validation_procedures: Optional[List[ValidationProcedure]] = None
 

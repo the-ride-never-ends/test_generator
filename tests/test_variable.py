@@ -59,7 +59,7 @@ class TestVariableProperties(unittest.TestCase):
             value=100.5,
             expected_value=ExpectedValue(
                 value=100.0,
-                validation_methods=[
+                validation_procedures=[
                     {
                         "name": "range",
                         "description": "Check if within range",

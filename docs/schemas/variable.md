@@ -1,4 +1,4 @@
-# variable.py: last updated 03:30 PM on April 14, 2025
+# variable.py: last updated 02:01 PM on April 15, 2025
 
 **File Path:** `WIP/test_generator/schemas/variable.py`
 
@@ -42,7 +42,6 @@ vary over time for each data unit (i.e. income can go up or down).
 **Methods:**
 
 - [`name_in_python`](#name_in_python) (property)
-- [`reject_null`](#reject_null) (property)
 - [`type_in_python`](#type_in_python) (property)
 
 ### `name_in_python`
@@ -53,12 +52,6 @@ def name_in_python(self)
 
 Returns the name of the variable in python.
 This is used to determine how to handle the variable in code.
-
-### `reject_null`
-
-```python
-def reject_null(self)
-```
 
 ### `type_in_python`
 

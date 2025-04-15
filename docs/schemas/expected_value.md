@@ -1,4 +1,4 @@
-# expected_value.py: last updated 03:30 PM on April 14, 2025
+# expected_value.py: last updated 02:01 PM on April 15, 2025
 
 **File Path:** `WIP/test_generator/schemas/expected_value.py`
 
@@ -6,18 +6,9 @@
 
 ### Classes
 
-- [`ValidationMethod`](#validationmethod)
 - [`ExpectedValue`](#expectedvalue)
 
 ## Classes
-
-## `ValidationMethod`
-
-```python
-class ValidationMethod(BaseModel)
-```
-
-Defines a method for validating expected values against actual values.
 
 ## `ExpectedValue`
 

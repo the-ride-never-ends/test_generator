@@ -28,14 +28,15 @@
 ### 1. Template System
 - [x] Create base template
 - [x] Implement unittest template
-- [x] Implement pytest template
+- [x] Implement pytest template with proper plugin support
 - [ ] Add support for fixture handling
 
 ### 2. Enhanced Features
 - [ ] Add support for parametrized tests
 - [ ] Implement conditional test generation
 - [ ] Add test discovery features
-- [ ] Support generating both test file and JSON output
+- [x] Support generating both test file and JSON output
+- [x] Automatic test result collection and reporting
 
 ### 3. Error Handling
 - [x] Create custom exception hierarchy
@@ -84,8 +85,8 @@
 5. Implement debug mode with enhanced logging  
 6. Add `mypy` type checking and `flake8` linting  
 7. Package for distribution with proper versioning  
-8. Enhance test templates with more robust implementations  
-9. Add validation for template generation success  
-10. Implement automatic test data collection and result statistics  
+8. ✅ Enhance test templates with more robust implementations (completed for unittest and pytest)
+9. ✅ Add validation for template generation success (implemented with test reporting)
+10. ✅ Implement automatic test data collection and result statistics (added with JSON result output)
 11. Create visual reports of test results and coverage  
 12. Add support for async functions

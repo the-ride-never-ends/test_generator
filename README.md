@@ -12,13 +12,16 @@ Test Generator Mk2 creates test boilerplate code with a scientific approach to t
 
 ## Features
 
-- Generate test files for unittest or pytest
+- Generate test files for unittest or pytest with framework-specific optimizations
 - Define tests in a structured JSON format
 - Support for variable definitions and relationships
 - Template-based generation with Jinja2
 - Validation of expected vs actual results
 - Clean separation of concerns
 - Proper logging and error handling
+- Comprehensive test result capturing and reporting
+- Plugin-based approach for pytest integration
+- Automated JSON result generation
 
 ## Installation
 
@@ -86,38 +89,39 @@ Here's the structure from `_test_file_parameters_template.json`:
 {
     "test_file_parameters": {
         "background": {
-            "orientation": "Previous performance tests showed varying query performance with different connection pool sizes.",
-            "purpose": "Determine the optimal connection pool size for maximum database query performance.",
+            "orientation": "Division by zero is undefined and throws exceptions in most programming languages.",
+            "purpose": "Test the behavior of division by zero in polynomial multiplication operations.",
             "citation_path": "path/to/citation1.md",
-            "citation": "Optimize connection pool size for PostgreSQL",
-            "hypothesis": "A larger connection pool will improve performance up to a certain threshold, after which contention for database resources will cause performance degradation."
+            "citation": "Mathematics for Computer Science",
+            "hypothesis": "Division by zero will raise a ZeroDivisionError exception and prevent the completion of polynomial multiplication."
         },
-        "test_title": "The Effect of Connection Pool Size on Database Query Performance",
+        "test_title": "The Effects of Division by Zero on Polynomial Multiplication",
         "independent_variable": {
-            "name": "Connection Pool Size",
-            "description": "Number of connections maintained in the database connection pool",
-            "statistical_type": "DISCRETE",
-            "unit": "connections",
-            "value": 10
+            "name": "Divisor Value",
+            "description": "The value used as a divisor in the polynomial operation",
+            "statistical_type": "discrete",
+            "unit": "integer",
+            "value": 0
         },
         "dependent_variable": {
-            "name": "Query Response Time",
-            "description": "Average time in milliseconds taken to execute a standard query",
-            "statistical_type": "CONTINUOUS",
+            "name": "Calculation Result",
+            "description": "Whether the calculation completes successfully or raises an exception",
+            "statistical_type": "nominal",
+            "unit": "result",
             "expected_value": {
-                "value": 100.0,
-                "validation_methods": [
+                "value": "ZeroDivisionError",
+                "validation_procedures": [
                     {
-                        "description": "Check if the response time is within expected range",
-                        "name": "range",
+                        "description": "Check if the ZeroDivisionError exception is raised",
+                        "name": "exception_zero_division_error",
                         "kwargs": {
-                            "min": 50.0,
-                            "max": 200.0
+                            "exception_type": "ZeroDivisionError"
                         },
                         "steps": [
-                            "Run the benchmark query",
-                            "Measure the response time",
-                            "Compare with expected range"
+                            "Create two polynomial objects",
+                            "Attempt to divide the first polynomial by zero",
+                            "Multiply the result with the second polynomial",
+                            "Verify that a ZeroDivisionError is raised"
                         ]
                     }
                 ]
@@ -125,55 +129,48 @@ Here's the structure from `_test_file_parameters_template.json`:
         },
         "control_variables": [
             {
-                "name": "Database Size",
-                "description": "Size of the test database",
-                "statistical_type": "CONTINUOUS",
-                "unit": "GB",
-                "value": 1.0
+                "name": "Polynomial Degree",
+                "description": "The degree of the polynomials being multiplied",
+                "statistical_type": "discrete",
+                "unit": "degree",
+                "value": 2
             },
             {
-                "name": "Query Complexity",
-                "description": "Complexity of the test query",
-                "statistical_type": "ORDINAL",
-                "unit": "level",
-                "value": "medium"
+                "name": "Coefficient Range",
+                "description": "The range of values for polynomial coefficients",
+                "statistical_type": "discrete",
+                "unit": "range",
+                "value": 10
             }
         ],
         "test_materials": [
             {
-                "name": "PostgreSQL Database",
-                "description": "Test database server",
-                "type": "software",
-                "version": "14.1",
+                "description": "Mathematical library for polynomial operations",
+                "name": "NumPy",
+                "type": "library",
+                "version": "1.24.0",
                 "configuration": {
-                    "max_connections": 100,
-                    "shared_buffers": "1GB",
-                    "work_mem": "64MB"
+                    "random_seed": 42
                 }
             }
         ],
-        "test_method": {
+        "test_procedure": {
+            "data_collection": "Exception type and message",
+            "analysis_technique": "Exception analysis and verification",
             "steps": [
-                "Set up database with test data",
-                "Configure client with specified connection pool size",
-                "Run benchmark query suite 100 times",
-                "Record average query response time",
-                "Analyze results for statistical significance",
-                "Clean up test resources"
-            ],
-            "data_collection": "Automated benchmark metrics with detailed timing breakdown",
-            "analysis_technique": "Mean response time with 95% confidence intervals"
+                "Import required libraries (numpy)",
+                "Create two random polynomials with degree 2",
+                "Attempt to calculate: (polynomial1 / 0) * polynomial2",
+                "Verify that ZeroDivisionError is raised",
+                "Record the exception details"
+            ]
         },
         "imports": [
             {
-                "name": "psycopg2"
+                "name": "numpy"
             },
             {
-                "name": "numpy",
-                "import_funcs": ["mean", "std"]
-            },
-            {
-                "name": "pandas"
+                "name": "unittest"
             }
         ]
     }
@@ -200,13 +197,15 @@ python -m unittest tests.test_configs
 The test system implements strict validation for all components:
 
 - **Variable Validation**: All variables require proper statistical_type, unit, and other required fields
-- **Expected Value Validation**: Dependent variables must have validation_methods specified
+- **Expected Value Validation**: Dependent variables must have validation_procedures specified
 - **Proper Test Isolation**: Tests use mocking to ensure proper unit testing isolation
 - **Case Insensitivity**: Statistical types are handled case-insensitively (e.g., "DISCRETE" or "discrete")
 - **Path Handling**: Path objects and strings are properly compared
-- **Exception Testing**: Special handling for tests that expect exceptions
+- **Exception Testing**: Special handling for tests that expect exceptions with detailed capturing
 - **Variable Sanitization**: Converts variable names to valid Python identifiers
 - **Automated Results**: Test files include JSON result generation with timestamps
+- **Test Reporting**: Comprehensive test result capture including error messages and outcomes
+- **Framework Support**: Both unittest and pytest frameworks with proper test fixtures and plugins
 
 ### Test Reporting
 
@@ -231,6 +230,35 @@ Reports are stored in the `test_reports/` directory:
 - `test_report_TIMESTAMP.json` - Historical reports (JSON)
 - `test_report_TIMESTAMP.md` - Historical reports (Markdown)
 
+In addition, generated test files automatically produce their own JSON result files when executed:
+
+```json
+{
+  "test_title": "The Effects of Division by Zero on Polynomial Multiplication",
+  "test_function": "test_divisionbyzerotest",
+  "hypothesis": "Division by zero will raise a ZeroDivisionError exception...",
+  "independent_variable": {
+    "name": "Divisor Value",
+    "value": "0"
+  },
+  "dependent_variable": {
+    "name": "Calculation Result",
+    "expected": "ZeroDivisionError",
+    "actual": "Raised expected ZeroDivisionError"
+  },
+  "timestamp": "20250415_144710",
+  "generated_on": "20250415_144710",
+  "outcome": "passed"
+}
+```
+
+These result files include:
+- Test metadata (title, function name, hypothesis)
+- Variable definitions with expected and actual values
+- Test outcome (passed, failed, skipped)
+- Error details (for failed tests)
+- Timestamps for test execution
+
 ### Adding New Templates
 
 To add a new test framework template:
@@ -238,6 +266,19 @@ To add a new test framework template:
 1. Create a new template file in the `templates/` directory (e.g., `pytest_test.py.j2`)
 2. Update the `_get_template()` method in `generator.py`
 3. Add the new framework to the valid harnesses list in `configs.py`
+
+#### Template Structure Requirements
+
+Templates must follow a standard structure to ensure proper test generation:
+
+- **Variable Definitions**: Include sections for independent, dependent, and control variables
+- **Test Implementation**: Use NotImplementedError with descriptive messages for placeholder code
+- **Result Reporting**: Include JSON result generation with test status capture
+- **Framework Integration**: Use framework-specific features (e.g., plugins for pytest)
+
+For framework-specific features:
+- **unittest**: Use TestCase.setUp, tearDown, and assertion methods
+- **pytest**: Implement test fixtures and plugins for result collection
 
 ### Project Structure
 

@@ -22,10 +22,10 @@
             "unit": "result",
             "expected_value": {
                 "value": "ZeroDivisionError",
-                "validation_methods": [
+                "validation_procedures": [
                     {
-                        "description": "Check if the expected exception is raised",
-                        "name": "exception",
+                        "description": "Check if the ZeroDivisionError exception is raised",
+                        "name": "exception_zero_division_error",
                         "kwargs": {
                             "exception_type": "ZeroDivisionError"
                         },
@@ -66,16 +66,16 @@
                 }
             }
         ],
-        "test_method": {
+        "test_procedure": {
+            "data_collection": "Exception type and message",
+            "analysis_technique": "Exception analysis and verification",
             "steps": [
                 "Import required libraries (numpy)",
                 "Create two random polynomials with degree 2",
                 "Attempt to calculate: (polynomial1 / 0) * polynomial2",
                 "Verify that ZeroDivisionError is raised",
                 "Record the exception details"
-            ],
-            "data_collection": "Exception type and message",
-            "analysis_technique": "Exception analysis and verification"
+            ]
         },
         "imports": [
             {
