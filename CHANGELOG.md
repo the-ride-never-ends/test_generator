@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Properly handled enum validation for StatisticalType
 - Fixed dependent variable validation in integration tests
 - Achieved 100% test success rate (38/38 tests passing)
+- Fixed recursive call in Variable.name_in_python property that would cause infinite recursion
+- Fixed _get_python_type_from_statistical_type function to properly handle StatisticalType enum values
 
 ### Added
 - Design documentation (SAD.md, CLAUDE.md)

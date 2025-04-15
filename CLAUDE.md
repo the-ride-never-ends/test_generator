@@ -1,6 +1,6 @@
-# Test Generator Mk2 - Claude Developer Guide
+# Test Generator - Claude Developer Guide
 
-This file provides guidance to Claude Code when working with the Test Generator Mk2 project.
+This file provides guidance to Claude Code when working with the Test Generator project.
 
 ## Core Components
 
@@ -64,9 +64,24 @@ cli.run()
 ## Code Guidelines
 
 - Follow Google style docstrings for all public APIs
-- All functions should have type hints
+- All functions must have type hints
 - Use snake_case for functions and variables
 - Use PascalCase for classes
+- Use ALL_CAPS for constants and global variables
+
+## CRITICAL CODE WRITING AND MODIFICATION RULES
+
+1. NEVER replace or bypass code with placeholder comments (e.g. "in a real implementation", "For now, we'll just...", "For simplicity..."), "simplified" or partial implementations, or any other placeholder, until you explicitly ask and are given permission to do so.
+2. If you are given permission for the placeholder, add TODO comments that MUST include:
+- What exactly is missing or bypassed
+- Why it's temporarily omitted
+- How it should be implemented when completed
+The TODO must appear in:
+- Inline code comments above the placeholder
+- The function/class docstring
+- A dedicated TODO.md file in the repository root
+3. ALWAYS assume code needs to be fully implemented unless explicitly stated otherwise e.g. If a comment says "verify that x equals 2", the code at runtime better actually verify that x equals 2.
+4. Remember, your job is to implement and fix the code so that it runs successfully, not fake it or pretend it works for the purpose of it passing tests or for your convenience.
 
 ## Testing
 

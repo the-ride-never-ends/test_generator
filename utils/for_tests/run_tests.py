@@ -275,7 +275,9 @@ if __name__ == "__main__":
         verbosity = 1
     
     # Discover and run tests
-    test_dir = Path(__file__).parent / "tests"
+    # Use the current working directory (which should be the project root due to cd in run_tests.sh)
+    test_dir = Path.cwd() / "tests"
+    print(f"Looking for tests in: {test_dir}")
     discoverer = TestDiscoverer(test_dir, verbosity)
     
     success, _ = discoverer.run_tests()

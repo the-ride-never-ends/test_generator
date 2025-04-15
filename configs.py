@@ -2,7 +2,13 @@ from __future__ import annotations
 from __version__ import __version__
 
 
+from pathlib import Path
+
+
 from pydantic import BaseModel, DirectoryPath, Field, FilePath, field_validator
+
+
+ROOT_DIR = Path(__file__).parent
 
 
 class Configs(BaseModel):

@@ -5,24 +5,23 @@ from pydantic import BaseModel, computed_field, ValidationError
 
 
 from .statistical_type import StatisticalType
-from .expected_value import ExpectedValue
+from .expected_value import ExpectedValue, ValidationMethod
 from utils.common.convert_to_snake_case import convert_to_snake_case
 
 
-def _get_python_type_from_statistical_type(statistical_type: str) -> Type:
+def _get_python_type_from_statistical_type(statistical_type: StatisticalType) -> Type:
     """
     Returns the python type of the variable based on the statistical type.
     """
-    if statistical_type in StatisticalType.__members__:
-        match statistical_type:
-            case StatisticalType.ORDINAL:
-                return str
-            case StatisticalType.NOMINAL:
-                return str
-            case StatisticalType.DISCRETE:
-                return int
-            case StatisticalType.CONTINOUS:
-                return float
+    if isinstance(statistical_type, StatisticalType):
+        if statistical_type == StatisticalType.ORDINAL or statistical_type == StatisticalType.NOMINAL:
+            return str
+        elif statistical_type == StatisticalType.DISCRETE:
+            return int
+        elif statistical_type == StatisticalType.CONTINOUS:
+            return float
+        else:
+            raise ValueError(f"Unknown statistical type: {statistical_type}")
     else:
         raise ValueError(f"Unknown statistical type: {statistical_type}")
 
@@ -58,7 +57,6 @@ class Variable(BaseModel):
     value:            Optional[Any] = None
     expected_value:   Optional[ExpectedValue] = None
 
-
     @computed_field # type: ignore[prop-decorator]
     @property
     def type_in_python(self) -> Type:
@@ -68,15 +66,14 @@ class Variable(BaseModel):
         """
         return _get_python_type_from_statistical_type(self.statistical_type)
 
-
+    @computed_field # type: ignore[prop-decorator]
     @property
     def name_in_python(self) -> str:
         """
         Returns the name of the variable in python.
         This is used to determine how to handle the variable in code.
         """
-        return convert_to_snake_case(self.name_in_python)
-
+        return convert_to_snake_case(self.name)
 
     @computed_field # type: ignore[prop-decorator]
     @property
@@ -84,9 +81,25 @@ class Variable(BaseModel):
         if self.value and self.expected_value:
             # Verify if the value rejects the null hypothesis
             try:
+                if self.expected_value.validation_methods:
+                    for method in self.expected_value.validation_methods:
+                        method: ValidationMethod
+                        
+
+
+                        # Assuming each validation method has a validate method
+                        if not method.validate_the_value(self.value):
+                            raise ValidationError(f"Validation failed for {self.name}")
+                else:
+                    # If no validation methods are provided, use the default validation
+                    if self.value != self.expected_value.value:
+                        raise ValidationError(f"Value '{self.value}' does not match expected value '{self.expected_value.value}' for {self.name_in_python}")
+
+
                 ExpectedValue(value=self.value, expected_value=self.expected_value)
+                return True
             except ValidationError as e:
-                print(f"Cannot reject null hypothesis {self.test}: {e}")
+                print(f"Cannot reject null hypothesis for {self.name}: {e}")
                 return False
         return False
 

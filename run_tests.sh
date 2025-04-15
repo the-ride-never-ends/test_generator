@@ -20,7 +20,7 @@ fi
 
 # Run the tests
 echo "Running tests for Test Generator..."
-python run_tests.py $VERBOSITY_ARG
+python utils/for_tests/run_tests.py $VERBOSITY_ARG
 
 # Get the exit code
 EXIT_CODE=$?

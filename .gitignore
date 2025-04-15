@@ -2,6 +2,7 @@ TODO/
 WIP/
 venv/
 .env
+.coverage
 .venv/
 test_reports/
 test_output/

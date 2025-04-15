@@ -1,0 +1,51 @@
+# validator_func_template.py
+"""
+{{ description }}
+
+This validator function was automatically generated from a template.
+Generated on: {{ "{{timestamp}}" }}
+
+# TODO: Implement validation logic for {{ name }}
+"""
+
+class _ValidationError(Exception):
+    """
+    Custom exception class for validation errors.
+    NOTE: We do this to avoid having to import it from pydantic.
+    """
+    pass
+
+def validate_{{ name }}(value, expected_value, **kwargs) -> None:
+    """
+    {{ description }}
+    
+    Args:
+        value: The actual value to validate
+        expected_value: The expected value for comparison
+        {% if kwargs %}
+        {% for kwarg_name, kwarg_value in kwargs.items() %}
+        {{ kwarg_name }}: {{ kwarg_value.__class__.__name__ }} (default: {{ kwarg_value }})
+        {% endfor %}
+        {% endif %}
+    
+    Returns:
+        None: None if validation passes, otherwise raises an exception
+
+    Raises:
+        _ValidationError: If the validation fails
+    """
+    # Extract kwargs
+    {% if kwargs %}
+    {% for kwarg_name, kwarg_value in kwargs.items() %}
+    {{ kwarg_name }} = kwargs.get('{{ kwarg_name }}', {{ kwarg_value }})
+    {% endfor %}
+    {% endif %}
+    
+    # Implementation steps for {{ name }} validator
+    # TODO: Implement validation logic for {{ name }}
+    {% for step in steps %}
+    # {{ step }}
+    {% endfor %}
+
+    raise NotImplementedError(f"Validator '{{ name }}' implementation not provided")
+    {% endif %}

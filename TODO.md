@@ -77,12 +77,15 @@
 
 ## Next Tasks
 
-1. Add test coverage reporting to measure code quality
-2. Add support for parametrized tests 
-3. Implement debug mode with enhanced logging
-4. Add mypy type checking and flake8 linting
-5. Package for distribution with proper versioning
-6. Enhance test templates with more robust implementations
-7. Add validation for template generation success
-8. Implement automatic test data collection and result statistics
-9. Create visual reports of test results and coverage
+1. Fix remaining test issues with `Variable.reject_null` functionality  
+2. Improve test coverage for schema validation methods  
+3. Add test coverage reporting to measure code quality  
+4. Add support for parameterized tests  
+5. Implement debug mode with enhanced logging  
+6. Add `mypy` type checking and `flake8` linting  
+7. Package for distribution with proper versioning  
+8. Enhance test templates with more robust implementations  
+9. Add validation for template generation success  
+10. Implement automatic test data collection and result statistics  
+11. Create visual reports of test results and coverage  
+12. Add support for async functions
