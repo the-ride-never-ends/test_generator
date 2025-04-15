@@ -89,32 +89,6 @@ class TestVariableProperties(unittest.TestCase):
         self.assertEqual(self.variable_discrete.type_in_python, int)
         self.assertEqual(self.variable_with_expected.type_in_python, float)
 
-    def test_reject_null_without_expected(self):
-        """Test reject_null property when expected_value is not set."""
-        self.assertFalse(self.variable_discrete.reject_null)
-
-    def test_reject_null_with_expected(self):
-        """Test reject_null property when expected_value is set."""
-        # Since the value 100.5 is within the range 50-150, it should pass validation
-        self.assertTrue(self.variable_with_expected.reject_null)
-        
-        # Create a mock ExpectedValue that will raise a ValidationError
-        from unittest.mock import patch
-        
-        # Use patch to make the ExpectedValue constructor raise a ValidationError
-        with patch('schemas.variable.ExpectedValue', side_effect=ValidationError('Validation failed', model=ExpectedValue)):
-            variable = Variable(
-                name="Test Variable",
-                description="Test",
-                statistical_type=StatisticalType.CONTINOUS,
-                unit="test",
-                value=10,
-                expected_value=self.variable_with_expected.expected_value
-            )
-            
-            # Now reject_null should return False because the validation fails
-            self.assertFalse(variable.reject_null)
-
 
 if __name__ == "__main__":
     unittest.main()

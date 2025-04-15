@@ -1,6 +1,6 @@
-# test_variable.py: last updated 02:01 PM on April 15, 2025
+# test_variable.py: last updated 03:56 PM on April 15, 2025
 
-**File Path:** `WIP/test_generator/tests/test_variable.py`
+**File Path:** `/home/kylerose1946/claudes_toolbox/WIP/test_generator/tests/test_variable.py`
 
 ## Table of Contents
 
@@ -79,8 +79,6 @@ Test the properties of the Variable class.
 
 - [`setUp`](#setup)
 - [`test_name_in_python`](#test_name_in_python)
-- [`test_reject_null_with_expected`](#test_reject_null_with_expected)
-- [`test_reject_null_without_expected`](#test_reject_null_without_expected)
 - [`test_type_in_python`](#test_type_in_python)
 
 ### `setUp`
@@ -98,22 +96,6 @@ def test_name_in_python(self)
 ```
 
 Test the name_in_python property.
-
-### `test_reject_null_with_expected`
-
-```python
-def test_reject_null_with_expected(self)
-```
-
-Test reject_null property when expected_value is set.
-
-### `test_reject_null_without_expected`
-
-```python
-def test_reject_null_without_expected(self)
-```
-
-Test reject_null property when expected_value is not set.
 
 ### `test_type_in_python`
 

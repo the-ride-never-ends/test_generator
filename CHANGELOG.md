@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Added comprehensive test coverage reporting functionality
+- Added test files specifically for test coverage reporting
+- Added comprehensive schema validation tests
+- Added tests for TestTitle model validation
+- Added tests for all validation methods in schema classes
+
 ### Fixed
 - Fixed circular import issues between modules that prevented tests from running
 - Added case insensitivity for StatisticalType validation

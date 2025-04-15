@@ -56,7 +56,7 @@ class TestIntegration(unittest.TestCase):
                     }
                 },
                 "control_variables": [],
-                "test_method": {
+                "test_procedure": {
                     "steps": ["Step 1", "Step 2"],
                     "data_collection": "Test data collection",
                     "analysis_technique": "Test analysis"

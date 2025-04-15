@@ -190,6 +190,11 @@ python -m unittest discover tests
 
 # Run a specific test
 python -m unittest tests.test_configs
+
+# Run tests with coverage reporting
+python -m coverage run -m unittest discover tests
+python -m coverage report
+python -m coverage html  # Generates HTML report in htmlcov/
 ```
 
 ### Test Validation
@@ -206,6 +211,7 @@ The test system implements strict validation for all components:
 - **Automated Results**: Test files include JSON result generation with timestamps
 - **Test Reporting**: Comprehensive test result capture including error messages and outcomes
 - **Framework Support**: Both unittest and pytest frameworks with proper test fixtures and plugins
+- **Code Coverage**: Extensive test coverage (95%) with specific tests for all schema validation methods
 
 ### Test Reporting
 

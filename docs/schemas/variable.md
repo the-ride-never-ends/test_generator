@@ -1,6 +1,6 @@
-# variable.py: last updated 02:01 PM on April 15, 2025
+# variable.py: last updated 03:56 PM on April 15, 2025
 
-**File Path:** `WIP/test_generator/schemas/variable.py`
+**File Path:** `/home/kylerose1946/claudes_toolbox/WIP/test_generator/schemas/variable.py`
 
 ## Table of Contents
 
