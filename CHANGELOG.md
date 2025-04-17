@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Added return type hints to tests in tests directory.
 - Added mypy type checking with configuration file
   - Created mypy.ini with project-specific settings
   - Configured mypy to ensure proper type checking

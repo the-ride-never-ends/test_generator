@@ -19,7 +19,7 @@ from utils.for_tests.run_tests import TestResultCollector, TestDiscoverer
 class TestCoverageReporting(unittest.TestCase):
     """Test case for the test coverage reporting system."""
     
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up the test environment."""
         # Create a temp dir for test reports
         self.test_reports_dir = Path("./test_reports_temp")
@@ -31,7 +31,7 @@ class TestCoverageReporting(unittest.TestCase):
         # Create a collector with our fixed start time
         self.collector = TestResultCollector(self.start_time)
     
-    def tearDown(self):
+    def tearDown(self) -> None:
         """Clean up the test environment."""
         # Remove any test files created
         for file in self.test_reports_dir.glob("*"):
@@ -41,7 +41,7 @@ class TestCoverageReporting(unittest.TestCase):
         if self.test_reports_dir.exists():
             self.test_reports_dir.rmdir()
     
-    def test_collector_initialization(self):
+    def test_collector_initialization(self) -> None:
         """Test that the test result collector initializes correctly."""
         # Check that the results structure is created correctly
         self.assertEqual(self.collector.results["summary"]["tests"], 0)
@@ -51,7 +51,7 @@ class TestCoverageReporting(unittest.TestCase):
         self.assertEqual(self.collector.results["summary"]["success_rate"], 0.0)
         self.assertEqual(len(self.collector.results["test_cases"]), 0)
     
-    def test_collect_results(self):
+    def test_collect_results(self) -> None:
         """Test collecting results from a TestResult object."""
         # Create a mock TestResult
         mock_result = MagicMock()
@@ -87,7 +87,7 @@ class TestCoverageReporting(unittest.TestCase):
         self.assertIn("EXPECTED_FAILURE", statuses)
         self.assertIn("UNEXPECTED_SUCCESS", statuses)
     
-    def test_generate_json_report(self):
+    def test_generate_json_report(self) -> None:
         """Test generating a JSON report of test results."""
         # Create a mock TestResult
         mock_result = MagicMock()
@@ -116,7 +116,7 @@ class TestCoverageReporting(unittest.TestCase):
         self.assertEqual(report["summary"]["errors"], 0)
         self.assertEqual(report["summary"]["success_rate"], 100.0)
     
-    def test_generate_markdown_report(self):
+    def test_generate_markdown_report(self) -> None:
         """Test generating a Markdown report of test results."""
         # Create a mock TestResult
         mock_result = MagicMock()
@@ -145,7 +145,7 @@ class TestCoverageReporting(unittest.TestCase):
         self.assertIn("- **Tests Run**: 5", content)
         self.assertIn("- **Success Rate**: 100.00%", content)
     
-    def test_markdown_report_with_failures(self):
+    def test_markdown_report_with_failures(self) -> None:
         """Test generating a Markdown report with failures."""
         # Create a mock TestResult
         mock_result = MagicMock()
@@ -172,7 +172,7 @@ class TestCoverageReporting(unittest.TestCase):
         self.assertIn("### FAIL:", content)
         self.assertIn("**Message**: AssertionError: 1 != 0", content)
     
-    def test_test_discoverer(self):
+    def test_test_discoverer(self) -> None:
         """Test the TestDiscoverer class."""
         # Mock unittest.defaultTestLoader
         with patch('unittest.defaultTestLoader') as mock_loader:

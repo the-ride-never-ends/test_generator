@@ -20,7 +20,7 @@ from utils.for_tests.run_tests import TestDiscoverer
 class TestDiscoveryFeatures(unittest.TestCase):
     """Tests for test discovery features."""
     
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up test environment."""
         # Create a temporary output directory
         self.temp_dir = tempfile.TemporaryDirectory()
@@ -78,10 +78,10 @@ class TestDiscoveryFeatures(unittest.TestCase):
 import unittest
 
 class Test{file_path.stem.capitalize()}(unittest.TestCase):
-    def test_feature1(self):
+    def test_feature1(self) -> None:
         self.assertTrue(True)
         
-    def test_feature2(self):
+    def test_feature2(self) -> None:
         self.assertEqual(1, 1)
 """)
                 else:
@@ -97,12 +97,12 @@ class Test{file_path.stem.capitalize()}(unittest.TestCase):
             "verbose": True
         })
         
-    def tearDown(self):
+    def tearDown(self) -> None:
         """Clean up temporary files."""
         os.unlink(self.temp_json.name)
         self.temp_dir.cleanup()
     
-    def test_discovery_all_tests(self):
+    def test_discovery_all_tests(self) -> None:
         """Test discovery of all tests in directory."""
         # Create a test directory that is properly importable
         test_dir = tempfile.TemporaryDirectory()
@@ -120,7 +120,7 @@ class Test{file_path.stem.capitalize()}(unittest.TestCase):
 import unittest
 
 class TestModule(unittest.TestCase):
-    def test_feature(self):
+    def test_feature(self) -> None:
         self.assertTrue(True)
 """)
             
@@ -162,7 +162,7 @@ class TestModule(unittest.TestCase):
         finally:
             test_dir.cleanup()
     
-    def test_discovery_pattern_matching(self):
+    def test_discovery_pattern_matching(self) -> None:
         """Test discovery with specific pattern matching."""
         # Create a test directory that is properly importable
         test_dir = tempfile.TemporaryDirectory()
@@ -180,7 +180,7 @@ class TestModule(unittest.TestCase):
 import unittest
 
 class TestModule1(unittest.TestCase):
-    def test_feature(self):
+    def test_feature(self) -> None:
         self.assertTrue(True)
 """)
             
@@ -190,7 +190,7 @@ class TestModule1(unittest.TestCase):
 import unittest
 
 class TestModule2(unittest.TestCase):
-    def test_feature(self):
+    def test_feature(self) -> None:
         self.assertTrue(True)
 """)
             
@@ -232,7 +232,7 @@ class TestModule2(unittest.TestCase):
         finally:
             test_dir.cleanup()
     
-    def test_discovery_multiple_directories(self):
+    def test_discovery_multiple_directories(self) -> None:
         """Test discovery across multiple directories."""
         # Create a first test directory that is properly importable
         test_dir1 = tempfile.TemporaryDirectory()
@@ -257,7 +257,7 @@ class TestModule2(unittest.TestCase):
 import unittest
 
 class TestModule1(unittest.TestCase):
-    def test_feature(self):
+    def test_feature(self) -> None:
         self.assertTrue(True)
 """)
             
@@ -268,7 +268,7 @@ class TestModule1(unittest.TestCase):
 import unittest
 
 class TestModule2(unittest.TestCase):
-    def test_feature(self):
+    def test_feature(self) -> None:
         self.assertTrue(True)
 """)
             
@@ -319,7 +319,7 @@ class TestModule2(unittest.TestCase):
             test_dir1.cleanup()
             test_dir2.cleanup()
     
-    def test_discovery_with_specific_tests(self):
+    def test_discovery_with_specific_tests(self) -> None:
         """Test discovery of specific test methods."""
         # Create a test directory that is properly importable
         test_dir = tempfile.TemporaryDirectory()
@@ -337,10 +337,10 @@ class TestModule2(unittest.TestCase):
 import unittest
 
 class TestModule(unittest.TestCase):
-    def test_feature1(self):
+    def test_feature1(self) -> None:
         self.assertTrue(True)
         
-    def test_feature2(self):
+    def test_feature2(self) -> None:
         self.assertEqual(1, 1)
 """)
             
@@ -398,7 +398,7 @@ class TestModule(unittest.TestCase):
         finally:
             test_dir.cleanup()
     
-    def test_report_generation(self):
+    def test_report_generation(self) -> None:
         """Test generation of test reports."""
         # Create a test directory that is properly importable
         test_dir = tempfile.TemporaryDirectory()
@@ -416,7 +416,7 @@ class TestModule(unittest.TestCase):
 import unittest
 
 class TestModule(unittest.TestCase):
-    def test_feature(self):
+    def test_feature(self) -> None:
         self.assertTrue(True)
 """)
             

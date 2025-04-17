@@ -19,7 +19,7 @@ from configs import Configs
 class TestConfigs(unittest.TestCase):
     """Test case for the Configs model."""
     
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up temporary files for testing."""
         # Create a temporary file to use as a valid file path
         self.temp_file = tempfile.NamedTemporaryFile(delete=False)
@@ -29,13 +29,13 @@ class TestConfigs(unittest.TestCase):
         # Create a temporary directory to use as a valid directory path
         self.temp_dir = tempfile.TemporaryDirectory()
         
-    def tearDown(self):
+    def tearDown(self) -> None:
         """Clean up temporary files."""
         # Remove temporary file and directory
         os.unlink(self.temp_file.name)
         self.temp_dir.cleanup()
     
-    def test_valid_config(self):
+    def test_valid_config(self) -> None:
         """Test that valid configuration passes validation."""
         config_data = {
             "name": "Test Name",
@@ -59,7 +59,7 @@ class TestConfigs(unittest.TestCase):
         self.assertEqual(config.has_fixtures, False)
         self.assertEqual(config.docstring_style, "google")
     
-    def test_invalid_harness(self):
+    def test_invalid_harness(self) -> None:
         """Test that invalid harness raises ValidationError."""
         config_data = {
             "name": "Test Name",
@@ -73,7 +73,7 @@ class TestConfigs(unittest.TestCase):
         with self.assertRaises(ValidationError):
             Configs.model_validate(config_data)
     
-    def test_missing_required_fields(self):
+    def test_missing_required_fields(self) -> None:
         """Test that missing required fields raise ValidationError."""
         config_data = {
             # Missing name and description
@@ -85,7 +85,7 @@ class TestConfigs(unittest.TestCase):
         with self.assertRaises(ValidationError):
             Configs.model_validate(config_data)
     
-    def test_invalid_file_path(self):
+    def test_invalid_file_path(self) -> None:
         """Test that non-existent file path raises ValidationError."""
         config_data = {
             "name": "Test Name",
@@ -98,7 +98,7 @@ class TestConfigs(unittest.TestCase):
         with self.assertRaises(ValidationError):
             Configs.model_validate(config_data)
     
-    def test_default_values(self):
+    def test_default_values(self) -> None:
         """Test that default values are set correctly."""
         config_data = {
             "name": "Test Name",

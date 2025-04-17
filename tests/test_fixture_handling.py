@@ -20,7 +20,7 @@ from configs import Configs
 class TestFixtureHandling(unittest.TestCase):
     """Tests for fixture handling in test templates."""
     
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up test environment."""
         # Create a temporary JSON file with fixture data
         self.temp_json = tempfile.NamedTemporaryFile(delete=False, suffix=".json")
@@ -103,12 +103,12 @@ class TestFixtureHandling(unittest.TestCase):
             "has_fixtures": True
         })
     
-    def tearDown(self):
+    def tearDown(self) -> None:
         """Clean up temporary files."""
         os.unlink(self.temp_json.name)
         self.temp_dir.cleanup()
     
-    def test_fixture_flag(self):
+    def test_fixture_flag(self) -> None:
         """Test fixture flag is properly passed to the generator."""
         self.assertTrue(self.config.has_fixtures)
     

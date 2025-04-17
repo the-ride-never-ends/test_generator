@@ -243,7 +243,7 @@ def test_parametrized_example(input_value, expected_output):
         mock_template = MagicMock()
         mock_get_template.return_value = mock_template
         mock_render.return_value = """
-def test_parametrized_example(self):
+def test_parametrized_example(self) -> None:
     test_cases = [
         (1, 2),
         (10, 20),

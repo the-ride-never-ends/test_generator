@@ -26,7 +26,7 @@ from schemas.imports import Imports
 class TestValidationProcedures(unittest.TestCase):
     """Test the ValidationProcedure schema class."""
     
-    def test_validation_procedure_creation(self):
+    def test_validation_procedure_creation(self) -> None:
         """Test creating a validation procedure."""
         procedure = ValidationProcedure(
             name="test_validation",
@@ -40,7 +40,7 @@ class TestValidationProcedures(unittest.TestCase):
         self.assertEqual(procedure.steps, ["Step 1", "Step 2", "Step 3"])
         self.assertEqual(procedure.kwargs, {"test_arg": "test_value"})
     
-    def test_validation_procedure_optional_fields(self):
+    def test_validation_procedure_optional_fields(self) -> None:
         """Test creating a validation procedure with optional fields omitted."""
         procedure = ValidationProcedure(
             name="test_validation",
@@ -54,7 +54,7 @@ class TestValidationProcedures(unittest.TestCase):
 class TestExpectedValue(unittest.TestCase):
     """Test the ExpectedValue schema class."""
     
-    def test_expected_value_creation(self):
+    def test_expected_value_creation(self) -> None:
         """Test creating an expected value."""
         validation_procedure = ValidationProcedure(
             name="test_validation",
@@ -71,7 +71,7 @@ class TestExpectedValue(unittest.TestCase):
         self.assertEqual(len(expected_value.validation_procedures), 1)
         self.assertEqual(expected_value.validation_procedures[0].name, "test_validation")
     
-    def test_expected_value_multiple_procedures(self):
+    def test_expected_value_multiple_procedures(self) -> None:
         """Test creating an expected value with multiple validation procedures."""
         validation_procedure1 = ValidationProcedure(
             name="test_validation1",
@@ -98,7 +98,7 @@ class TestExpectedValue(unittest.TestCase):
 class TestVariableValidation(unittest.TestCase):
     """Test the Variable schema class with comprehensive validation testing."""
     
-    def test_variable_creation_discrete(self):
+    def test_variable_creation_discrete(self) -> None:
         """Test creating a discrete variable."""
         variable = Variable(
             name="Test Variable",
@@ -115,7 +115,7 @@ class TestVariableValidation(unittest.TestCase):
         self.assertEqual(variable.value, 10)
         self.assertIsNone(variable.expected_value)
     
-    def test_variable_creation_continuous(self):
+    def test_variable_creation_continuous(self) -> None:
         """Test creating a continuous variable."""
         variable = Variable(
             name="Test Variable",
@@ -128,7 +128,7 @@ class TestVariableValidation(unittest.TestCase):
         self.assertEqual(variable.value, 10.5)
         self.assertEqual(variable.statistical_type, StatisticalType.CONTINUOUS)
     
-    def test_variable_creation_nominal(self):
+    def test_variable_creation_nominal(self) -> None:
         """Test creating a nominal variable."""
         variable = Variable(
             name="Test Variable",
@@ -141,7 +141,7 @@ class TestVariableValidation(unittest.TestCase):
         self.assertEqual(variable.value, "category_a")
         self.assertEqual(variable.statistical_type, StatisticalType.NOMINAL)
     
-    def test_variable_creation_ordinal(self):
+    def test_variable_creation_ordinal(self) -> None:
         """Test creating an ordinal variable."""
         variable = Variable(
             name="Test Variable",
@@ -154,7 +154,7 @@ class TestVariableValidation(unittest.TestCase):
         self.assertEqual(variable.value, "medium")
         self.assertEqual(variable.statistical_type, StatisticalType.ORDINAL)
     
-    def test_variable_with_expected_value(self):
+    def test_variable_with_expected_value(self) -> None:
         """Test creating a variable with an expected value."""
         validation_procedure = ValidationProcedure(
             name="test_validation",
@@ -179,7 +179,7 @@ class TestVariableValidation(unittest.TestCase):
         self.assertEqual(variable.expected_value.value, "test_value")
         self.assertEqual(len(variable.expected_value.validation_procedures), 1)
     
-    def test_name_in_python_property(self):
+    def test_name_in_python_property(self) -> None:
         """Test the name_in_python property of Variable."""
         variable = Variable(
             name="Test Variable Name",
@@ -192,7 +192,7 @@ class TestVariableValidation(unittest.TestCase):
         # Should convert to snake_case
         self.assertEqual(variable.name_in_python, "test_variable_name")
     
-    def test_type_in_python_property(self):
+    def test_type_in_python_property(self) -> None:
         """Test the type_in_python property of Variable."""
         # Discrete -> int
         variable_discrete = Variable(
@@ -238,7 +238,7 @@ class TestVariableValidation(unittest.TestCase):
 class TestMaterial(unittest.TestCase):
     """Test the Material schema class."""
     
-    def test_material_creation(self):
+    def test_material_creation(self) -> None:
         """Test creating a material."""
         material = Material(
             name="Test Material",
@@ -256,7 +256,7 @@ class TestMaterial(unittest.TestCase):
         self.assertEqual(material.configuration, {"setting": "value"})
         self.assertEqual(material.source, "test source")
     
-    def test_material_optional_fields(self):
+    def test_material_optional_fields(self) -> None:
         """Test creating a material with optional fields omitted."""
         material = Material(
             name="Test Material",
@@ -272,7 +272,7 @@ class TestMaterial(unittest.TestCase):
 class TestMethod(unittest.TestCase):
     """Test the Method schema class."""
     
-    def test_method_creation(self):
+    def test_method_creation(self) -> None:
         """Test creating a method."""
         method = Method(
             steps=["Step 1", "Step 2", "Step 3"],
@@ -288,7 +288,7 @@ class TestMethod(unittest.TestCase):
 class TestImports(unittest.TestCase):
     """Test the Imports schema class."""
     
-    def test_import_creation(self):
+    def test_import_creation(self) -> None:
         """Test creating an import."""
         imp = Imports(name="test_module")
         
@@ -296,7 +296,7 @@ class TestImports(unittest.TestCase):
         self.assertIsNone(imp.import_funcs)
         self.assertEqual(imp.import_string, "import test_module")
     
-    def test_import_with_functions(self):
+    def test_import_with_functions(self) -> None:
         """Test creating an import with functions."""
         imp = Imports(name="test_module", import_funcs=["func1", "func2"])
         
@@ -308,19 +308,19 @@ class TestImports(unittest.TestCase):
 class TestTestTitle(unittest.TestCase):
     """Test the TestTitle schema class."""
     
-    def test_test_title(self):
+    def test_test_title(self) -> None:
         """Test creating a test title."""
         title = TestTitle(test_title="Test Title")
         
         self.assertEqual(title.test_title, "TestTitle")  # PascalCase conversion
     
-    def test_test_title_default(self):
+    def test_test_title_default(self) -> None:
         """Test creating a test title with the default value."""
         title = TestTitle()
         
         self.assertEqual(title.test_title, "ThisIsAGenericTitle")  # Default value + PascalCase
         
-    def test_test_title_model_validator(self):
+    def test_test_title_model_validator(self) -> None:
         """Test that the model validator converts to PascalCase."""
         # Test that spaces are removed and each word is capitalized
         title = TestTitle(test_title="this is a test title")

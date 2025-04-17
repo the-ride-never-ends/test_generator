@@ -18,7 +18,7 @@ from cli import CLI
 class TestCLI(unittest.TestCase):
     """Test case for the CLI module."""
     
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up temporary files for testing."""
         # Create a temporary file to use as a valid file path
         self.temp_file = tempfile.NamedTemporaryFile(delete=False)
@@ -31,13 +31,13 @@ class TestCLI(unittest.TestCase):
         # Initialize CLI
         self.cli = CLI()
     
-    def tearDown(self):
+    def tearDown(self) -> None:
         """Clean up temporary files."""
         # Remove temporary file and directory
         os.unlink(self.temp_file.name)
         self.temp_dir.cleanup()
     
-    def test_parser_creation(self):
+    def test_parser_creation(self) -> None:
         """Test that the argument parser is created correctly."""
         parser = self.cli._create_parser()
         
@@ -52,7 +52,7 @@ class TestCLI(unittest.TestCase):
         self.assertEqual(args.description, "Test Description")
         self.assertEqual(args.test_parameter_json, self.temp_file.name)
     
-    def test_parse_args(self):
+    def test_parse_args(self) -> None:
         """Test parsing of command-line arguments."""
         args = [
             "--name", "Test Name",
@@ -71,7 +71,7 @@ class TestCLI(unittest.TestCase):
         self.assertEqual(args_dict["output_dir"], self.temp_dir.name)
         self.assertTrue(args_dict["verbose"])
     
-    def test_validate_config_valid(self):
+    def test_validate_config_valid(self) -> None:
         """Test validation of valid configuration."""
         args_dict = {
             "name": "Test Name",
@@ -90,7 +90,7 @@ class TestCLI(unittest.TestCase):
         self.assertEqual(self.cli.config.name, "Test Name")
         self.assertEqual(str(self.cli.config.json_file_path), self.temp_file.name)
     
-    def test_validate_config_invalid(self):
+    def test_validate_config_invalid(self) -> None:
         """Test validation of invalid configuration."""
         # Missing required fields
         args_dict = {

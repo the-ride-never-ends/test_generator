@@ -22,7 +22,7 @@ from cli import CLI
 class TestDebugMode(unittest.TestCase):
     """Tests for debug mode with enhanced output."""
     
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up test environment."""
         # Create a temporary JSON file
         self.temp_json = tempfile.NamedTemporaryFile(delete=False, suffix=".json")
@@ -96,7 +96,7 @@ class TestDebugMode(unittest.TestCase):
             "debug": False
         })
     
-    def tearDown(self):
+    def tearDown(self) -> None:
         """Clean up temporary files."""
         os.unlink(self.temp_json.name)
         self.temp_dir.cleanup()
@@ -206,11 +206,11 @@ logger = logging.getLogger("test_debug")
 logger.setLevel(logging.DEBUG)
 
 class TestDebugFeature(unittest.TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         # Debug setup logic
         logger.debug("Setting up test case")
         
-    def test_feature(self):
+    def test_feature(self) -> None:
         logger.debug("Starting test_feature")
         # Test with debug output
         logger.debug("Test step 1 complete")
@@ -249,7 +249,7 @@ class TestDebugFeature(unittest.TestCase):
             help=unittest.mock.ANY  # Any help string is fine
         )
     
-    def test_debug_json_dump(self):
+    def test_debug_json_dump(self) -> None:
         """Test debug dump of JSON data."""
         # For this test, we'll create a real temporary JSON file to test
         with tempfile.NamedTemporaryFile(delete=False, suffix=".json") as temp_file:

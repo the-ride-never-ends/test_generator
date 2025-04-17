@@ -20,7 +20,7 @@ from configs import Configs
 class TestConditionalGeneration(unittest.TestCase):
     """Tests for conditional test generation."""
     
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up test environment."""
         # Create a temporary JSON file with conditional test data
         self.temp_json = tempfile.NamedTemporaryFile(delete=False, suffix=".json")
@@ -131,7 +131,7 @@ class TestConditionalGeneration(unittest.TestCase):
             "test_params": {"input_type": "string"}
         })
     
-    def tearDown(self):
+    def tearDown(self) -> None:
         """Clean up temporary files."""
         os.unlink(self.temp_json.name)
         self.temp_dir.cleanup()
@@ -165,7 +165,7 @@ class TestConditionalGeneration(unittest.TestCase):
     
     @patch('generator.TestGenerator._get_template')
     @patch('generator.TestGenerator._render_template')
-    def test_conditional_test_inclusion(self, mock_render, mock_get_template):
+    def test_conditional_test_inclusion(self, mock_render, mock_get_template) -> None:
         """Test inclusion of conditional tests based on parameters."""
         # Setup
         generator = TestGenerator(self.string_config)
@@ -177,7 +177,7 @@ class TestConditionalGeneration(unittest.TestCase):
         mock_template = MagicMock()
         mock_get_template.return_value = mock_template
         mock_render.return_value = """
-def test_string_handling(self):
+def test_string_handling(self) -> None:
     # This test is conditionally included for string inputs
     input_value = "test string"
     self.assertEqual(function_under_test(input_value), "processed string")
@@ -191,7 +191,7 @@ def test_string_handling(self):
     
     @patch('generator.TestGenerator._get_template')
     @patch('generator.TestGenerator._render_template')
-    def test_conditional_test_exclusion(self, mock_render, mock_get_template):
+    def test_conditional_test_exclusion(self, mock_render, mock_get_template) -> None:
         """Test exclusion of conditional tests based on parameters."""
         # Setup
         generator = TestGenerator(self.string_config)
@@ -203,7 +203,7 @@ def test_string_handling(self):
         mock_template = MagicMock()
         mock_get_template.return_value = mock_template
         mock_render.return_value = """
-def test_numeric_handling(self):
+def test_numeric_handling(self) -> None:
     # This test is conditionally included for numeric inputs
     input_value = 42
     self.assertEqual(function_under_test(input_value), 84)

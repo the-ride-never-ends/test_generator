@@ -9,23 +9,23 @@ from schemas.expected_value import ExpectedValue
 class TestGetPythonType(unittest.TestCase):
     """Test the _get_python_type_from_statistical_type function."""
 
-    def test_ordinal_type(self):
+    def test_ordinal_type(self) -> None:
         """Test that ORDINAL returns str type."""
         self.assertEqual(_get_python_type_from_statistical_type(StatisticalType.ORDINAL), str)
 
-    def test_nominal_type(self):
+    def test_nominal_type(self) -> None:
         """Test that NOMINAL returns str type."""
         self.assertEqual(_get_python_type_from_statistical_type(StatisticalType.NOMINAL), str)
 
-    def test_discrete_type(self):
+    def test_discrete_type(self) -> None:
         """Test that DISCRETE returns int type."""
         self.assertEqual(_get_python_type_from_statistical_type(StatisticalType.DISCRETE), int)
 
-    def test_continuous_type(self):
+    def test_continuous_type(self) -> None:
         """Test that CONTINUOUS returns float type."""
         self.assertEqual(_get_python_type_from_statistical_type(StatisticalType.CONTINOUS), float)
 
-    def test_invalid_type(self):
+    def test_invalid_type(self) -> None:
         """Test that a non-StatisticalType value raises ValueError."""
         with self.assertRaises(ValueError):
             _get_python_type_from_statistical_type("INVALID")
@@ -34,7 +34,7 @@ class TestGetPythonType(unittest.TestCase):
 class TestVariableProperties(unittest.TestCase):
     """Test the properties of the Variable class."""
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up test variables."""
         self.variable_ordinal = Variable(
             name="Test Status",
@@ -69,7 +69,7 @@ class TestVariableProperties(unittest.TestCase):
             )
         )
 
-    def test_name_in_python(self):
+    def test_name_in_python(self) -> None:
         """Test the name_in_python property."""
         self.assertEqual(self.variable_ordinal.name_in_python, "test_status")
         self.assertEqual(self.variable_discrete.name_in_python, "number_of_errors")
@@ -83,7 +83,7 @@ class TestVariableProperties(unittest.TestCase):
         )
         self.assertEqual(variable.name_in_python, "multi_word_variable_name")
 
-    def test_type_in_python(self):
+    def test_type_in_python(self) -> None:
         """Test the type_in_python property."""
         self.assertEqual(self.variable_ordinal.type_in_python, str)
         self.assertEqual(self.variable_discrete.type_in_python, int)

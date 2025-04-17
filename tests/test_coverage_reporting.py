@@ -17,7 +17,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 class TestCoverageReporting(unittest.TestCase):
     """Test coverage reporting using the coverage tool."""
     
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up test environment."""
         self.test_dir = Path("tests")
         self.project_root = Path(__file__).parent.parent
@@ -25,7 +25,7 @@ class TestCoverageReporting(unittest.TestCase):
         self.temp_file.close()
         self.coverage_file = Path(self.temp_file.name)
     
-    def tearDown(self):
+    def tearDown(self) -> None:
         """Clean up test environment."""
         try:
             if Path(self.coverage_file.name).exists():
@@ -34,7 +34,7 @@ class TestCoverageReporting(unittest.TestCase):
             # The file might have been deleted already or never created
             pass
     
-    def test_coverage_run(self):
+    def test_coverage_run(self) -> None:
         """Test running coverage on the project."""
         # Skip if coverage is not installed
         try:
@@ -62,7 +62,7 @@ class TestCoverageReporting(unittest.TestCase):
         # Check that the coverage file was created
         self.assertTrue(self.coverage_file.exists(), "Coverage file was not created")
     
-    def test_coverage_report(self):
+    def test_coverage_report(self) -> None:
         """Test generating a coverage report."""
         # Skip if coverage is not installed
         try:
@@ -109,7 +109,7 @@ class TestCoverageReporting(unittest.TestCase):
         self.assertIn("Cover", report_result.stdout)
         self.assertIn("cli.py", report_result.stdout)
     
-    def test_coverage_html_report(self):
+    def test_coverage_html_report(self) -> None:
         """Test generating an HTML coverage report."""
         # Skip if coverage is not installed
         try:

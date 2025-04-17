@@ -27,7 +27,7 @@ class TestTestFileParameters(unittest.TestCase):
     @patch('generator.TestFileParameters._parse_materials')
     @patch('generator.TestFileParameters._parse_imports')
     @patch('generator.TestFileParameters._parse_control_variables')
-    def test_parse_test_title_string(self, mock_control_vars, mock_imports, mock_materials, mock_test_method, mock_parse_variable):
+    def test_parse_test_title_string(self, mock_control_vars, mock_imports, mock_materials, mock_test_method, mock_parse_variable) -> None:
         """Test parsing test title from string."""
         # Mock the methods to avoid validation errors
         mock_parse_variable.return_value = None
@@ -50,7 +50,7 @@ class TestTestFileParameters(unittest.TestCase):
     @patch('generator.TestFileParameters._parse_materials')
     @patch('generator.TestFileParameters._parse_imports')
     @patch('generator.TestFileParameters._parse_control_variables')
-    def test_parse_test_title_dict(self, mock_control_vars, mock_imports, mock_materials, mock_test_method, mock_parse_variable):
+    def test_parse_test_title_dict(self, mock_control_vars, mock_imports, mock_materials, mock_test_method, mock_parse_variable) -> None:
         """Test parsing test title from dictionary."""
         # Mock the methods to avoid validation errors
         mock_parse_variable.return_value = None
@@ -73,7 +73,7 @@ class TestTestFileParameters(unittest.TestCase):
     @patch('generator.TestFileParameters._parse_materials')
     @patch('generator.TestFileParameters._parse_imports')
     @patch('generator.TestFileParameters._parse_control_variables')
-    def test_parse_background(self, mock_control_vars, mock_imports, mock_materials, mock_test_method, mock_parse_variable):
+    def test_parse_background(self, mock_control_vars, mock_imports, mock_materials, mock_test_method, mock_parse_variable) -> None:
         """Test parsing background information."""
         # Mock the methods to avoid validation errors
         mock_parse_variable.return_value = None
@@ -99,7 +99,7 @@ class TestTestFileParameters(unittest.TestCase):
         self.assertEqual(params.background["purpose"], "Test purpose")
         self.assertEqual(params.background["hypothesis"], "Test hypothesis")
     
-    def test_parse_empty_json(self):
+    def test_parse_empty_json(self) -> None:
         """Test handling of empty JSON data."""
         json_data = {}
         
@@ -110,7 +110,7 @@ class TestTestFileParameters(unittest.TestCase):
 class TestTestGenerator(unittest.TestCase):
     """Test case for the TestGenerator class."""
     
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up test environment."""
         # Create a temporary JSON file
         self.temp_json = tempfile.NamedTemporaryFile(delete=False, suffix=".json")
@@ -168,12 +168,12 @@ class TestTestGenerator(unittest.TestCase):
         # Create generator
         self.generator = TestGenerator(self.config)
     
-    def tearDown(self):
+    def tearDown(self) -> None:
         """Clean up temporary files."""
         os.unlink(self.temp_json.name)
         self.temp_dir.cleanup()
     
-    def test_load_json_file(self):
+    def test_load_json_file(self) -> None:
         """Test loading JSON file."""
         json_data = self.generator._load_json_file()
         self.assertIn("test_file_parameters", json_data)
@@ -201,7 +201,7 @@ class TestTestGenerator(unittest.TestCase):
         self.assertEqual(params.background["orientation"], "Test orientation")
         self.assertEqual(params.dependent_variable.name, "Dependent Var")
     
-    def test_get_template_unittest(self):
+    def test_get_template_unittest(self) -> None:
         """Test getting unittest template."""
         self.config.harness = "unittest"
         template = self.generator._get_template()
@@ -211,7 +211,7 @@ class TestTestGenerator(unittest.TestCase):
         if isinstance(template, str):
             self.assertIn("unittest", template)
     
-    def test_get_template_pytest(self):
+    def test_get_template_pytest(self) -> None:
         """Test getting pytest template."""
         self.config.harness = "pytest"
         template = self.generator._get_template()
@@ -221,7 +221,7 @@ class TestTestGenerator(unittest.TestCase):
         if isinstance(template, str):
             self.assertIn("pytest", template)
     
-    def test_get_template_invalid(self):
+    def test_get_template_invalid(self) -> None:
         """Test getting template for invalid harness."""
         self.config.harness = "invalid"
         with self.assertRaises(ValueError):
@@ -229,7 +229,7 @@ class TestTestGenerator(unittest.TestCase):
     
     @patch('generator.TestGenerator._get_template')
     @patch('generator.TestFileParameters')
-    def test_render_template(self, mock_test_file_params, mock_get_template):
+    def test_render_template(self, mock_test_file_params, mock_get_template) -> None:
         """Test rendering template."""
         # Mock template
         mock_template = MagicMock()
@@ -259,7 +259,7 @@ class TestTestGenerator(unittest.TestCase):
     @patch('generator.TestGenerator._parse_test_parameters')
     @patch('generator.TestGenerator._get_template')
     @patch('generator.TestGenerator._render_template')
-    def test_generate_test_file(self, mock_render, mock_get_template, mock_parse, mock_load):
+    def test_generate_test_file(self, mock_render, mock_get_template, mock_parse, mock_load) -> None:
         """Test generating test file."""
         # Set up mocks
         mock_load.return_value = {"test_file_parameters": {}}
@@ -281,7 +281,7 @@ class TestTestGenerator(unittest.TestCase):
         mock_get_template.assert_called_once()
         mock_render.assert_called_once_with(mock_template)
     
-    def test_write_test_file(self):
+    def test_write_test_file(self) -> None:
         """Test writing test file to disk."""
         # Generate content
         content = "Test file content"

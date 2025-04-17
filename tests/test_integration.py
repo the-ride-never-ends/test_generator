@@ -18,7 +18,7 @@ from cli import CLI
 class TestIntegration(unittest.TestCase):
     """Integration tests for Test Generator Mk2."""
     
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up test environment."""
         # Create a temporary JSON file with test parameters
         self.temp_json = tempfile.NamedTemporaryFile(delete=False, suffix=".json")
@@ -72,12 +72,12 @@ class TestIntegration(unittest.TestCase):
         # Create a temporary output directory
         self.temp_dir = tempfile.TemporaryDirectory()
     
-    def tearDown(self):
+    def tearDown(self) -> None:
         """Clean up temporary files."""
         os.unlink(self.temp_json.name)
         self.temp_dir.cleanup()
     
-    def test_end_to_end_unittest(self):
+    def test_end_to_end_unittest(self) -> None:
         """Test end-to-end process with unittest framework."""
         # Create command-line arguments
         args = [
@@ -115,7 +115,7 @@ class TestIntegration(unittest.TestCase):
             self.assertIn("Step 1", content)
             self.assertIn("Step 2", content)
     
-    def test_end_to_end_pytest(self):
+    def test_end_to_end_pytest(self) -> None:
         """Test end-to-end process with pytest framework."""
         # Create command-line arguments
         args = [
