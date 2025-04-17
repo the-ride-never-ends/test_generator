@@ -24,6 +24,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added --mypy, --flake8, --check-all, and --lint-only parameters
   - Implemented parallel running of tests, type checking, and linting
   - Created proper exit code handling for test/lint failures
+- Added pre-commit configuration for automated linting and type checking
+  - Created .pre-commit-config.yaml with hooks for flake8, mypy, trailing whitespace, etc.
+  - Configured hooks to match project standards
+
+### Fixed
+- Fixed type checking errors in generator.py
+  - Added proper null checks for test_file_params attribute
+  - Fixed incompatible return types in _initialize_template_engine 
+  - Corrected Template type annotations in _get_template
+  - Improved type safety in _render_template with proper null checks
+- Fixed default_factory error in schemas/imports.py
+  - Updated default_factory to use lambda instead of direct list type
+  - Fixed test_import_creation test to expect empty list instead of None
 
 ## [0.2.0] - 2025-04-16
 

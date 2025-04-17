@@ -1,6 +1,6 @@
-# view_report.py: last updated 04:45 PM on April 16, 2025
+# view_report.py: last updated 09:35 AM on April 17, 2025
 
-**File Path:** `/home/kylerose1946/claudes_toolbox/WIP/test_generator/utils/for_tests/view_report.py`
+**File Path:** `WIP/test_generator/utils/for_tests/view_report.py`
 
 ## Module Description
 
@@ -24,7 +24,13 @@ Simple viewer for test reports.
 def print_color(text, color=None)
 ```
 
-Print colored text.
+Print colored text to the console.
+
+**Parameters:**
+
+- `text` (`str`): The text to print
+
+- `color` (`Optional[str]`): Optional color name ('red', 'green', etc.)
 
 ## `view_report`
 
@@ -36,9 +42,13 @@ View a test report file.
 
 **Parameters:**
 
-- `report_path` (`Any`): Path to the report file
+- `report_path` (`Union[(str, Path)]`): Path to the report file
 
-- `format_type` (`Any`): Type of report to show (summary, details, full)
+- `format_type` (`str`): Type of report to show (summary, details, full)
+
+**Returns:**
+
+- `bool`: True if report was displayed successfully, False otherwise
 
 ## `_display_json_report`
 
@@ -48,6 +58,12 @@ def _display_json_report(report, format_type)
 
 Display a JSON report.
 
+**Parameters:**
+
+- `report` (`Dict[(str, Any)]`): The parsed JSON report
+
+- `format_type` (`str`): Format type (summary, details, full)
+
 ## `_display_markdown_report`
 
 ```python
@@ -55,6 +71,10 @@ def _display_markdown_report(report_path)
 ```
 
 Display a Markdown report.
+
+**Parameters:**
+
+- `report_path` (`Path`): Path to the Markdown report file
 
 ## `main`
 

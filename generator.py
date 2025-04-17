@@ -8,10 +8,10 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, Union
+from typing import Any, Dict, List, Optional, Union
 
 
-from jinja2 import Environment, FileSystemLoader, select_autoescape
+from jinja2 import Environment, FileSystemLoader, select_autoescape, Template
 from pydantic import ValidationError
 
 
@@ -184,7 +184,7 @@ class TestGenerator:
         """
         self.config = config
         self.template_engine = self._initialize_template_engine()
-        self.test_file_params = None
+        self.test_file_params: Optional[TestFileParameters] = None
         
         # Set debug logging if enabled
         if self.config.debug:
@@ -195,12 +195,12 @@ class TestGenerator:
         if self.config.parametrized:
             logger.debug("Parametrized test generation enabled")
     
-    def _initialize_template_engine(self) -> Environment:
+    def _initialize_template_engine(self) -> Optional[Environment]:
         """
         Initialize the Jinja2 template engine.
         
         Returns:
-            Environment: Configured Jinja2 environment
+            Optional[Environment]: Configured Jinja2 environment or None if no templates found
         """
         # First try package templates, then fall back to inline templates
         template_paths = [
@@ -268,12 +268,12 @@ class TestGenerator:
         logger.info("Parsing test parameters")
         return TestFileParameters(json_data)
     
-    def _get_template(self) -> Union[str, None]:
+    def _get_template(self) -> Union[Template, str]:
         """
         Get the appropriate template for the test framework.
         
         Returns:
-            Union[str, None]: Template string or None if template engine is not available
+            Union[Template, str]: Template object or string template if engine not available
         """
         harness = self.config.harness.lower()
         
@@ -292,37 +292,39 @@ class TestGenerator:
             logger.error(f"Unsupported test harness: {harness}")
             raise ValueError(f"Unsupported test harness: {harness}")
     
-    def _render_template(self, template: str) -> str:
+    def _render_template(self, template: Union[Template, str]) -> str:
         """
         Render the template with test parameters.
         
         Args:
-            template: Template string or Jinja2 template
+            template: Template object or string template
             
         Returns:
             str: Rendered test file
         """
         logger.info("Rendering test file template")
         
+        # Check if test_file_params is initialized
+        if self.test_file_params is None:
+            raise ValueError("Test file parameters not initialized. Call generate_test_file() first.")
+        
         # Check if the expected value is an exception class
         is_exception_test = False
         expected_value = None
-        if hasattr(self.test_file_params.dependent_variable, 'expected_value'):
-            ev = self.test_file_params.dependent_variable.expected_value
+        dependent_variable = self.test_file_params.dependent_variable
+        if hasattr(dependent_variable, 'expected_value') and dependent_variable.expected_value is not None:
+            ev = dependent_variable.expected_value
             expected_value = ev.value if ev else None
             if isinstance(expected_value, str) and "Error" in expected_value:
                 is_exception_test = True
         
         # Sanitize variable names for Python
-        independent_var_name = sanitize_variable_name(
-            self.test_file_params.independent_variable.name)
+        independent_variable = self.test_file_params.independent_variable
+        independent_var_name = sanitize_variable_name(independent_variable.name)
             
         # Generate timestamp for the template
         import datetime
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        
-        # Create a rendered timestamp to replace the placeholder in the template
-        rendered_content = None
         
         # Prepare context for template rendering
         context = {
@@ -331,8 +333,8 @@ class TestGenerator:
             "test_class_name": convert_to_pascal_case(self.config.name),
             "test_func_name": convert_to_snake_case(self.config.name),
             "background": self.test_file_params.background,
-            "independent_variable": self.test_file_params.independent_variable,
-            "dependent_variable": self.test_file_params.dependent_variable,
+            "independent_variable": independent_variable,
+            "dependent_variable": dependent_variable,
             "control_variables": self.test_file_params.control_variables,
             "materials": self.test_file_params.materials,
             "test_procedure": self.test_file_params.test_method,  # Pass as test_procedure to templates
@@ -351,8 +353,8 @@ class TestGenerator:
             logger.debug(f"Template context keys: {list(context.keys())}")
             
             # Check if this is a parametrized test
-            if hasattr(self.test_file_params.independent_variable, 'values'):
-                values = getattr(self.test_file_params.independent_variable, 'values', None)
+            if hasattr(independent_variable, 'values'):
+                values = getattr(independent_variable, 'values', None)
                 if values and isinstance(values, list):
                     logger.debug(f"Parametrized test with {len(values)} parameter sets")
                     
@@ -363,17 +365,18 @@ class TestGenerator:
                         context["parametrized"] = True
         
         # Render template
+        result_content: str = ""
         if hasattr(template, "render"):
             # Jinja2 template
-            rendered_content = template.render(**context)
+            result_content = template.render(**context)
         else:
             # String template (basic formatting)
-            rendered_content = template.format(**context)
+            result_content = template.format(**context)
             
         # Replace the timestamp placeholder with the actual timestamp
-        rendered_content: str = rendered_content.replace("{{timestamp}}", timestamp)
+        result_content = result_content.replace("{{timestamp}}", timestamp)
         
-        return rendered_content
+        return result_content
     
     def generate_test_file(self) -> str:
         """
@@ -400,9 +403,13 @@ class TestGenerator:
         
         # Parse test parameters
         self.test_file_params = self._parse_test_parameters(json_data)
+        if self.test_file_params is None:
+            raise ValueError("Failed to parse test parameters")
         
         # Get template
         template = self._get_template()
+        if template is None:
+            raise ValueError("Failed to get template")
         
         if self.config.debug:
             logger.debug(f"Using template for {self.config.harness}")

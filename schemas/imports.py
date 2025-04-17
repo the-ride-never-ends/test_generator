@@ -1,5 +1,5 @@
 
-from typing import List, Optional
+from typing import Callable, List, Optional
 from pydantic import BaseModel, Field
 
 
@@ -14,7 +14,7 @@ class Imports(BaseModel):
         import_string: Formatted import statement
     """
     name: str
-    import_funcs: Optional[List[str]] = Field(default_factory=list)
+    import_funcs: Optional[List[str]] = Field(default_factory=lambda: [])
 
     @property
     def import_string(self) -> str:

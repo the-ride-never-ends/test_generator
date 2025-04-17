@@ -293,7 +293,7 @@ class TestImports(unittest.TestCase):
         imp = Imports(name="test_module")
         
         self.assertEqual(imp.name, "test_module")
-        self.assertIsNone(imp.import_funcs)
+        self.assertEqual(imp.import_funcs, [])  # Empty list instead of None
         self.assertEqual(imp.import_string, "import test_module")
     
     def test_import_with_functions(self) -> None:

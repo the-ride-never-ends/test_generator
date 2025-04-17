@@ -66,11 +66,21 @@
 
 ### 1. Quality Improvements
 - [x] Fix all test failures
-- [ ] Continue mypy type checking (configuration added but many type errors remain)
-- [ ] Continue flake8 linting (configuration added but linting errors remain)
-- [ ] Fix all mypy type checking errors
-- [ ] Fix all flake8 linting errors
-- [ ] Implement pre-commit hooks
+- [ ] Fix mypy type checking errors:
+  - [x] Fix None checks in generator.py (14 errors)
+  - [ ] Fix Collection type issues in run_tests.py (16+ errors)
+  - [x] Fix incompatible return types in generator.py (4 errors)
+  - [x] Fix argument type errors in schemas/imports.py (1 error)
+  - [ ] Fix name redefinition in generator.py (1 error)
+- [ ] Fix flake8 linting errors:
+  - [ ] Fix blank line whitespace issues (50+ errors)
+  - [ ] Fix f-string missing placeholders (2 errors)
+  - [ ] Fix line length issues (1+ errors)
+  - [ ] Fix trailing whitespace (4+ errors)
+  - [ ] Add missing newlines at end of files (2 errors)
+- [x] Implement pre-commit hooks
+  - [x] Create .pre-commit-config.yaml with hooks for flake8, mypy, etc.
+  - [ ] Test and refine pre-commit hooks
 - [ ] Code review and refinement
 
 ### 2. Release Preparation
@@ -81,14 +91,8 @@
 
 ## Next Tasks
 
-2. ✅ Improve test coverage for schema validation methods (completed with comprehensive schema validation tests)
-3. ✅ Add test coverage reporting to measure code quality (achieved 95% code coverage with test_coverage.py and test_coverage_reporting.py)
-4. ✅ Add support for parameterized tests (implemented with Variable.values and ExpectedValue.values)
-5. ✅ Implement debug mode with enhanced logging (added with verbose debug output and CLI parameter)
-6. Add `mypy` type checking and `flake8` linting  
-7. Package for distribution with proper versioning  
-8. ✅ Enhance test templates with more robust implementations (completed for unittest and pytest)
-9. ✅ Add validation for template generation success (implemented with test reporting)
-10. ✅ Implement automatic test data collection and result statistics (added with JSON result output)
-11. Create visual reports of test results and coverage  
-12. Add support for async functions
+1. Fix generator.py None attribute errors by adding proper null checks
+2. Fix collection type issues in run_tests.py by using List instead of Collection
+3. Fix incompatible return types in generator.py
+4. Add pre-commit hooks for automatic linting and type checking
+5. Add support for async functions
