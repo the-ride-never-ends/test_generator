@@ -28,3 +28,6 @@ __pycache__/
 *.swp
 *.swo
 *.py.bak
+
+*.ini
+.flake8

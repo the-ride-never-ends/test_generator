@@ -8,11 +8,55 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Added mypy type checking with configuration file
+  - Created mypy.ini with project-specific settings
+  - Configured mypy to ensure proper type checking
+  - Fixed type annotations in utils/common/load_json_file.py
+  - Fixed type annotations in utils/for_tests/view_report.py
+  - Fixed type annotations in schemas/imports.py and schemas/method.py
+- Added flake8 linting with configuration file
+  - Created .flake8 configuration file with project-specific settings
+  - Identified linting issues across the codebase (988 total issues)
+  - Common issues include: blank lines with whitespace (696), multiple spaces after ':' (26), 
+    trailing whitespace (46), and lines too long (58)
+- Enhanced run_tests.sh to support type checking and linting options
+  - Added --mypy, --flake8, --check-all, and --lint-only parameters
+  - Implemented parallel running of tests, type checking, and linting
+  - Created proper exit code handling for test/lint failures
+
+## [0.2.0] - 2025-04-16
+
+### Added
 - Added comprehensive test coverage reporting functionality
 - Added test files specifically for test coverage reporting
 - Added comprehensive schema validation tests
 - Added tests for TestTitle model validation
 - Added tests for all validation methods in schema classes
+- Fixed all test failures in test_debug_mode.py and test_discovery_features.py
+- Achieved 100% test success rate (101/101 tests passing)
+- Added test files for Phase 2 features:
+  - Test suite for fixture handling in test templates
+  - Test suite for parametrized test generation
+  - Test suite for conditional test generation based on parameters
+  - Test suite for test discovery features
+  - Test suite for debug mode with enhanced output
+- Implemented parametrized test support:
+  - Added support for multiple parameter values in Variable schema (values field)
+  - Added ParameterValue class for structured parameter sets
+  - Added corresponding expected values for each parameter with ParameterExpectedValue
+  - Enhanced template context to support parametrized tests
+  - Added automatic detection of parametrized test data
+- Implemented debug mode with enhanced output:
+  - Added debug flag to CLI and Configs model
+  - Added detailed logging throughout the generation process
+  - Added analysis of generated test files
+  - Added automatic parametrization detection
+  - Added JSON data structure debug output
+- Added conditional test generation:
+  - Added condition expressions to validation procedures
+  - Added test parameters for conditional inclusion
+  - Updated CLI to handle conditional test parameters as JSON
+  - Added support for conditional test inclusion based on parameters
 
 ### Fixed
 - Fixed circular import issues between modules that prevented tests from running

@@ -1,4 +1,4 @@
-# variable.py: last updated 03:56 PM on April 15, 2025
+# variable.py: last updated 04:45 PM on April 16, 2025
 
 **File Path:** `/home/kylerose1946/claudes_toolbox/WIP/test_generator/schemas/variable.py`
 
@@ -10,6 +10,7 @@
 
 ### Classes
 
+- [`ParameterValue`](#parametervalue)
 - [`Variable`](#variable)
 
 ## Functions
@@ -23,6 +24,14 @@ def _get_python_type_from_statistical_type(statistical_type)
 Returns the python type of the variable based on the statistical type.
 
 ## Classes
+
+## `ParameterValue`
+
+```python
+class ParameterValue(BaseModel)
+```
+
+Represents a single parameter value for parametrized tests.
 
 ## `Variable`
 

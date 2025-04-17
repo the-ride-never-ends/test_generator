@@ -1,12 +1,24 @@
-from typing import Any, Optional, Type
+from typing import Any, Dict, List, Optional, Type, Union
 
 
-from pydantic import BaseModel, computed_field
+from pydantic import BaseModel, computed_field, Field
 
 
 from .statistical_type import StatisticalType
 from .expected_value import ExpectedValue
 from utils.common.convert_to_snake_case import convert_to_snake_case
+
+
+class ParameterValue(BaseModel):
+    """
+    Represents a single parameter value for parametrized tests.
+    
+    Attributes:
+        value: The actual value of the parameter
+        description: Optional description of what this parameter value represents
+    """
+    value: Any
+    description: Optional[str] = None
 
 
 def _get_python_type_from_statistical_type(statistical_type: StatisticalType) -> Type:
@@ -47,6 +59,7 @@ class Variable(BaseModel):
         - value : The value a variable is assigned. For control variables, it is pre-assigned and fixed.
             For independent variables, it is pre-assigned for each test but is not fixed overall.
             For dependent variables, it is not pre-assigned or fixed.
+        - values : For parametrized tests, a list of values to use for the variable.
         - expected_value : The value a variable is expected to have pre-experiment. 
             This is only used by dependent variables. This can be a pydantic validation type.
     """
@@ -55,6 +68,7 @@ class Variable(BaseModel):
     statistical_type: StatisticalType
     unit:             str
     value:            Optional[Any] = None
+    values:           Optional[List[Union[ParameterValue, Any]]] = Field(default=None, description="For parametrized tests, a list of values to use")
     expected_value:   Optional[ExpectedValue] = None
 
     @computed_field # type: ignore[prop-decorator]

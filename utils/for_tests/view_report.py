@@ -7,11 +7,18 @@ import argparse
 import json
 from pathlib import Path
 import sys
+from typing import Any, Dict, List, Optional, Union
 
 
-def print_color(text, color=None):
-    """Print colored text."""
-    colors = {
+def print_color(text: str, color: Optional[str] = None) -> None:
+    """
+    Print colored text to the console.
+    
+    Args:
+        text: The text to print
+        color: Optional color name ('red', 'green', etc.)
+    """
+    colors: Dict[str, str] = {
         "red": "\033[91m",
         "green": "\033[92m",
         "yellow": "\033[93m",
@@ -29,13 +36,16 @@ def print_color(text, color=None):
         print(f"{colors.get(color, '')}{text}{colors['end']}")
 
 
-def view_report(report_path, format_type="summary"):
+def view_report(report_path: Union[str, Path], format_type: str = "summary") -> bool:
     """
     View a test report file.
     
     Args:
         report_path: Path to the report file
         format_type: Type of report to show (summary, details, full)
+        
+    Returns:
+        bool: True if report was displayed successfully, False otherwise
     """
     report_path = Path(report_path)
     
@@ -48,8 +58,8 @@ def view_report(report_path, format_type="summary"):
     if report_path.suffix == ".json":
         # Parse JSON report
         try:
-            with open(report_path, 'r') as f:
-                report = json.load(f)
+            with open(report_path, 'r', encoding='utf-8') as f:
+                report: Dict[str, Any] = json.load(f)
         except json.JSONDecodeError as e:
             print_color(f"Error: Invalid JSON in report file: {e}", "red")
             return False
@@ -66,10 +76,16 @@ def view_report(report_path, format_type="summary"):
     return True
 
 
-def _display_json_report(report, format_type):
-    """Display a JSON report."""
-    summary = report["summary"]
-    test_cases = report["test_cases"]
+def _display_json_report(report: Dict[str, Any], format_type: str) -> None:
+    """
+    Display a JSON report.
+    
+    Args:
+        report: The parsed JSON report
+        format_type: Format type (summary, details, full)
+    """
+    summary: Dict[str, Any] = report["summary"]
+    test_cases: List[Dict[str, Any]] = report["test_cases"]
     
     # Print summary header
     print_color("\n=== Test Generator Mk2 - Test Report ===\n", "bold")
@@ -84,8 +100,8 @@ def _display_json_report(report, format_type):
     print(f"Expected Failures:    {summary['expected_failures']}")
     print(f"Unexpected Successes: {summary['unexpected_successes']}")
     
-    success_rate = summary['success_rate']
-    color = "green" if success_rate == 100 else "yellow" if success_rate >= 80 else "red"
+    success_rate: float = summary['success_rate']
+    color: str = "green" if success_rate == 100 else "yellow" if success_rate >= 80 else "red"
     print(f"Success Rate:         ", end="")
     print_color(f"{success_rate:.2f}%", color)
     
@@ -96,7 +112,7 @@ def _display_json_report(report, format_type):
         print_color("TEST DETAILS:", "bold")
         
         # Group test cases by status
-        cases_by_status = {}
+        cases_by_status: Dict[str, List[Dict[str, Any]]] = {}
         for case in test_cases:
             status = case["status"]
             if status not in cases_by_status:
@@ -120,14 +136,19 @@ def _display_json_report(report, format_type):
                         print()
 
 
-def _display_markdown_report(report_path):
-    """Display a Markdown report."""
+def _display_markdown_report(report_path: Path) -> None:
+    """
+    Display a Markdown report.
+    
+    Args:
+        report_path: Path to the Markdown report file
+    """
     try:
-        with open(report_path, 'r') as f:
-            content = f.read()
+        with open(report_path, 'r', encoding='utf-8') as f:
+            content: str = f.read()
         
         # Very simple Markdown display
-        lines = content.split("\n")
+        lines: List[str] = content.split("\n")
         for line in lines:
             if line.startswith("# "):
                 print_color(line[2:], "bold")
@@ -136,8 +157,11 @@ def _display_markdown_report(report_path):
             elif line.startswith("### "):
                 print_color(f"\n{line[4:]}", "bold")
             elif line.startswith("- **"):
-                parts = line.split("**")
-                print(f"{parts[1]:<22} {parts[2][2:]}")
+                parts: List[str] = line.split("**")
+                if len(parts) >= 3:
+                    print(f"{parts[1]:<22} {parts[2][2:]}")
+                else:
+                    print(line)
             elif line.startswith("|"):
                 # Simple table handling
                 print(line)
@@ -147,7 +171,7 @@ def _display_markdown_report(report_path):
         print_color(f"Error displaying Markdown report: {e}", "red")
 
 
-def main():
+def main() -> None:
     """Main entry point."""
     parser = argparse.ArgumentParser(description="View test reports for Test Generator Mk2.")
     parser.add_argument(

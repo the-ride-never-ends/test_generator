@@ -185,6 +185,15 @@ class TestGenerator:
         self.config = config
         self.template_engine = self._initialize_template_engine()
         self.test_file_params = None
+        
+        # Set debug logging if enabled
+        if self.config.debug:
+            logger.setLevel(logging.DEBUG)
+            logger.debug(f"Debug mode enabled in TestGenerator")
+            
+        # Log if parametrized test generation is enabled
+        if self.config.parametrized:
+            logger.debug("Parametrized test generation enabled")
     
     def _initialize_template_engine(self) -> Environment:
         """
@@ -222,7 +231,29 @@ class TestGenerator:
             Dict[str, Any]: Parsed JSON data
         """
         logger.info(f"Loading test parameters from {self.config.json_file_path}")
-        return load_json_file(self.config.json_file_path)
+        json_data = load_json_file(self.config.json_file_path)
+        
+        # Provide more detailed debug information if enabled
+        if self.config.debug:
+            import json
+            logger.debug(f"JSON data structure:\n{json.dumps(json_data, indent=2)}")
+            
+            # Check for parametrized test data structures
+            if "test_file_parameters" in json_data:
+                params = json_data["test_file_parameters"]
+                
+                # Check for 'values' array in independent variable (indicates parametrized test)
+                if "independent_variable" in params and "values" in params["independent_variable"]:
+                    value_count = len(params["independent_variable"]["values"])
+                    logger.debug(f"Found {value_count} parameter sets for parametrized testing")
+                    
+                # Check for 'values' array in dependent variable expected values
+                if ("dependent_variable" in params and "expected_value" in params["dependent_variable"] and 
+                    "values" in params["dependent_variable"]["expected_value"]):
+                    expected_count = len(params["dependent_variable"]["expected_value"]["values"])
+                    logger.debug(f"Found {expected_count} expected values for parametrized testing")
+        
+        return json_data
     
     def _parse_test_parameters(self, json_data: Dict[str, Any]) -> TestFileParameters:
         """
@@ -309,8 +340,27 @@ class TestGenerator:
             "independent_var_name": independent_var_name,
             "is_exception_test": is_exception_test,
             "expected_value": expected_value,
-            "timestamp": timestamp
+            "timestamp": timestamp,
+            "parametrized": self.config.parametrized,
+            "debug": self.config.debug,
+            "test_params": self.config.test_params
         }
+        
+        # Add debug information if enabled
+        if self.config.debug:
+            logger.debug(f"Template context keys: {list(context.keys())}")
+            
+            # Check if this is a parametrized test
+            if hasattr(self.test_file_params.independent_variable, 'values'):
+                values = getattr(self.test_file_params.independent_variable, 'values', None)
+                if values and isinstance(values, list):
+                    logger.debug(f"Parametrized test with {len(values)} parameter sets")
+                    
+                    # Set parametrized flag automatically if values are found
+                    if not self.config.parametrized:
+                        logger.debug("Auto-enabling parametrized testing based on data structure")
+                        self.config.parametrized = True
+                        context["parametrized"] = True
         
         # Render template
         if hasattr(template, "render"):
@@ -321,7 +371,7 @@ class TestGenerator:
             rendered_content = template.format(**context)
             
         # Replace the timestamp placeholder with the actual timestamp
-        rendered_content = rendered_content.replace("{{timestamp}}", timestamp)
+        rendered_content: str = rendered_content.replace("{{timestamp}}", timestamp)
         
         return rendered_content
     
@@ -332,6 +382,19 @@ class TestGenerator:
         Returns:
             str: Generated test file content
         """
+        if self.config.debug:
+            logger.debug(f"Starting test file generation with config: {self.config}")
+            
+            # Show configuration settings relevant to generation
+            debug_settings = [
+                f"Harness: {self.config.harness}",
+                f"Parametrized: {self.config.parametrized}",
+                f"Fixtures: {self.config.has_fixtures}",
+                f"Output directory: {self.config.output_dir}",
+                f"JSON file: {self.config.json_file_path}"
+            ]
+            logger.debug("\n".join(debug_settings))
+        
         # Load JSON data
         json_data = self._load_json_file()
         
@@ -341,8 +404,29 @@ class TestGenerator:
         # Get template
         template = self._get_template()
         
+        if self.config.debug:
+            logger.debug(f"Using template for {self.config.harness}")
+            
         # Render template
-        return self._render_template(template)
+        content = self._render_template(template)
+        
+        if self.config.debug:
+            logger.debug(f"Generated test content with {content.count(chr(10))+1} lines")
+            
+            # Analyze the generated content for debug purposes
+            if self.config.parametrized:
+                # For pytest
+                if "pytest.mark.parametrize" in content:
+                    logger.debug("Generated content includes pytest parametrization")
+                # For unittest
+                elif "self.subTest" in content:
+                    logger.debug("Generated content includes unittest parametrization with subTest")
+                    
+            # Check for debugging code in the generated file
+            if self.config.debug and "logger.debug" in content:
+                logger.debug("Generated test includes debug logging statements")
+                
+        return content
     
     def write_test_file(self, content: str) -> Path:
         """

@@ -74,6 +74,18 @@ class CLI:
             help="Whether a test needs fixtures in order to run (default: false)"
         )
         parser.add_argument(
+            "--parametrized", action="store_true", default=False,
+            help="Whether to generate parametrized tests (default: false)"
+        )
+        parser.add_argument(
+            "--debug", action="store_true", default=False,
+            help="Enable debug mode with enhanced output (default: false)"
+        )
+        parser.add_argument(
+            "--test-params", type=str, default=None,
+            help="JSON string of parameters for conditional test generation (e.g. '{\"input_type\": \"string\"}')"
+        )
+        parser.add_argument(
             "--docstring-style", type=str, default="google", 
             help="Docstring style to parse (default: google)"
         )
@@ -110,12 +122,26 @@ class CLI:
             if "test_parameter_json" in args_dict and "json_file_path" not in args_dict:
                 args_dict["json_file_path"] = args_dict.pop("test_parameter_json")
             
+            # Parse JSON test parameters if provided
+            if "test_params" in args_dict and args_dict["test_params"]:
+                try:
+                    import json
+                    args_dict["test_params"] = json.loads(args_dict["test_params"])
+                except json.JSONDecodeError as e:
+                    logger.error(f"Invalid JSON in test-params: {e}")
+                    return False
+            
             # If output_dir is provided, ensure it exists before validation
             if 'output_dir' in args_dict and args_dict['output_dir']:
                 output_dir = Path(args_dict['output_dir'])
                 if not output_dir.exists():
                     logger.info(f"Creating output directory: {output_dir}")
                     output_dir.mkdir(parents=True, exist_ok=True)
+            
+            # Set debug logging level if debug mode is enabled
+            if args_dict.get('debug', False):
+                logger.setLevel(logging.DEBUG)
+                logger.debug("Debug mode enabled with enhanced logging")
                 
             self.config = Configs.model_validate(args_dict)
             return True
@@ -131,23 +157,42 @@ class CLI:
             int: Exit code (0 for success, non-zero for errors)
         """
         try:
-            # Set up logging level
-            if self.config and self.config.verbose:
-                logger.setLevel(logging.DEBUG)
+            # Set up logging level (debug overrides verbose)
+            if self.config:
+                if self.config.debug:
+                    logger.setLevel(logging.DEBUG)
+                    logger.debug("Debug mode enabled - showing enhanced debug output")
+                elif self.config.verbose:
+                    logger.setLevel(logging.INFO)
             
             # Initialize generator
             self.generator = TestGenerator(self.config)
             
             # Generate and save test file
+            logger.debug("Starting test file generation")
             test_file = self.generator.generate_test_file()
+            
+            # Log detailed information in debug mode
+            if self.config and self.config.debug:
+                lines = test_file.count('\n')
+                logger.debug(f"Generated test file with {lines} lines")
+                
             output_path = self.generator.write_test_file(test_file)
             
+            # Log additional details in debug mode
+            if self.config and self.config.debug:
+                logger.debug(f"Test file type: {self.config.harness}")
+                if self.config.parametrized:
+                    logger.debug("Test file uses parametrized testing")
+                if self.config.has_fixtures:
+                    logger.debug("Test file includes fixture support")
+                    
             logger.info(f"Test file generated successfully at {output_path}")
             return 0
             
         except Exception as e:
             logger.error(f"Error generating test file: {e}")
-            if self.config and self.config.verbose:
+            if self.config and (self.config.verbose or self.config.debug):
                 import traceback
                 traceback.print_exc()
             return 1

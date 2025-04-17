@@ -37,12 +37,34 @@ pip install -r requirements.txt
 ## Command-line Usage
 
 ```bash
+# Basic test generation
 python -m test_generator_mk2 \
   --name "Connection Pool Performance" \
   --description "Tests the impact of connection pool size on query performance" \
   --test_parameter_json path/to/parameters.json \
   --output_dir ./tests \
   --harness unittest
+
+# Generate parametrized test
+python -m test_generator_mk2 \
+  --name "String Handling Test" \
+  --description "Tests string operations with multiple inputs" \
+  --test_parameter_json string_tests.json \
+  --parametrized
+
+# Generate with debug output
+python -m test_generator_mk2 \
+  --name "Database Query Test" \
+  --description "Tests query performance with debugging" \
+  --test_parameter_json db_test.json \
+  --debug
+
+# Generate conditional test
+python -m test_generator_mk2 \
+  --name "API Response Test" \
+  --description "Tests API responses with conditions" \
+  --test_parameter_json api_test.json \
+  --test-params '{"response_type": "json", "auth_enabled": true}'
 ```
 
 ### Command-line Options
@@ -55,6 +77,9 @@ python -m test_generator_mk2 \
 - `--harness`: Which python testing harness to use (default: unittest)
 - `--has-fixtures`: Whether a test needs fixtures in order to run (default: false)
 - `--docstring-style`: Docstring style to parse (default: google)
+- `--parametrized`: Whether to generate parametrized tests (default: false)
+- `--debug`: Enable debug mode with enhanced output (default: false)
+- `--test-params`: JSON string of parameters for conditional test generation
 
 ## Architecture
 
@@ -80,7 +105,7 @@ The test parameter JSON file defines all aspects of the test in a scientific str
 | Dependent variable | The variable you're measuring in response |
 | Control variables | Variables kept constant during the test |
 | Test materials | Software, hardware, and configurations used |
-| Test method | Steps to execute the test and analyze results |
+| Test procedure | Steps to execute the test and analyze results |
 | Imports | Libraries needed for the test |
 
 Here's the structure from `_test_file_parameters_template.json`:
@@ -195,6 +220,12 @@ python -m unittest tests.test_configs
 python -m coverage run -m unittest discover tests
 python -m coverage report
 python -m coverage html  # Generates HTML report in htmlcov/
+
+# Run type checking and linting
+./run_tests.sh --check-all      # Run tests + mypy + flake8
+./run_tests.sh --mypy           # Run tests + mypy type checking
+./run_tests.sh --flake8         # Run tests + flake8 linting
+./run_tests.sh --lint-only      # Only run mypy + flake8 (no tests)
 ```
 
 ### Test Validation
@@ -211,7 +242,10 @@ The test system implements strict validation for all components:
 - **Automated Results**: Test files include JSON result generation with timestamps
 - **Test Reporting**: Comprehensive test result capture including error messages and outcomes
 - **Framework Support**: Both unittest and pytest frameworks with proper test fixtures and plugins
-- **Code Coverage**: Extensive test coverage (95%) with specific tests for all schema validation methods
+- **Code Coverage**: Extensive test coverage (100%) with specific tests for all schema validation methods
+- **Parametrized Tests**: Support for multiple parameter values with automatic detection
+- **Conditional Tests**: Test procedures with conditional execution based on parameters
+- **Debug Mode**: Enhanced logging and troubleshooting features
 
 ### Test Reporting
 

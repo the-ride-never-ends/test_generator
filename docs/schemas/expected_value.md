@@ -1,4 +1,4 @@
-# expected_value.py: last updated 03:56 PM on April 15, 2025
+# expected_value.py: last updated 04:45 PM on April 16, 2025
 
 **File Path:** `/home/kylerose1946/claudes_toolbox/WIP/test_generator/schemas/expected_value.py`
 
@@ -6,9 +6,18 @@
 
 ### Classes
 
+- [`ParameterExpectedValue`](#parameterexpectedvalue)
 - [`ExpectedValue`](#expectedvalue)
 
 ## Classes
+
+## `ParameterExpectedValue`
+
+```python
+class ParameterExpectedValue(BaseModel)
+```
+
+Defines an expected value for a specific parameter input.
 
 ## `ExpectedValue`
 
