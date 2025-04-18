@@ -1,12 +1,12 @@
 
-from typing import Callable, List, Optional
+from typing import List, Optional
 from pydantic import BaseModel, Field
 
 
 class Imports(BaseModel):
     """
     Imports used in the test method.
-    
+
     Attributes:
         name: Name of the library
         import_funcs: Functions to import from the library
@@ -20,7 +20,7 @@ class Imports(BaseModel):
     def import_string(self) -> str:
         """
         Format the import statement for the template.
-        
+
         Returns:
             str: Properly formatted import statement
         """

@@ -1,0 +1,123 @@
+{
+    "test_file_parameters": {
+        "background": {
+            "orientation": "API response handling should adapt to different response formats.",
+            "purpose": "Test API response parsing with conditional behavior based on response type.",
+            "citation": "RESTful API Design Best Practices",
+            "hypothesis": "The parse_response function will correctly process different response types based on the specified format parameter."
+        },
+        "test_title": "Conditional API Response Parsing",
+        "independent_variable": {
+            "name": "Response Type",
+            "description": "The format of the API response to be parsed",
+            "statistical_type": "nominal",
+            "unit": "format",
+            "value": "response_type"
+        },
+        "dependent_variable": {
+            "name": "Parsed Data",
+            "description": "The data structure resulting from parsing the response",
+            "statistical_type": "nominal",
+            "unit": "dict",
+            "expected_value": {
+                "value": "{\"id\": 123, \"name\": \"Test Item\", \"status\": \"active\"}",
+                "validation_procedures": [
+                    {
+                        "description": "Verify JSON response parsing",
+                        "name": "verify_json_parsing",
+                        "condition": "response_type == 'json'",
+                        "steps": [
+                            "Create a mock JSON response",
+                            "Parse the response with the parse_response function",
+                            "Verify the parsed data matches the expected structure",
+                            "Check that all fields are correctly extracted"
+                        ]
+                    },
+                    {
+                        "description": "Verify XML response parsing",
+                        "name": "verify_xml_parsing",
+                        "condition": "response_type == 'xml'",
+                        "steps": [
+                            "Create a mock XML response",
+                            "Parse the response with the parse_response function",
+                            "Verify the parsed data matches the expected structure",
+                            "Check that XML tags are correctly converted to dictionary keys"
+                        ]
+                    },
+                    {
+                        "description": "Verify YAML response parsing",
+                        "name": "verify_yaml_parsing",
+                        "condition": "response_type == 'yaml'",
+                        "steps": [
+                            "Create a mock YAML response",
+                            "Parse the response with the parse_response function",
+                            "Verify the parsed data matches the expected structure",
+                            "Check that YAML hierarchies are properly preserved"
+                        ]
+                    }
+                ]
+            }
+        },
+        "control_variables": [
+            {
+                "name": "Error Handling",
+                "description": "How errors in the response are handled",
+                "statistical_type": "nominal",
+                "unit": "mode",
+                "value": "strict"
+            },
+            {
+                "name": "Timeout",
+                "description": "Timeout value for the response parsing",
+                "statistical_type": "continuous",
+                "unit": "seconds",
+                "value": 5.0
+            }
+        ],
+        "test_materials": [
+            {
+                "description": "JSON parsing library",
+                "name": "json",
+                "type": "library",
+                "version": "built-in"
+            },
+            {
+                "description": "XML parsing library",
+                "name": "xml.etree.ElementTree",
+                "type": "library",
+                "version": "built-in"
+            },
+            {
+                "description": "YAML parsing library",
+                "name": "pyyaml",
+                "type": "library",
+                "version": "6.0.1"
+            }
+        ],
+        "test_procedure": {
+            "data_collection": "Parsed response data",
+            "analysis_technique": "Structure and content verification",
+            "steps": [
+                "Create a mock response in the specified format (JSON, XML, or YAML)",
+                "Call the parse_response function with the mock response and format parameter",
+                "Verify the returned data structure matches the expected format",
+                "Check that all data fields are correctly extracted",
+                "Verify error handling behaves as expected"
+            ]
+        },
+        "imports": [
+            {
+                "name": "pytest"
+            },
+            {
+                "name": "json"
+            },
+            {
+                "name": "xml.etree.ElementTree"
+            },
+            {
+                "name": "yaml"
+            }
+        ]
+    }
+}

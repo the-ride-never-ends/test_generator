@@ -3,12 +3,16 @@
 """
 Script to generate reports for mypy and flake8 linting.
 """
+import argparse
 import datetime
 import json
+import os
 import subprocess
 from pathlib import Path
 import sys
-from typing import Dict, Any, List, Tuple
+from typing import Dict, Any, List, Tuple, Optional
+
+import pathspec
 
 
 class LintResultCollector:
@@ -168,7 +172,7 @@ class LintResultCollector:
     def generate_json_report(self, output_path: Path) -> None:
         """
         Generate a JSON report of the linting results.
-        
+
         Args:
             output_path: Path to write the report to
         """
@@ -245,15 +249,15 @@ class LintResultCollector:
             ])
 
             # Group issues by file
-            file_issues: Dict[str, List[Dict[str, Any]]] = {}
+            flake8_file_issues: Dict[str, List[Dict[str, Any]]] = {}
             for issue in flake8_issues:
                 file_path = issue.get("file", "Unknown file")
-                if file_path not in file_issues:
-                    file_issues[file_path] = []
-                file_issues[file_path].append(issue)
+                if file_path not in flake8_file_issues:
+                    flake8_file_issues[file_path] = []
+                flake8_file_issues[file_path].append(issue)
 
             # Add issues by file
-            for file_path, issues in file_issues.items():
+            for file_path, issues in flake8_file_issues.items():
                 content.append(f"### {file_path}")
                 content.append("")
 
@@ -278,15 +282,66 @@ class LintResultCollector:
             f.write('\n'.join(content))
 
 
-def run_linting() -> Tuple[bool, Dict[str, Any]]:
+def load_gitignore_patterns(gitignore_path: Path) -> Optional[pathspec.PathSpec]:
+    """
+    Load patterns from a gitignore file.
+
+    Args:
+        gitignore_path: Path to the gitignore file
+
+    Returns:
+        PathSpec object or None if file doesn't exist
+    """
+    if not gitignore_path.exists():
+        return None
+
+    with open(gitignore_path, 'r') as f:
+        patterns = f.read().splitlines()
+
+    return pathspec.PathSpec.from_lines('gitwildmatch', patterns)
+
+
+def should_ignore_file(file_path: str, spec: Optional[pathspec.PathSpec]) -> bool:
+    """
+    Check if a file should be ignored based on gitignore patterns.
+
+    Args:
+        file_path: The file path to check
+        spec: The PathSpec object with gitignore patterns
+
+    Returns:
+        True if the file should be ignored, False otherwise
+    """
+    if spec is None:
+        return False
+
+    # Convert to path relative to the project root
+    rel_path = os.path.relpath(file_path, '.')
+    
+    # Check if the file matches any gitignore pattern
+    return spec.match_file(rel_path)
+
+
+def run_linting(respect_gitignore: bool = False) -> Tuple[bool, Dict[str, Any]]:
     """
     Run linting and generate reports.
-    
+
+    Args:
+        respect_gitignore: Whether to respect gitignore patterns
+
     Returns:
         Tuple of success status and lint results dictionary
     """
     # Set up collector
     collector = LintResultCollector()
+
+    # Load gitignore patterns if needed
+    gitignore_spec = None
+    if respect_gitignore:
+        gitignore_path = Path('.gitignore')
+        gitignore_spec = load_gitignore_patterns(gitignore_path)
+        if gitignore_spec:
+            print(f"Using gitignore patterns from {gitignore_path}")
 
     # Run mypy
     print("Running mypy type checking...")
@@ -295,10 +350,28 @@ def run_linting() -> Tuple[bool, Dict[str, Any]]:
         mypy_result = subprocess.run(mypy_cmd, capture_output=True, text=True)
         mypy_success, mypy_errors = collector.collect_mypy_results(mypy_result.stdout + mypy_result.stderr)
 
+        if respect_gitignore and gitignore_spec:
+            # Filter out issues in ignored files
+            filtered_issues = []
+            filtered_count = 0
+            for issue in collector.results["mypy_issues"]:
+                file_path = issue.get("file", "")
+                if file_path and should_ignore_file(file_path, gitignore_spec):
+                    filtered_count += 1
+                else:
+                    filtered_issues.append(issue)
+            
+            if filtered_count > 0:
+                print(f"Ignored {filtered_count} issues in gitignored files")
+                collector.results["mypy_issues"] = filtered_issues
+                collector.results["summary"]["mypy_errors"] -= filtered_count
+                collector.results["summary"]["total_errors"] -= filtered_count
+                mypy_success = collector.results["summary"]["mypy_errors"] == 0
+
         if mypy_success:
             print("✅ Type checking passed!")
         else:
-            print(f"❌ Type checking failed with {mypy_errors} errors")
+            print(f"❌ Type checking failed with {collector.results['summary']['mypy_errors']} errors")
     except Exception as e:
         print(f"Error running mypy: {e}")
         mypy_success = False
@@ -310,10 +383,28 @@ def run_linting() -> Tuple[bool, Dict[str, Any]]:
         flake8_result = subprocess.run(flake8_cmd, capture_output=True, text=True)
         flake8_success, flake8_errors = collector.collect_flake8_results(flake8_result.stdout + flake8_result.stderr)
 
+        if respect_gitignore and gitignore_spec:
+            # Filter out issues in ignored files
+            filtered_issues = []
+            filtered_count = 0
+            for issue in collector.results["flake8_issues"]:
+                file_path = issue.get("file", "")
+                if file_path and should_ignore_file(file_path, gitignore_spec):
+                    filtered_count += 1
+                else:
+                    filtered_issues.append(issue)
+            
+            if filtered_count > 0:
+                print(f"Ignored {filtered_count} issues in gitignored files")
+                collector.results["flake8_issues"] = filtered_issues
+                collector.results["summary"]["flake8_errors"] -= filtered_count
+                collector.results["summary"]["total_errors"] -= filtered_count
+                flake8_success = collector.results["summary"]["flake8_errors"] == 0
+
         if flake8_success:
             print("✅ Linting passed!")
         else:
-            print(f"❌ Linting failed with {flake8_errors} errors")
+            print(f"❌ Linting failed with {collector.results['summary']['flake8_errors']} errors")
     except Exception as e:
         print(f"Error running flake8: {e}")
         flake8_success = False
@@ -333,7 +424,7 @@ def run_linting() -> Tuple[bool, Dict[str, Any]]:
     collector.generate_json_report(json_path)
     collector.generate_markdown_report(markdown_path)
 
-    print(f"\nLint reports generated:")
+    print("\nLint reports generated:")
     print(f"  - JSON: {json_path}")
     print(f"  - Markdown: {markdown_path}")
 
@@ -351,6 +442,12 @@ def run_linting() -> Tuple[bool, Dict[str, Any]]:
 
 
 if __name__ == "__main__":
-    success, _ = run_linting()
+    parser = argparse.ArgumentParser(description="Run linting and generate reports")
+    parser.add_argument("--respect-gitignore", action="store_true", 
+                        help="Respect .gitignore patterns when reporting issues")
+    
+    args = parser.parse_args()
+    
+    success, _ = run_linting(respect_gitignore=args.respect_gitignore)
     # Exit with non-zero code if linting failed
     sys.exit(0 if success else 1)

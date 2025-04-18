@@ -1,6 +1,6 @@
-# variable.py: last updated 06:01 PM on April 17, 2025
+# variable.py: last updated 11:35 PM on April 17, 2025
 
-**File Path:** `/home/kylerose1946/claudes_toolbox/WIP/test_generator/schemas/variable.py`
+**File Path:** `WIP/test_generator/schemas/variable.py`
 
 ## Table of Contents
 
@@ -40,12 +40,12 @@ class Variable(BaseModel)
 ```
 
 A variable is any characteristic, number, or quantity that can be measured or counted.
-Age, sex, business income and expenses, country of birth, capital expenditure, class grades, eye color 
-and vehicle type are examples of variables. It is called a variable because the value may vary between data units in a population, 
+Age, sex, business income and expenses, country of birth, capital expenditure, class grades, eye color
+and vehicle type are examples of variables. It is called a variable because the value may vary between data units in a population,
 and may change in value over time.
 
-For example, 'income' is a variable that can vary between data units in a population 
-(i.e. the people or businesses being studied may not have the same incomes) and can also 
+For example, 'income' is a variable that can vary between data units in a population
+(i.e. the people or businesses being studied may not have the same incomes) and can also
 vary over time for each data unit (i.e. income can go up or down).
 
 **Methods:**
@@ -68,5 +68,5 @@ This is used to determine how to handle the variable in code.
 def type_in_python(self)
 ```
 
-Returns the python type of the variable. 
+Returns the python type of the variable.
 This is used to determine how to handle the variable in code.

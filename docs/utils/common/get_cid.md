@@ -1,6 +1,6 @@
-# get_cid.py: last updated 06:01 PM on April 17, 2025
+# get_cid.py: last updated 11:35 PM on April 17, 2025
 
-**File Path:** `/home/kylerose1946/claudes_toolbox/WIP/test_generator/utils/common/get_cid.py`
+**File Path:** `WIP/test_generator/utils/common/get_cid.py`
 
 ## Table of Contents
 
@@ -95,7 +95,7 @@ writes the data to it, calculates the CID, and then removes the temporary file.
 def get_file_sha256(self, file_path)
 ```
 
-Calculate the SHA-256 hash of a file. 
+Calculate the SHA-256 hash of a file.
 
 This method reads the file in 8192-byte chunks to handle large files
 without loading everything into memory all at once.

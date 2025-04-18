@@ -36,7 +36,7 @@ class TestResultCollector:
     def collect_results(self, result: unittest.TestResult) -> None:
         """
         Collect results from a TestResult object.
-        
+
         Args:
             result: TestResult object from the test run
         """
@@ -182,7 +182,7 @@ class TestResultCollector:
                 module = str(test_case.get("module", ""))
                 cls = str(test_case.get("class", ""))
                 name = str(test_case.get("name", ""))
-                
+
                 content.append(f"| {status} | {module} | {cls} | {name} |")
 
             # Add failure/error details
@@ -201,7 +201,7 @@ class TestResultCollector:
                     tc_name = str(tc.get("name", ""))
                     tc_message = str(tc.get("message", ""))
                     tc_traceback = str(tc.get("traceback", ""))
-                    
+
                     content.extend([
                         f"### {tc_status}: {tc_module}.{tc_class}.{tc_name}",
                         "",
@@ -265,7 +265,7 @@ class TestDiscoverer:
         collector.generate_json_report(json_path)
         collector.generate_markdown_report(markdown_path)
 
-        print(f"\nTest reports generated:")
+        print("\nTest reports generated:")
         print(f"  - JSON: {json_path}")
         print(f"  - Markdown: {markdown_path}")
 

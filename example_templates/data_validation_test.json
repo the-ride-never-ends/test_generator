@@ -1,0 +1,198 @@
+{
+    "test_file_parameters": {
+        "background": {
+            "orientation": "Data validation is critical for ensuring data integrity in applications.",
+            "purpose": "Test the validation logic for user profile data with various scenarios.",
+            "citation": "Data Validation Design Patterns",
+            "hypothesis": "The user profile validator will correctly identify and report validation errors for different types of invalid data."
+        },
+        "test_title": "User Profile Data Validation Testing",
+        "independent_variable": {
+            "name": "User Profile Data",
+            "description": "The user profile data to be validated",
+            "statistical_type": "nominal",
+            "unit": "dictionary",
+            "values": [
+                {
+                    "id": "valid_profile",
+                    "value": "{\"name\": \"Jane Doe\", \"age\": 30, \"email\": \"jane.doe@example.com\", \"interests\": [\"reading\", \"hiking\"]}"
+                },
+                {
+                    "id": "invalid_age",
+                    "value": "{\"name\": \"Jane Doe\", \"age\": -5, \"email\": \"jane.doe@example.com\", \"interests\": [\"reading\", \"hiking\"]}"
+                },
+                {
+                    "id": "invalid_email",
+                    "value": "{\"name\": \"Jane Doe\", \"age\": 30, \"email\": \"not-an-email\", \"interests\": [\"reading\", \"hiking\"]}"
+                },
+                {
+                    "id": "missing_required",
+                    "value": "{\"age\": 30, \"email\": \"jane.doe@example.com\", \"interests\": [\"reading\", \"hiking\"]}"
+                },
+                {
+                    "id": "empty_interests",
+                    "value": "{\"name\": \"Jane Doe\", \"age\": 30, \"email\": \"jane.doe@example.com\", \"interests\": []}"
+                },
+                {
+                    "id": "extra_fields",
+                    "value": "{\"name\": \"Jane Doe\", \"age\": 30, \"email\": \"jane.doe@example.com\", \"interests\": [\"reading\"], \"unknown_field\": \"value\"}"
+                }
+            ]
+        },
+        "dependent_variable": {
+            "name": "Validation Result",
+            "description": "The result of validating the user profile data",
+            "statistical_type": "nominal",
+            "unit": "result",
+            "expected_value": {
+                "values": [
+                    {
+                        "id": "valid_profile",
+                        "value": "{\"valid\": true, \"errors\": []}"
+                    },
+                    {
+                        "id": "invalid_age",
+                        "value": "{\"valid\": false, \"errors\": [\"age must be a positive number\"]}"
+                    },
+                    {
+                        "id": "invalid_email",
+                        "value": "{\"valid\": false, \"errors\": [\"email is not valid\"]}"
+                    },
+                    {
+                        "id": "missing_required",
+                        "value": "{\"valid\": false, \"errors\": [\"name is required\"]}"
+                    },
+                    {
+                        "id": "empty_interests",
+                        "value": "{\"valid\": false, \"errors\": [\"interests cannot be empty\"]}"
+                    },
+                    {
+                        "id": "extra_fields",
+                        "value": "{\"valid\": false, \"errors\": [\"unknown field: unknown_field\"]}"
+                    }
+                ],
+                "validation_procedures": [
+                    {
+                        "description": "Verify validation of a valid profile",
+                        "name": "verify_valid_profile",
+                        "condition": "profile_id == 'valid_profile'",
+                        "steps": [
+                            "Create a valid user profile",
+                            "Call the validate_profile function",
+                            "Verify the validation result indicates success",
+                            "Verify no validation errors are reported"
+                        ]
+                    },
+                    {
+                        "description": "Verify validation of an invalid age",
+                        "name": "verify_invalid_age",
+                        "condition": "profile_id == 'invalid_age'",
+                        "steps": [
+                            "Create a user profile with an invalid age",
+                            "Call the validate_profile function",
+                            "Verify the validation result indicates failure",
+                            "Verify the correct error message about age is reported"
+                        ]
+                    },
+                    {
+                        "description": "Verify validation of an invalid email",
+                        "name": "verify_invalid_email",
+                        "condition": "profile_id == 'invalid_email'",
+                        "steps": [
+                            "Create a user profile with an invalid email",
+                            "Call the validate_profile function",
+                            "Verify the validation result indicates failure",
+                            "Verify the correct error message about email is reported"
+                        ]
+                    },
+                    {
+                        "description": "Verify validation of missing required fields",
+                        "name": "verify_missing_required",
+                        "condition": "profile_id == 'missing_required'",
+                        "steps": [
+                            "Create a user profile missing the required name field",
+                            "Call the validate_profile function",
+                            "Verify the validation result indicates failure",
+                            "Verify the correct error message about missing name is reported"
+                        ]
+                    },
+                    {
+                        "description": "Verify validation of empty interests",
+                        "name": "verify_empty_interests",
+                        "condition": "profile_id == 'empty_interests'",
+                        "steps": [
+                            "Create a user profile with empty interests",
+                            "Call the validate_profile function",
+                            "Verify the validation result indicates failure",
+                            "Verify the correct error message about empty interests is reported"
+                        ]
+                    },
+                    {
+                        "description": "Verify validation of extra unknown fields",
+                        "name": "verify_extra_fields",
+                        "condition": "profile_id == 'extra_fields'",
+                        "steps": [
+                            "Create a user profile with an unknown field",
+                            "Call the validate_profile function",
+                            "Verify the validation result indicates failure",
+                            "Verify the correct error message about unknown field is reported"
+                        ]
+                    }
+                ]
+            }
+        },
+        "control_variables": [
+            {
+                "name": "Validation Mode",
+                "description": "The validation mode being used",
+                "statistical_type": "nominal",
+                "unit": "mode",
+                "value": "\"strict\""
+            },
+            {
+                "name": "Schema Version",
+                "description": "The version of the validation schema",
+                "statistical_type": "nominal",
+                "unit": "version",
+                "value": "\"1.0\""
+            }
+        ],
+        "test_materials": [
+            {
+                "description": "JSON schema validation library",
+                "name": "jsonschema",
+                "type": "library",
+                "version": "4.17.3"
+            },
+            {
+                "description": "Testing framework",
+                "name": "pytest",
+                "type": "library",
+                "version": "7.4.0"
+            }
+        ],
+        "test_procedure": {
+            "data_collection": "Validation results and error messages",
+            "analysis_technique": "Result verification and error message checking",
+            "steps": [
+                "Create a user profile with the test data",
+                "Call the validate_profile function with the profile",
+                "Capture the validation result",
+                "Verify the result matches the expected outcome (success/failure)",
+                "Verify any error messages match the expected messages",
+                "Check that the number of errors matches the expected count"
+            ]
+        },
+        "imports": [
+            {
+                "name": "pytest"
+            },
+            {
+                "name": "jsonschema"
+            },
+            {
+                "name": "json"
+            }
+        ]
+    }
+}

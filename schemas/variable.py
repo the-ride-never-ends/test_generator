@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, Type, Union
+from typing import Any, List, Optional, Type, Union
 
 
 from pydantic import BaseModel, computed_field, Field
@@ -12,7 +12,7 @@ from utils.common.convert_to_snake_case import convert_to_snake_case
 class ParameterValue(BaseModel):
     """
     Represents a single parameter value for parametrized tests.
-    
+
     Attributes:
         value: The actual value of the parameter
         description: Optional description of what this parameter value represents
@@ -30,7 +30,7 @@ def _get_python_type_from_statistical_type(statistical_type: StatisticalType) ->
             return str
         elif statistical_type == StatisticalType.DISCRETE:
             return int
-        elif statistical_type == StatisticalType.CONTINOUS:
+        elif statistical_type == StatisticalType.CONTINUOUS:
             return float
         else:
             raise ValueError(f"Unknown statistical type: {statistical_type}")
@@ -41,12 +41,12 @@ def _get_python_type_from_statistical_type(statistical_type: StatisticalType) ->
 class Variable(BaseModel):
     """
     A variable is any characteristic, number, or quantity that can be measured or counted.
-    Age, sex, business income and expenses, country of birth, capital expenditure, class grades, eye color 
-    and vehicle type are examples of variables. It is called a variable because the value may vary between data units in a population, 
+    Age, sex, business income and expenses, country of birth, capital expenditure, class grades, eye color
+    and vehicle type are examples of variables. It is called a variable because the value may vary between data units in a population,
     and may change in value over time.
 
-    For example, 'income' is a variable that can vary between data units in a population 
-    (i.e. the people or businesses being studied may not have the same incomes) and can also 
+    For example, 'income' is a variable that can vary between data units in a population
+    (i.e. the people or businesses being studied may not have the same incomes) and can also
     vary over time for each data unit (i.e. income can go up or down).
 
     Attributes:
@@ -60,22 +60,22 @@ class Variable(BaseModel):
             For independent variables, it is pre-assigned for each test but is not fixed overall.
             For dependent variables, it is not pre-assigned or fixed.
         - values : For parametrized tests, a list of values to use for the variable.
-        - expected_value : The value a variable is expected to have pre-experiment. 
+        - expected_value : The value a variable is expected to have pre-experiment.
             This is only used by dependent variables. This can be a pydantic validation type.
     """
-    name:             str
-    description:      str
+    name: str
+    description: str
     statistical_type: StatisticalType
-    unit:             str
-    value:            Optional[Any] = None
-    values:           Optional[List[Union[ParameterValue, Any]]] = Field(default=None, description="For parametrized tests, a list of values to use")
-    expected_value:   Optional[ExpectedValue] = None
+    unit: str
+    value: Optional[Any] = None
+    values: Optional[List[Union[ParameterValue, Any]]] = Field(default=None, description="For parametrized tests, a list of values to use")
+    expected_value: Optional[ExpectedValue] = None
 
     @computed_field # type: ignore[prop-decorator]
     @property
     def type_in_python(self) -> Type:
         """
-        Returns the python type of the variable. 
+        Returns the python type of the variable.
         This is used to determine how to handle the variable in code.
         """
         return _get_python_type_from_statistical_type(self.statistical_type)

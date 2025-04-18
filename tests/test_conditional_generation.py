@@ -5,21 +5,24 @@ Tests for conditional test generation.
 """
 import json
 import os
+from pathlib import Path
+import sys
 import tempfile
 import unittest
-from pathlib import Path
 from unittest.mock import patch, MagicMock
 
-# Adjust the import path to properly import the generator module
-import sys
-sys.path.insert(0, str(Path(__file__).parent.parent))
-from generator import TestGenerator
+
 from configs import Configs
+from generator import TestGenerator
+
+
+# Adjust the import path to properly import the generator module
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 
 class TestConditionalGeneration(unittest.TestCase):
     """Tests for conditional test generation."""
-    
+
     def setUp(self) -> None:
         """Set up test environment."""
         # Create a temporary JSON file with conditional test data
@@ -108,10 +111,10 @@ class TestConditionalGeneration(unittest.TestCase):
         }
         self.temp_json.write(json.dumps(sample_data).encode('utf-8'))
         self.temp_json.close()
-        
+
         # Create a temporary output directory
         self.temp_dir = tempfile.TemporaryDirectory()
-        
+
         # Create configs for different input types
         self.string_config = Configs.model_validate({
             "name": "String Conditional Test",
@@ -120,7 +123,7 @@ class TestConditionalGeneration(unittest.TestCase):
             "output_dir": self.temp_dir.name,
             "harness": "unittest"
         })
-        
+
         # Add additional config params for conditional testing
         self.string_config_with_params = Configs.model_validate({
             "name": "String Conditional Test",
@@ -130,18 +133,18 @@ class TestConditionalGeneration(unittest.TestCase):
             "harness": "unittest",
             "test_params": {"input_type": "string"}
         })
-    
+
     def tearDown(self) -> None:
         """Clean up temporary files."""
         os.unlink(self.temp_json.name)
         self.temp_dir.cleanup()
-    
+
     @patch('configs.Configs.model_validate')
     def test_conditional_param_validation(self, mock_validate):
         """Test validation of conditional test parameters."""
         # Setup
         mock_validate.return_value = self.string_config_with_params
-        
+
         # Create test parameters dict with test_params as a JSON string
         # This matches our implementation in cli.py which expects test_params as a JSON string
         args_dict = {
@@ -151,28 +154,28 @@ class TestConditionalGeneration(unittest.TestCase):
             "output_dir": self.temp_dir.name,
             "test_params": json.dumps({"input_type": "string"})
         }
-        
+
         # Use the config validation logic (mocked)
         from cli import CLI
         cli = CLI()
         result = cli.validate_config(args_dict)
-        
+
         # Verify that the validation was called with test_params
         mock_validate.assert_called_once()
         call_kwargs = mock_validate.call_args[0][0]
         self.assertIn("test_params", call_kwargs)
         self.assertEqual(call_kwargs["test_params"]["input_type"], "string")
-    
+
     @patch('generator.TestGenerator._get_template')
     @patch('generator.TestGenerator._render_template')
     def test_conditional_test_inclusion(self, mock_render, mock_get_template) -> None:
         """Test inclusion of conditional tests based on parameters."""
         # Setup
         generator = TestGenerator(self.string_config)
-        
+
         # Add test parameters to the generator
         generator.config.test_params = {"input_type": "string"}
-        
+
         # Mock template and rendering
         mock_template = MagicMock()
         mock_get_template.return_value = mock_template
@@ -182,23 +185,23 @@ def test_string_handling(self) -> None:
     input_value = "test string"
     self.assertEqual(function_under_test(input_value), "processed string")
 """
-        
+
         # Generate test file
         content = generator.generate_test_file()
-        
+
         # Verify the conditionally included test is in the content
         self.assertIn("test_string_handling", content)
-    
+
     @patch('generator.TestGenerator._get_template')
     @patch('generator.TestGenerator._render_template')
     def test_conditional_test_exclusion(self, mock_render, mock_get_template) -> None:
         """Test exclusion of conditional tests based on parameters."""
         # Setup
         generator = TestGenerator(self.string_config)
-        
+
         # Add test parameters to the generator for numeric input
         generator.config.test_params = {"input_type": "numeric"}
-        
+
         # Mock template and rendering - only returns numeric test
         mock_template = MagicMock()
         mock_get_template.return_value = mock_template
@@ -208,16 +211,16 @@ def test_numeric_handling(self) -> None:
     input_value = 42
     self.assertEqual(function_under_test(input_value), 84)
 """
-        
+
         # Generate test file
         content = generator.generate_test_file()
-        
+
         # Verify the conditionally included test is in the content
         self.assertIn("test_numeric_handling", content)
-        
+
         # String test should not be in the content
         self.assertNotIn("test_string_handling", content)
-    
+
     @patch('generator.TestFileParameters._parse_test_method')
     def test_conditional_procedure_processing(self, mock_parse_method):
         """Test processing of conditional test procedures."""
@@ -225,29 +228,29 @@ def test_numeric_handling(self) -> None:
         expected_procedure = {
             "steps": ["Validate string length", "Check string content"]
         }
-        
+
         # Mock the method parsing
         mock_parse_method.return_value = expected_procedure
-        
+
         # Create generator with string input parameters
         generator = TestGenerator(self.string_config)
         generator.config.test_params = {"input_type": "string"}
-        
+
         # Mock various parse methods to avoid validation errors
         with patch('generator.TestFileParameters._parse_variable'), \
              patch('generator.TestFileParameters._parse_materials'), \
              patch('generator.TestFileParameters._parse_imports'), \
              patch('generator.TestFileParameters._parse_control_variables'), \
              patch('generator.TestFileParameters._parse_test_title'):
-                
+
             # Load and parse JSON
             json_data = generator._load_json_file()
             params = generator._parse_test_parameters(json_data)
-            
+
             # Verify that the correct procedure was parsed
             mock_parse_method.assert_called_once()
             self.assertEqual(params.test_method, expected_procedure)
-    
+
     @patch('generator.TestFileParameters._parse_variable')
     def test_conditional_validation_procedure(self, mock_parse_variable):
         """Test conditional validation procedures based on parameters."""
@@ -262,7 +265,7 @@ def test_numeric_handling(self) -> None:
                 "condition": "input_type == 'string'"
             }
         ]
-        
+
         # Different return values based on variable type
         def mock_variable_parser(var_type):
             if var_type == "dependent_variable":
@@ -273,31 +276,31 @@ def test_numeric_handling(self) -> None:
                 simple_mock.name = "Input Type"
                 simple_mock.value = "string"
                 return simple_mock
-        
+
         mock_parse_variable.side_effect = mock_variable_parser
-        
+
         # Create generator with string input parameters
         generator = TestGenerator(self.string_config)
         generator.config.test_params = {"input_type": "string"}
-        
+
         # Mock various parse methods to avoid validation errors
         with patch('generator.TestFileParameters._parse_test_method'), \
              patch('generator.TestFileParameters._parse_materials'), \
              patch('generator.TestFileParameters._parse_imports'), \
              patch('generator.TestFileParameters._parse_control_variables'), \
              patch('generator.TestFileParameters._parse_test_title'):
-                
+
             # Load and parse JSON
             json_data = generator._load_json_file()
             params = generator._parse_test_parameters(json_data)
-            
+
             # Verify that the variable was parsed twice (once for independent, once for dependent)
             self.assertEqual(mock_parse_variable.call_count, 2)
-            
+
             # Verify the dependent variable has the expected validation procedure
             self.assertEqual(params.dependent_variable, mock_var)
             self.assertEqual(
-                params.dependent_variable.expected_value.validation_procedures[0]["name"], 
+                params.dependent_variable.expected_value.validation_procedures[0]["name"],
                 "validate_string_handling"
             )
 

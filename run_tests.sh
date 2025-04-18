@@ -18,6 +18,7 @@ RUN_MYPY=false
 RUN_FLAKE8=false
 VERBOSITY_ARG=""
 CHECK_ALL=false
+RESPECT_GITIGNORE=false
 
 # Parse arguments
 while [[ $# -gt 0 ]]; do
@@ -46,9 +47,13 @@ while [[ $# -gt 0 ]]; do
             RUN_FLAKE8=true
             shift
             ;;
+        --respect-gitignore)
+            RESPECT_GITIGNORE=true
+            shift
+            ;;
         *)
             echo "Unknown option: $1"
-            echo "Usage: $0 [-q|--quiet] [--mypy] [--flake8] [--check-all] [--lint-only]"
+            echo "Usage: $0 [-q|--quiet] [--mypy] [--flake8] [--check-all] [--lint-only] [--respect-gitignore]"
             exit 1
             ;;
     esac
@@ -96,7 +101,15 @@ fi
 # Run linting tools if requested
 if $RUN_MYPY || $RUN_FLAKE8; then
     echo -e "\n==== Running linting tools ===="
-    python utils/for_tests/lint_report.py
+    
+    # Build the command
+    LINT_CMD="python utils/for_tests/lint_report.py"
+    if $RESPECT_GITIGNORE; then
+        LINT_CMD="$LINT_CMD --respect-gitignore"
+    fi
+    
+    # Run the linting command
+    eval $LINT_CMD
     LINT_EXIT_CODE=$?
     
     if [ $LINT_EXIT_CODE -eq 0 ]; then
@@ -128,14 +141,15 @@ fi
 
 # Show usage help if nothing was run
 if ! $RUN_TESTS && ! $RUN_MYPY && ! $RUN_FLAKE8; then
-    echo "Usage: $0 [-q|--quiet] [--mypy] [--flake8] [--check-all] [--lint-only]"
+    echo "Usage: $0 [-q|--quiet] [--mypy] [--flake8] [--check-all] [--lint-only] [--respect-gitignore]"
     echo ""
     echo "Options:"
-    echo "  -q, --quiet      Run tests with reduced verbosity"
-    echo "  --mypy           Run mypy type checking"
-    echo "  --flake8         Run flake8 linting"
-    echo "  --check-all      Run tests, type checking, and linting"
-    echo "  --lint-only      Run only type checking and linting (no tests)"
+    echo "  -q, --quiet           Run tests with reduced verbosity"
+    echo "  --mypy                Run mypy type checking"
+    echo "  --flake8              Run flake8 linting"
+    echo "  --check-all           Run tests, type checking, and linting"
+    echo "  --lint-only           Run only type checking and linting (no tests)"
+    echo "  --respect-gitignore   Ignore files/folders listed in .gitignore during linting"
 fi
 
 exit $OVERALL_EXIT

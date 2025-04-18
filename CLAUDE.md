@@ -139,6 +139,7 @@ The TODO must appear in:
 - A dedicated TODO.md file in the repository root
 3. ALWAYS assume code needs to be fully implemented unless explicitly stated otherwise e.g. If a comment says "verify that x equals 2", the code at runtime better actually verify that x equals 2.
 4. Remember, your job is to implement and fix the code so that it runs successfully, not fake it or pretend it works for the purpose of it passing tests or for your convenience.
+5. NEVER make special exceptions in code to handle test cases. Tests should verify the actual behavior of the code, not the other way around. If tests are failing, either fix the code to work correctly or update the tests to match the intended behavior. DO NOT add conditionals, special cases, or workarounds in the core code that only exist to make tests pass.
 
 ## Testing
 

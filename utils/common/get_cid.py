@@ -10,7 +10,7 @@ from multiformats import CID, multihash
 class IpfsMultiformats:
     """
     A class to manage Content Identifiers (CIDs) using multihash and IPFS standards.
-    
+
     This class provides methods to generate CIDs for files and content using the
     IPFS multiformats specification. It implements a three-step process:
     1. Hash the content using SHA-256
@@ -18,14 +18,14 @@ class IpfsMultiformats:
     3. Generate a CIDv1 using the raw codec and base32 encoding
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize a new IpfsMultiformats instance."""
         return None
 
     def get_file_sha256(self, file_path: str) -> bytes:
         """
-        Calculate the SHA-256 hash of a file. 
-        
+        Calculate the SHA-256 hash of a file.
+
         This method reads the file in 8192-byte chunks to handle large files
         without loading everything into memory all at once.
 
@@ -44,7 +44,7 @@ class IpfsMultiformats:
     def get_multihash_sha256(self, file_content_hash: bytes) -> bytes:
         """
         Wrap the given SHA-256 hash in Multihash format.
-        
+
         This method uses the 'sha2-256' algorithm identifier for the Multihash format.
 
         Args:
@@ -67,7 +67,7 @@ class IpfsMultiformats:
 
         Returns:
             str: The generated CID as a string.
-            
+
         Note:
             - For existing files, the CID is calculated directly from the file
             - For string or bytes data, a temporary file is created to calculate the CID
@@ -94,7 +94,7 @@ class IpfsMultiformats:
             file_content_hash = self.get_file_sha256(filename)
             mh = self.get_multihash_sha256(file_content_hash)
             cid = CID('base32', 1, 'raw', mh)
-        
+
         # Always clean up the temporary file
         os.remove(filename)
 
@@ -131,7 +131,7 @@ def get_cid(file_data: str | Path | bytes, for_string: bool = False) -> str:
 
     Args:
         file_data (str | Path | bytes): The file path or string data to generate a CID for.
-        for_string (bool): Flag to indicate if the input is an arbitrary string 
+        for_string (bool): Flag to indicate if the input is an arbitrary string
             (as opposed to a Path or the string of a path). Defaults to False.
 
     Returns:
@@ -141,7 +141,7 @@ def get_cid(file_data: str | Path | bytes, for_string: bool = False) -> str:
         return _get_cid_for_string(file_data)
 
     if isinstance(file_data, Path):
-       file_data = str(file_data)
+        file_data = str(file_data)
 
     ipfs_multiformats = IpfsMultiformats()
     return ipfs_multiformats.get_cid(file_data)

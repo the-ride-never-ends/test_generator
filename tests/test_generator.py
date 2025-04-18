@@ -5,23 +5,26 @@ Tests for the Generator module.
 """
 import json
 import os
+from pathlib import Path
+import sys
 import tempfile
 import unittest
-from pathlib import Path
 from unittest.mock import patch, MagicMock
 
-# Adjust the import path to properly import the generator module
-import sys
-sys.path.insert(0, str(Path(__file__).parent.parent))
-from generator import TestGenerator, TestFileParameters
-from schemas.variable import Variable
-from schemas.statistical_type import StatisticalType
+
 from configs import Configs
+from generator import TestGenerator, TestFileParameters
+from schemas.statistical_type import StatisticalType
+from schemas.variable import Variable
+
+
+# Adjust the import path to properly import the generator module
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 
 class TestTestFileParameters(unittest.TestCase):
     """Test case for the TestFileParameters class."""
-    
+
     @patch('generator.TestFileParameters._parse_variable')
     @patch('generator.TestFileParameters._parse_test_method')
     @patch('generator.TestFileParameters._parse_materials')
@@ -35,16 +38,16 @@ class TestTestFileParameters(unittest.TestCase):
         mock_materials.return_value = []
         mock_imports.return_value = []
         mock_control_vars.return_value = []
-        
+
         json_data = {
             "test_file_parameters": {
                 "test_title": "Test Title"
             }
         }
-        
+
         params = TestFileParameters(json_data)
         self.assertEqual(params.test_title, "Test Title")
-    
+
     @patch('generator.TestFileParameters._parse_variable')
     @patch('generator.TestFileParameters._parse_test_method')
     @patch('generator.TestFileParameters._parse_materials')
@@ -58,16 +61,16 @@ class TestTestFileParameters(unittest.TestCase):
         mock_materials.return_value = []
         mock_imports.return_value = []
         mock_control_vars.return_value = []
-        
+
         json_data = {
             "test_file_parameters": {
                 "test_title": {"test_title": "Test Title"}
             }
         }
-        
+
         params = TestFileParameters(json_data)
         self.assertEqual(params.test_title, "TestTitle")
-    
+
     @patch('generator.TestFileParameters._parse_variable')
     @patch('generator.TestFileParameters._parse_test_method')
     @patch('generator.TestFileParameters._parse_materials')
@@ -81,7 +84,7 @@ class TestTestFileParameters(unittest.TestCase):
         mock_materials.return_value = []
         mock_imports.return_value = []
         mock_control_vars.return_value = []
-        
+
         json_data = {
             "test_file_parameters": {
                 "background": {
@@ -93,23 +96,23 @@ class TestTestFileParameters(unittest.TestCase):
                 }
             }
         }
-        
+
         params = TestFileParameters(json_data)
         self.assertEqual(params.background["orientation"], "Test orientation")
         self.assertEqual(params.background["purpose"], "Test purpose")
         self.assertEqual(params.background["hypothesis"], "Test hypothesis")
-    
+
     def test_parse_empty_json(self) -> None:
         """Test handling of empty JSON data."""
         json_data = {}
-        
+
         with self.assertRaises(ValueError):
             TestFileParameters(json_data)
 
 
 class TestTestGenerator(unittest.TestCase):
     """Test case for the TestGenerator class."""
-    
+
     def setUp(self) -> None:
         """Set up test environment."""
         # Create a temporary JSON file
@@ -152,10 +155,10 @@ class TestTestGenerator(unittest.TestCase):
         }
         self.temp_json.write(json.dumps(sample_data).encode('utf-8'))
         self.temp_json.close()
-        
+
         # Create a temporary output directory
         self.temp_dir = tempfile.TemporaryDirectory()
-        
+
         # Create config
         self.config = Configs.model_validate({
             "name": "Test Name",
@@ -164,21 +167,21 @@ class TestTestGenerator(unittest.TestCase):
             "output_dir": self.temp_dir.name,
             "harness": "unittest"
         })
-        
+
         # Create generator
         self.generator = TestGenerator(self.config)
-    
+
     def tearDown(self) -> None:
         """Clean up temporary files."""
         os.unlink(self.temp_json.name)
         self.temp_dir.cleanup()
-    
+
     def test_load_json_file(self) -> None:
         """Test loading JSON file."""
         json_data = self.generator._load_json_file()
         self.assertIn("test_file_parameters", json_data)
         self.assertEqual(json_data["test_file_parameters"]["test_title"], "Test Title")
-    
+
     @patch('generator.Variable')
     @patch('generator.TestFileParameters._parse_variable')
     def test_parse_test_parameters(self, mock_parse_variable, mock_variable):
@@ -193,40 +196,40 @@ class TestTestGenerator(unittest.TestCase):
             "unit": "units",
             "value": 10
         })
-        
+
         json_data = self.generator._load_json_file()
         params = self.generator._parse_test_parameters(json_data)
-        
+
         self.assertEqual(params.test_title, "Test Title")
         self.assertEqual(params.background["orientation"], "Test orientation")
         self.assertEqual(params.dependent_variable.name, "Dependent Var")
-    
+
     def test_get_template_unittest(self) -> None:
         """Test getting unittest template."""
         self.config.harness = "unittest"
         template = self.generator._get_template()
         self.assertIsNotNone(template)
-        
+
         # If using inline template, should be a string
         if isinstance(template, str):
             self.assertIn("unittest", template)
-    
+
     def test_get_template_pytest(self) -> None:
         """Test getting pytest template."""
         self.config.harness = "pytest"
         template = self.generator._get_template()
         self.assertIsNotNone(template)
-        
+
         # If using inline template, should be a string
         if isinstance(template, str):
             self.assertIn("pytest", template)
-    
+
     def test_get_template_invalid(self) -> None:
         """Test getting template for invalid harness."""
         self.config.harness = "invalid"
         with self.assertRaises(ValueError):
             self.generator._get_template()
-    
+
     @patch('generator.TestGenerator._get_template')
     @patch('generator.TestFileParameters')
     def test_render_template(self, mock_test_file_params, mock_get_template) -> None:
@@ -235,7 +238,7 @@ class TestTestGenerator(unittest.TestCase):
         mock_template = MagicMock()
         mock_template.render.return_value = "Rendered template"
         mock_get_template.return_value = mock_template
-        
+
         # Create mock test parameters with all the required attributes
         mock_params = MagicMock()
         mock_params.test_title = "Test Title"
@@ -246,15 +249,15 @@ class TestTestGenerator(unittest.TestCase):
         mock_params.materials = []
         mock_params.test_method = MagicMock()
         mock_params.imports = []
-        
+
         # Set the mock parameters
         self.generator.test_file_params = mock_params
-        
+
         # Render template
         result = self.generator._render_template(mock_template)
         self.assertEqual(result, "Rendered template")
         mock_template.render.assert_called_once()
-    
+
     @patch('generator.TestGenerator._load_json_file')
     @patch('generator.TestGenerator._parse_test_parameters')
     @patch('generator.TestGenerator._get_template')
@@ -268,33 +271,33 @@ class TestTestGenerator(unittest.TestCase):
         mock_template = MagicMock()
         mock_get_template.return_value = mock_template
         mock_render.return_value = "Generated test content"
-        
+
         # Generate file
         result = self.generator.generate_test_file()
-        
+
         # Should be the mocked rendered content
         self.assertEqual(result, "Generated test content")
-        
+
         # Verify all methods were called
         mock_load.assert_called_once()
         mock_parse.assert_called_once()
         mock_get_template.assert_called_once()
         mock_render.assert_called_once_with(mock_template)
-    
+
     def test_write_test_file(self) -> None:
         """Test writing test file to disk."""
         # Generate content
         content = "Test file content"
-        
+
         # Write to file
         file_path = self.generator.write_test_file(content)
-        
+
         # Should return a Path object
         self.assertIsInstance(file_path, Path)
-        
+
         # File should exist
         self.assertTrue(file_path.exists())
-        
+
         # File should contain the content
         with open(file_path, 'r') as f:
             read_content = f.read()

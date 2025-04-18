@@ -1,0 +1,174 @@
+{
+    "test_file_parameters": {
+        "background": {
+            "orientation": "REST API endpoints should respond with appropriate status codes and data.",
+            "purpose": "Test the user registration API endpoint for successful and failed registration.",
+            "citation": "RESTful API Design Patterns",
+            "hypothesis": "The registration endpoint will return a 201 status code with user data on success and a 400 status code with validation errors on failure."
+        },
+        "test_title": "User Registration API Endpoint Testing",
+        "independent_variable": {
+            "name": "Registration Data",
+            "description": "The user data sent to the registration endpoint",
+            "statistical_type": "nominal",
+            "unit": "payload",
+            "values": [
+                {
+                    "id": "valid_user",
+                    "value": "{\"username\": \"new_user\", \"email\": \"user@example.com\", \"password\": \"SecureP@ss123\"}"
+                },
+                {
+                    "id": "invalid_email",
+                    "value": "{\"username\": \"new_user\", \"email\": \"invalid-email\", \"password\": \"SecureP@ss123\"}"
+                },
+                {
+                    "id": "weak_password",
+                    "value": "{\"username\": \"new_user\", \"email\": \"user@example.com\", \"password\": \"weak\"}"
+                },
+                {
+                    "id": "missing_username",
+                    "value": "{\"email\": \"user@example.com\", \"password\": \"SecureP@ss123\"}"
+                }
+            ]
+        },
+        "dependent_variable": {
+            "name": "API Response",
+            "description": "The HTTP response from the registration endpoint",
+            "statistical_type": "nominal",
+            "unit": "response",
+            "expected_value": {
+                "values": [
+                    {
+                        "id": "valid_user",
+                        "value": "{\"status_code\": 201, \"body\": {\"id\": \"*\", \"username\": \"new_user\", \"email\": \"user@example.com\"}}"
+                    },
+                    {
+                        "id": "invalid_email",
+                        "value": "{\"status_code\": 400, \"body\": {\"error\": \"Invalid email format\"}}"
+                    },
+                    {
+                        "id": "weak_password",
+                        "value": "{\"status_code\": 400, \"body\": {\"error\": \"Password does not meet complexity requirements\"}}"
+                    },
+                    {
+                        "id": "missing_username",
+                        "value": "{\"status_code\": 400, \"body\": {\"error\": \"Username is required\"}}"
+                    }
+                ],
+                "validation_procedures": [
+                    {
+                        "description": "Verify successful user registration",
+                        "name": "verify_successful_registration",
+                        "condition": "registration_data_id == 'valid_user'",
+                        "steps": [
+                            "Send a POST request to the registration endpoint with valid user data",
+                            "Verify the response status code is 201 (Created)",
+                            "Verify the response body contains user details",
+                            "Verify the user ID is present in the response",
+                            "Verify the username and email match the submitted data"
+                        ]
+                    },
+                    {
+                        "description": "Verify invalid email handling",
+                        "name": "verify_invalid_email_handling",
+                        "condition": "registration_data_id == 'invalid_email'",
+                        "steps": [
+                            "Send a POST request to the registration endpoint with invalid email",
+                            "Verify the response status code is 400 (Bad Request)",
+                            "Verify the response body contains an error message about email format"
+                        ]
+                    },
+                    {
+                        "description": "Verify weak password handling",
+                        "name": "verify_weak_password_handling",
+                        "condition": "registration_data_id == 'weak_password'",
+                        "steps": [
+                            "Send a POST request to the registration endpoint with a weak password",
+                            "Verify the response status code is 400 (Bad Request)",
+                            "Verify the response body contains an error message about password complexity"
+                        ]
+                    },
+                    {
+                        "description": "Verify missing username handling",
+                        "name": "verify_missing_username_handling",
+                        "condition": "registration_data_id == 'missing_username'",
+                        "steps": [
+                            "Send a POST request to the registration endpoint without a username",
+                            "Verify the response status code is 400 (Bad Request)",
+                            "Verify the response body contains an error message about username being required"
+                        ]
+                    }
+                ]
+            }
+        },
+        "control_variables": [
+            {
+                "name": "API Endpoint",
+                "description": "The endpoint being tested",
+                "statistical_type": "nominal",
+                "unit": "url",
+                "value": "\"/api/v1/users/register\""
+            },
+            {
+                "name": "HTTP Method",
+                "description": "The HTTP method used for the API request",
+                "statistical_type": "nominal",
+                "unit": "method",
+                "value": "\"POST\""
+            },
+            {
+                "name": "Content Type",
+                "description": "The content type of the request and response",
+                "statistical_type": "nominal",
+                "unit": "header",
+                "value": "\"application/json\""
+            }
+        ],
+        "test_materials": [
+            {
+                "description": "HTTP client library",
+                "name": "requests",
+                "type": "library",
+                "version": "2.31.0"
+            },
+            {
+                "description": "Testing framework",
+                "name": "pytest",
+                "type": "library",
+                "version": "7.4.0"
+            },
+            {
+                "description": "Mock server",
+                "name": "responses",
+                "type": "library",
+                "version": "0.23.1"
+            }
+        ],
+        "test_procedure": {
+            "data_collection": "HTTP response status codes and body content",
+            "analysis_technique": "Response validation and error message checking",
+            "steps": [
+                "Set up the mock server or connect to the test API server",
+                "Prepare the registration data payload",
+                "Send the HTTP request to the registration endpoint",
+                "Capture the HTTP response status code and body",
+                "Verify the response matches the expected outcome",
+                "Clean up any created test resources"
+            ]
+        },
+        "imports": [
+            {
+                "name": "pytest"
+            },
+            {
+                "name": "requests"
+            },
+            {
+                "name": "responses"
+            },
+            {
+                "name": "json"
+            }
+        ]
+    }
+}

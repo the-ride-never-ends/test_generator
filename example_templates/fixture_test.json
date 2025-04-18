@@ -1,0 +1,94 @@
+{
+    "test_file_parameters": {
+        "background": {
+            "orientation": "Database operations should be properly isolated during testing.",
+            "purpose": "Test database record insertion and retrieval with proper test isolation.",
+            "citation_path": "TODO.md",
+            "citation": "Ensure database record isolation during tests",
+            "hypothesis": "Using a database fixture will allow proper isolation of database tests and prevent test interference."
+        },
+        "test_title": "Database Record Isolation with SQLite",
+        "independent_variable": {
+            "name": "User Record",
+            "description": "The user record to be inserted into the database",
+            "statistical_type": "nominal",
+            "unit": "record",
+            "value": "{\"username\": \"test_user\", \"email\": \"test@example.com\", \"active\": True}"
+        },
+        "dependent_variable": {
+            "name": "Record Retrieval",
+            "description": "The retrieved user record from the database",
+            "statistical_type": "nominal",
+            "unit": "record",
+            "expected_value": {
+                "value": "{\"id\": 1, \"username\": \"test_user\", \"email\": \"test@example.com\", \"active\": True}",
+                "validation_procedures": [
+                    {
+                        "description": "Verify that the record is correctly retrieved from the database",
+                        "name": "verify_record_retrieval",
+                        "steps": [
+                            "Create a fixture that sets up a test database",
+                            "Insert a user record into the database",
+                            "Retrieve the record using the ID",
+                            "Verify that the retrieved record matches the inserted one",
+                            "Clean up the test database after the test"
+                        ]
+                    }
+                ]
+            }
+        },
+        "control_variables": [
+            {
+                "name": "Database Type",
+                "description": "The type of database being used for testing",
+                "statistical_type": "nominal",
+                "unit": "database",
+                "value": "SQLite"
+            },
+            {
+                "name": "Database Mode",
+                "description": "The mode the database is operating in",
+                "statistical_type": "nominal",
+                "unit": "mode",
+                "value": "memory"
+            }
+        ],
+        "test_materials": [
+            {
+                "description": "SQLite database",
+                "name": "sqlite3",
+                "type": "library",
+                "version": "built-in"
+            },
+            {
+                "description": "Testing framework",
+                "name": "pytest",
+                "type": "library",
+                "version": "7.4.0"
+            }
+        ],
+        "test_procedure": {
+            "data_collection": "Record comparison",
+            "analysis_technique": "Direct comparison of record attributes",
+            "steps": [
+                "Set up a SQLite in-memory database",
+                "Create a users table with appropriate schema",
+                "Insert the test user record",
+                "Retrieve the user record by ID",
+                "Verify all fields match the expected values",
+                "Close and clean up the database connection"
+            ]
+        },
+        "imports": [
+            {
+                "name": "pytest"
+            },
+            {
+                "name": "sqlite3"
+            },
+            {
+                "name": "json"
+            }
+        ]
+    }
+}

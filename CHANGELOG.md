@@ -5,16 +5,47 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.0.0] - 2025-04-17
+
+This version marks the first GitHub release with a completed feature set and robust test suite.
+
+### Release Highlights
+- 100% test passing rate (106/106 tests)
+- Comprehensive documentation including README, SAD, and CLAUDE guidance
+- Support for multiple test frameworks (unittest, pytest)
+- Advanced features: parameterized tests, fixtures, conditional generation
+- Example templates with working implementation
+- Improved code quality with type checking and linting
+- Robust error handling and validation
 
 ### Added
-- Added return type hints to tests in tests directory.
+- Added example templates for test generation:
+  - Added simple parametrized test example with working implementation
+  - Added comprehensive reference templates for various test scenarios:
+    - Advanced parametrized test template for string capitalization
+    - Fixture-based test template for database testing
+    - Conditional test template with format-specific validations
+    - API testing template with request/response scenarios
+    - Data validation template with various validation rules
+  - Added detailed README with usage instructions for all templates
+  - Included specific schema examples for proper template structure
+- Added gitignore-aware linting:
+  - Added --respect-gitignore option to run_tests.sh
+  - Enhanced lint_report.py to filter out issues in files/folders listed in .gitignore
+  - Integrated pathspec library for accurate gitignore pattern matching
+  - Added detailed filtering of mypy and flake8 issues with proper reporting
+- Added return type hints to tests in multiple directories:
+  - Added return type annotations to test_whitespace_issues.py methods
+  - Created tests for the fix_whitespace.py utility
+  - Enhanced type annotations in generator.py and cli.py
 - Added mypy type checking with configuration file
   - Created mypy.ini with project-specific settings
   - Configured mypy to ensure proper type checking
   - Fixed type annotations in utils/common/load_json_file.py
   - Fixed type annotations in utils/for_tests/view_report.py
   - Fixed type annotations in schemas/imports.py and schemas/method.py
+  - Added proper type annotations to CLI class attributes with Optional
+  - Fixed Optional type parameters in fix_whitespace.py
 - Added flake8 linting with configuration file
   - Created .flake8 configuration file with project-specific settings
   - Identified linting issues across the codebase (988 total issues)
@@ -36,6 +67,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Fixed Collection type issues in run_tests.py with proper typing
   - Used Optional and cast() to fix potential None reference errors in generator.py
   - Improved default_factory definition in schemas/imports.py using lambda
+- Added whitespace fixing script for automatic code style compliance
+  - Created fix_whitespace.py to automatically clean up common whitespace issues
+  - Fixed blank lines with whitespace in multiple files (cli.py, utils/common/*, schemas/*)
+  - Cleaned up all test files (473+ blank line whitespace issues fixed)
+  - Fixed trailing whitespace in 35+ files
+  - Added missing newlines at end of files (16+ files fixed)
+  - Implemented dry-run mode for previewing changes without modifying files
+  - Added verbose mode for detailed reporting of fixed issues
+  - Reduced flake8 linting errors by 66% (from 831 to 281)
 
 ### Fixed
 - Fixed type checking errors in generator.py
@@ -43,6 +83,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Fixed incompatible return types in _initialize_template_engine 
   - Corrected Template type annotations in _get_template
   - Improved type safety in _render_template with proper null checks
+- Fixed None attribute access errors in cli.py
+  - Added proper type annotations for all class attributes (args, config, generator)
+  - Added null checks before accessing attributes of potentially None values
+  - Improved error messages when configuration or generator is not available
+- Fixed variable naming issues in lint_report.py
+  - Fixed file_issues name redefinition by using separate names for different contexts
+  - Fixed proper dictionary typing in utility functions
+- Fixed StatisticalType enum reassignment error in test_schema_validation.py
+  - Removed inappropriate enum value reassignment that was causing test failures
+  - Fixed enum attribute access issue for Python 3.12 compatibility
+- Fixed f-string missing placeholder issues in multiple files
+  - Fixed f-string placeholders in run_tests.py 
+  - Fixed f-string placeholders in view_report.py
 - Fixed default_factory error in schemas/imports.py
   - Updated default_factory to use lambda instead of direct list type
   - Fixed test_import_creation test to expect empty list instead of None

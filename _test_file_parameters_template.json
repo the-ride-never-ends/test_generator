@@ -19,6 +19,7 @@
             "name": "Query Response Time",
             "description": "Average time in milliseconds taken to execute a standard query",
             "statistical_type": "CONTINUOUS",
+            "unit": "milliseconds",
             "expected_value": {
                 "value": 100.0,
                 "validation_procedures": [
@@ -78,6 +79,8 @@
             }
         ],
         "test_method": {
+            "data_collection": "Automated benchmark metrics with detailed timing breakdown",
+            "analysis_technique": "Mean response time with 95% confidence intervals",
             "steps": [
                 "Set up database with test data",
                 "Configure client with specified connection pool size",
@@ -85,9 +88,7 @@
                 "Record average query response time",
                 "Analyze results for statistical significance",
                 "Clean up test resources"
-            ],
-            "data_collection": "Automated benchmark metrics with detailed timing breakdown",
-            "analysis_technique": "Mean response time with 95% confidence intervals"
+            ]
         },
         "imports": [
             {

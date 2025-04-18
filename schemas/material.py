@@ -8,7 +8,7 @@ class Material(BaseModel):
     """
     Defines materials used in testing.
     This represents a catch-all for the various methods, fixtures, libraries, and other errata that go into test creation.
-    
+
     Attributes:
         name: Name of the material
         description: Description of the material
@@ -19,7 +19,7 @@ class Material(BaseModel):
     """
     name: str
     description: str
-    type: str  # software, hardware, library, etc.
+    type: str # software, hardware, library, etc.
     version: Optional[str] = None
     configuration: Optional[Dict[str, Any]] = None
     source: Optional[str] = None

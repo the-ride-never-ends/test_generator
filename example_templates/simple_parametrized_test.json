@@ -1,0 +1,107 @@
+{
+    "test_file_parameters": {
+        "background": {
+            "orientation": "String operations should handle different input types consistently.",
+            "purpose": "Test string length calculation with different input types.",
+            "citation": "Python String Documentation",
+            "hypothesis": "The len() function will correctly calculate the length of different string types."
+        },
+        "test_title": "String Length Function with Different Input Types",
+        "independent_variable": {
+            "name": "Input String",
+            "description": "The string whose length is being calculated",
+            "statistical_type": "nominal",
+            "unit": "string",
+            "values": [
+                {
+                    "value": "\"hello\"",
+                    "description": "Basic string"
+                },
+                {
+                    "value": "\"\"",
+                    "description": "Empty string"
+                },
+                {
+                    "value": "\"  \"",
+                    "description": "Whitespace string"
+                },
+                {
+                    "value": "\"123456\"",
+                    "description": "Numeric string"
+                }
+            ]
+        },
+        "dependent_variable": {
+            "name": "String Length",
+            "description": "The calculated length of the string",
+            "statistical_type": "discrete",
+            "unit": "characters",
+            "expected_value": {
+                "values": [
+                    {
+                        "input": "\"hello\"",
+                        "expected": 5,
+                        "description": "Length of 'hello'"
+                    },
+                    {
+                        "input": "\"\"",
+                        "expected": 0,
+                        "description": "Length of empty string"
+                    },
+                    {
+                        "input": "\"  \"",
+                        "expected": 2,
+                        "description": "Length of whitespace string"
+                    },
+                    {
+                        "input": "\"123456\"",
+                        "expected": 6,
+                        "description": "Length of numeric string"
+                    }
+                ],
+                "validation_procedures": [
+                    {
+                        "description": "Verify string length calculation",
+                        "name": "verify_string_length",
+                        "steps": [
+                            "Take the input string",
+                            "Calculate its length using len()",
+                            "Compare the result with the expected length"
+                        ]
+                    }
+                ]
+            }
+        },
+        "control_variables": [
+            {
+                "name": "String Function",
+                "description": "The function used to calculate string length",
+                "statistical_type": "nominal",
+                "unit": "function",
+                "value": "len"
+            }
+        ],
+        "test_materials": [
+            {
+                "description": "Python string functions",
+                "name": "str",
+                "type": "built-in",
+                "version": "n/a"
+            }
+        ],
+        "test_procedure": {
+            "data_collection": "String length calculation",
+            "analysis_technique": "Direct comparison of calculated vs expected length",
+            "steps": [
+                "Define the input string",
+                "Calculate its length using len()",
+                "Compare the result with the expected length"
+            ]
+        },
+        "imports": [
+            {
+                "name": "pytest"
+            }
+        ]
+    }
+}

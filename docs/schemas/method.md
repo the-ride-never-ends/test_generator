@@ -1,6 +1,6 @@
-# method.py: last updated 06:01 PM on April 17, 2025
+# method.py: last updated 11:35 PM on April 17, 2025
 
-**File Path:** `/home/kylerose1946/claudes_toolbox/WIP/test_generator/schemas/method.py`
+**File Path:** `WIP/test_generator/schemas/method.py`
 
 ## Table of Contents
 

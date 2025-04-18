@@ -13,7 +13,7 @@ from typing import Any, Dict, List, Optional, Union
 def print_color(text: str, color: Optional[str] = None) -> None:
     """
     Print colored text to the console.
-    
+
     Args:
         text: The text to print
         color: Optional color name ('red', 'green', etc.)
@@ -29,7 +29,7 @@ def print_color(text: str, color: Optional[str] = None) -> None:
         "underline": "\033[4m",
         "end": "\033[0m"
     }
-    
+
     if not color or not sys.stdout.isatty():
         print(text)
     else:
@@ -39,21 +39,21 @@ def print_color(text: str, color: Optional[str] = None) -> None:
 def view_report(report_path: Union[str, Path], format_type: str = "summary") -> bool:
     """
     View a test report file.
-    
+
     Args:
         report_path: Path to the report file
         format_type: Type of report to show (summary, details, full)
-        
+
     Returns:
         bool: True if report was displayed successfully, False otherwise
     """
     report_path = Path(report_path)
-    
+
     # Check if file exists
     if not report_path.exists():
         print_color(f"Error: Report file not found: {report_path}", "red")
         return False
-    
+
     # Check file extension
     if report_path.suffix == ".json":
         # Parse JSON report
@@ -63,7 +63,7 @@ def view_report(report_path: Union[str, Path], format_type: str = "summary") -> 
         except json.JSONDecodeError as e:
             print_color(f"Error: Invalid JSON in report file: {e}", "red")
             return False
-        
+
         # Display report
         _display_json_report(report, format_type)
     elif report_path.suffix == ".md":
@@ -72,24 +72,24 @@ def view_report(report_path: Union[str, Path], format_type: str = "summary") -> 
     else:
         print_color(f"Error: Unsupported report format: {report_path.suffix}", "red")
         return False
-    
+
     return True
 
 
 def _display_json_report(report: Dict[str, Any], format_type: str) -> None:
     """
     Display a JSON report.
-    
+
     Args:
         report: The parsed JSON report
         format_type: Format type (summary, details, full)
     """
     summary: Dict[str, Any] = report["summary"]
     test_cases: List[Dict[str, Any]] = report["test_cases"]
-    
+
     # Print summary header
     print_color("\n=== Test Generator Mk2 - Test Report ===\n", "bold")
-    
+
     # Print summary
     print_color("SUMMARY:", "bold")
     print(f"Tests Run:            {summary['tests']}")
@@ -99,18 +99,18 @@ def _display_json_report(report: Dict[str, Any], format_type: str) -> None:
     print(f"Skipped:              {summary['skipped']}")
     print(f"Expected Failures:    {summary['expected_failures']}")
     print(f"Unexpected Successes: {summary['unexpected_successes']}")
-    
+
     success_rate: float = summary['success_rate']
     color: str = "green" if success_rate == 100 else "yellow" if success_rate >= 80 else "red"
-    print(f"Success Rate:         ", end="")
+    print("Success Rate:         ", end="")
     print_color(f"{success_rate:.2f}%", color)
-    
+
     print(f"Duration:             {summary['duration']} seconds\n")
-    
+
     # Print test case details if requested
     if format_type in ["details", "full"] and test_cases:
         print_color("TEST DETAILS:", "bold")
-        
+
         # Group test cases by status
         cases_by_status: Dict[str, List[Dict[str, Any]]] = {}
         for case in test_cases:
@@ -118,15 +118,15 @@ def _display_json_report(report: Dict[str, Any], format_type: str) -> None:
             if status not in cases_by_status:
                 cases_by_status[status] = []
             cases_by_status[status].append(case)
-        
+
         # Print cases by status
         for status, cases in cases_by_status.items():
             status_color = "red" if status in ["FAIL", "ERROR"] else "yellow" if status in ["SKIPPED", "EXPECTED_FAILURE"] else "green"
             print_color(f"\n{status} ({len(cases)}):", status_color)
-            
+
             for case in cases:
                 print(f"  {case['module']}.{case['class']}.{case['name']}")
-                
+
                 if format_type == "full":
                     print(f"    Message: {case['message']}")
                     if case["traceback"] and status in ["FAIL", "ERROR"]:
@@ -139,14 +139,14 @@ def _display_json_report(report: Dict[str, Any], format_type: str) -> None:
 def _display_markdown_report(report_path: Path) -> None:
     """
     Display a Markdown report.
-    
+
     Args:
         report_path: Path to the Markdown report file
     """
     try:
         with open(report_path, 'r', encoding='utf-8') as f:
             content: str = f.read()
-        
+
         # Very simple Markdown display
         lines: List[str] = content.split("\n")
         for line in lines:
@@ -175,21 +175,21 @@ def main() -> None:
     """Main entry point."""
     parser = argparse.ArgumentParser(description="View test reports for Test Generator Mk2.")
     parser.add_argument(
-        "report_path", 
-        nargs="?", 
+        "report_path",
+        nargs="?",
         default="test_reports/latest_report.json",
         help="Path to the report file (default: test_reports/latest_report.json)"
     )
     parser.add_argument(
-        "--format", 
-        choices=["summary", "details", "full"], 
+        "--format",
+        choices=["summary", "details", "full"],
         default="summary",
         help="Format of the report output (default: summary)"
     )
-    
+
     args = parser.parse_args()
     success = view_report(args.report_path, args.format)
-    
+
     sys.exit(0 if success else 1)
 
 

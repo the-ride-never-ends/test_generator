@@ -222,10 +222,14 @@ python -m coverage report
 python -m coverage html  # Generates HTML report in htmlcov/
 
 # Run type checking and linting
-./run_tests.sh --check-all      # Run tests + mypy + flake8
-./run_tests.sh --mypy           # Run tests + mypy type checking
-./run_tests.sh --flake8         # Run tests + flake8 linting
-./run_tests.sh --lint-only      # Only run mypy + flake8 (no tests)
+./run_tests.sh --check-all          # Run tests + mypy + flake8
+./run_tests.sh --mypy               # Run tests + mypy type checking
+./run_tests.sh --flake8             # Run tests + flake8 linting
+./run_tests.sh --lint-only          # Only run mypy + flake8 (no tests)
+./run_tests.sh --respect-gitignore  # Ignore files/folders in .gitignore during linting
+
+# You can combine options
+./run_tests.sh --lint-only --respect-gitignore  # Run linting only, respecting .gitignore
 ```
 
 ### Test Validation
@@ -331,8 +335,18 @@ test_generator_mk2/
 ├── schemas/                 # Pydantic models
 ├── templates/               # Jinja2 templates
 ├── tests/                   # Unit tests
-└── utils/                   # Utility functions
+├── utils/                   # Utility functions
+└── example_templates/       # Example test definition templates
 ```
+
+## Example Templates
+
+The `example_templates/` directory contains example JSON definition files for different types of tests:
+
+- **Simple Parametrized Test**: A working example of string length testing with multiple test cases
+- **Advanced Templates**: Reference-only templates for fixtures, conditional validation, API testing, and more
+
+See the [example_templates/README.md](./example_templates/README.md) for detailed instructions on using these templates.
 
 ## Roadmap
 

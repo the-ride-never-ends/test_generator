@@ -1,0 +1,137 @@
+{
+    "test_file_parameters": {
+        "background": {
+            "orientation": "String manipulation functions should handle various input types correctly.",
+            "purpose": "Test string capitalization with different input types and edge cases.",
+            "citation_path": "SAD.md",
+            "citation": "Project must have the ability for string capitalization",
+            "hypothesis": "The capitalize() method will correctly capitalize the first character of a string while making the rest lowercase, handling edge cases like empty strings and numbers."
+        },
+        "test_title": "String Capitalization with Multiple Input Types",
+        "independent_variable": {
+            "name": "Input String",
+            "description": "The string to be capitalized",
+            "statistical_type": "nominal",
+            "unit": "string",
+            "values": [
+                {
+                    "id": "normal_string",
+                    "value": "\"hello world\""
+                },
+                {
+                    "id": "already_capitalized",
+                    "value": "\"Hello World\""
+                },
+                {
+                    "id": "all_caps",
+                    "value": "\"HELLO WORLD\""
+                },
+                {
+                    "id": "mixed_case",
+                    "value": "\"hElLo WoRlD\""
+                },
+                {
+                    "id": "empty_string",
+                    "value": "\"\""
+                },
+                {
+                    "id": "numeric_string",
+                    "value": "\"123 hello\""
+                },
+                {
+                    "id": "special_chars",
+                    "value": "\"!hello world\""
+                }
+            ]
+        },
+        "dependent_variable": {
+            "name": "Capitalized String",
+            "description": "The resulting string after capitalization",
+            "statistical_type": "nominal",
+            "unit": "string",
+            "expected_value": {
+                "values": [
+                    {
+                        "id": "normal_string",
+                        "value": "\"Hello world\""
+                    },
+                    {
+                        "id": "already_capitalized",
+                        "value": "\"Hello world\""
+                    },
+                    {
+                        "id": "all_caps",
+                        "value": "\"Hello world\""
+                    },
+                    {
+                        "id": "mixed_case",
+                        "value": "\"Hello world\""
+                    },
+                    {
+                        "id": "empty_string",
+                        "value": "\"\""
+                    },
+                    {
+                        "id": "numeric_string",
+                        "value": "\"123 hello\""
+                    },
+                    {
+                        "id": "special_chars",
+                        "value": "\"!hello world\""
+                    }
+                ],
+                "validation_procedures": [
+                    {
+                        "description": "Verify that string capitalization works correctly for all input types",
+                        "name": "verify_capitalization",
+                        "steps": [
+                            "Take the input string",
+                            "Apply the capitalize() method",
+                            "Compare the result with the expected value",
+                            "Verify that the first character is uppercase (if a letter) and all others are lowercase"
+                        ]
+                    }
+                ]
+            }
+        },
+        "control_variables": [
+            {
+                "name": "String Method",
+                "description": "The string method being tested",
+                "statistical_type": "nominal",
+                "unit": "method",
+                "value": "capitalize"
+            },
+            {
+                "name": "Python Version",
+                "description": "The version of Python being used for testing",
+                "statistical_type": "nominal",
+                "unit": "version",
+                "value": "3.11"
+            }
+        ],
+        "test_materials": [
+            {
+                "description": "Standard Python string library",
+                "name": "str",
+                "type": "library",
+                "version": "built-in"
+            }
+        ],
+        "test_procedure": {
+            "data_collection": "Actual vs expected string comparison",
+            "analysis_technique": "Direct comparison of string values",
+            "steps": [
+                "Define the input string for the current test case",
+                "Apply the capitalize() method to the string",
+                "Compare the result with the expected output",
+                "Verify that the output matches the expected capitalization pattern"
+            ]
+        },
+        "imports": [
+            {
+                "name": "pytest"
+            }
+        ]
+    }
+}

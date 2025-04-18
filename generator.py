@@ -6,6 +6,8 @@ Core test generation logic for Test Generator Mk2.
 from __future__ import annotations
 
 
+import datetime
+import json
 import logging
 from pathlib import Path
 from typing import Any, Dict, Optional, Union
@@ -226,7 +228,7 @@ class TestGenerator:
     def _load_json_file(self) -> Dict[str, Any]:
         """
         Load and parse the JSON file with test parameters.
-        
+
         Returns:
             Dict[str, Any]: Parsed JSON data
         """
@@ -235,7 +237,6 @@ class TestGenerator:
 
         # Provide more detailed debug information if enabled
         if self.config.debug:
-            import json
             logger.debug(f"JSON data structure:\n{json.dumps(json_data, indent=2)}")
 
             # Check for parametrized test data structures
@@ -248,7 +249,7 @@ class TestGenerator:
                     logger.debug(f"Found {value_count} parameter sets for parametrized testing")
 
                 # Check for 'values' array in dependent variable expected values
-                if ("dependent_variable" in params and "expected_value" in params["dependent_variable"] and 
+                if ("dependent_variable" in params and "expected_value" in params["dependent_variable"] and
                     "values" in params["dependent_variable"]["expected_value"]):
                     expected_count = len(params["dependent_variable"]["expected_value"]["values"])
                     logger.debug(f"Found {expected_count} expected values for parametrized testing")
@@ -323,7 +324,6 @@ class TestGenerator:
         independent_var_name = sanitize_variable_name(independent_variable.name)
 
         # Generate timestamp for the template
-        import datetime
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         # Prepare context for template rendering
@@ -357,7 +357,7 @@ class TestGenerator:
                 values = getattr(independent_variable, 'values', None)
                 if values and isinstance(values, list):
                     logger.debug(f"Parametrized test with {len(values)} parameter sets")
-                    
+
                     # Set parametrized flag automatically if values are found
                     if not self.config.parametrized:
                         logger.debug("Auto-enabling parametrized testing based on data structure")
@@ -493,7 +493,7 @@ class Test{test_class_name}(unittest.TestCase):
         Hypothesis: {background.hypothesis}
 
         Args:
-            Independent Variable: 
+            Independent Variable:
                 {independent_variable.name}: {independent_variable.description}
             Dependent Variable:
                 {dependent_variable.name}: {dependent_variable.description}
@@ -640,7 +640,7 @@ def test_{test_func_name}(setup_test, result_logger):
     Hypothesis: {background.hypothesis}
 
     Args:
-        Independent Variable: 
+        Independent Variable:
             {independent_variable.name}: {independent_variable.description}
         Dependent Variable:
             {dependent_variable.name}: {dependent_variable.description}
