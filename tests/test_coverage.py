@@ -208,7 +208,7 @@ class TestCoverageReporting(unittest.TestCase):
                     success, results = discoverer.run_tests()
                 
                 # Check that tests were discovered and run
-                mock_loader.discover.assert_called_once_with(test_dir)
+                mock_loader.discover.assert_called_once_with(str(test_dir))
                 mock_runner.run.assert_called_once_with(mock_suite)
                 
                 # Check the result

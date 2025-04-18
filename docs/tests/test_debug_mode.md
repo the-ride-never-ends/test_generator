@@ -1,6 +1,6 @@
-# test_debug_mode.py: last updated 09:35 AM on April 17, 2025
+# test_debug_mode.py: last updated 06:01 PM on April 17, 2025
 
-**File Path:** `WIP/test_generator/tests/test_debug_mode.py`
+**File Path:** `/home/kylerose1946/claudes_toolbox/WIP/test_generator/tests/test_debug_mode.py`
 
 ## Module Description
 

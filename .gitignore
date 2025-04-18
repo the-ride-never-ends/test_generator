@@ -31,3 +31,4 @@ __pycache__/
 
 *.ini
 .flake8
+.mypy_cache

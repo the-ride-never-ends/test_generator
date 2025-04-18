@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, Optional, Union
 
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape, Template
@@ -34,22 +34,22 @@ logger = logging.getLogger("test_generator.generator")
 class TestFileParameters:
     """
     Container for all test file parameters.
-    
+
     This class handles loading, validating, and transforming the test parameters
     from JSON into usable Python objects.
     """
-    
+
     def __init__(self, json_data: Dict[str, Any]):
         """
         Initialize test file parameters from JSON data.
-        
+
         Args:
             json_data: Dictionary of test file parameters
         """
         self.raw_data = json_data.get("test_file_parameters", {})
         if not self.raw_data:
             raise ValueError("No test file parameters found in JSON data")
-        
+
         # Parse and validate components
         self.test_title = self._parse_test_title()
         self.background = self._parse_background()
@@ -59,7 +59,7 @@ class TestFileParameters:
         self.materials = self._parse_materials()
         self.test_method = self._parse_test_method()
         self.imports = self._parse_imports()
-    
+
     def _parse_test_title(self) -> str:
         """Parse and validate the test title."""
         title_data = self.raw_data.get("test_title", "")
@@ -77,7 +77,7 @@ class TestFileParameters:
         else:
             logger.warning(f"Unknown test title format: {title_data}")
             return "DefaultTestTitle"
-    
+
     def _parse_background(self) -> Dict[str, Any]:
         """Parse and validate the background information."""
         bg_data = self.raw_data.get("background", {})
@@ -88,14 +88,14 @@ class TestFileParameters:
             "citation_path": bg_data.get("citation_path", ""),
             "citation": bg_data.get("citation", "")
         }
-    
+
     def _parse_variable(self, var_type: str) -> Variable:
         """
         Parse and validate a variable (independent or dependent).
-        
+
         Args:
             var_type: Type of variable (independent_variable or dependent_variable)
-            
+
         Returns:
             Variable: Validated variable object
         """
@@ -108,12 +108,12 @@ class TestFileParameters:
         except ValidationError as e:
             logger.error(f"Error parsing {var_type}: {e}")
             raise ValueError(f"Invalid {var_type} data") from e
-    
+
     def _parse_control_variables(self) -> list[Variable]:
         """Parse and validate control variables."""
         control_vars_data = self.raw_data.get("control_variables", [])
         control_vars = []
-        
+
         for var_data in control_vars_data:
             try:
                 # Handle case insensitivity for statistical_type
@@ -122,9 +122,9 @@ class TestFileParameters:
                 control_vars.append(Variable(**var_data))
             except ValidationError as e:
                 logger.warning(f"Skipping invalid control variable: {e}")
-        
+
         return control_vars
-    
+
     def _parse_materials(self) -> list[Material]:
         """Parse and validate test materials."""
         # Handle both "material" and "test_materials" keys for compatibility
@@ -134,16 +134,16 @@ class TestFileParameters:
             if isinstance(materials_data, dict):
                 # Handle single material as dict
                 materials_data = [materials_data]
-        
+
         materials = []
         for mat_data in materials_data:
             try:
                 materials.append(Material(**mat_data))
             except ValidationError as e:
                 logger.warning(f"Skipping invalid material: {e}")
-        
+
         return materials
-    
+
     def _parse_test_method(self) -> Method:
         """Parse and validate the test method."""
         method_data = self.raw_data.get("test_procedure", {})
@@ -152,53 +152,53 @@ class TestFileParameters:
         except ValidationError as e:
             logger.error(f"Error parsing test procedure: {e}")
             raise ValueError("Invalid test procedure data") from e
-    
+
     def _parse_imports(self) -> list[Imports]:
         """Parse and validate imports."""
         imports_data = self.raw_data.get("imports", [])
         imports = []
-        
+
         for imp_data in imports_data:
             try:
                 imports.append(Imports(**imp_data))
             except ValidationError as e:
                 logger.warning(f"Skipping invalid import: {e}")
-        
+
         return imports
 
 
 class TestGenerator:
     """
     Core test generation logic.
-    
+
     This class handles loading test specifications, applying templates,
     and managing the generation process.
     """
-    
+
     def __init__(self, config: Configs):
         """
         Initialize the test generator.
-        
+
         Args:
             config: Configuration object
         """
         self.config = config
         self.template_engine = self._initialize_template_engine()
         self.test_file_params: Optional[TestFileParameters] = None
-        
+
         # Set debug logging if enabled
         if self.config.debug:
             logger.setLevel(logging.DEBUG)
             logger.debug(f"Debug mode enabled in TestGenerator")
-            
+
         # Log if parametrized test generation is enabled
         if self.config.parametrized:
             logger.debug("Parametrized test generation enabled")
-    
+
     def _initialize_template_engine(self) -> Optional[Environment]:
         """
         Initialize the Jinja2 template engine.
-        
+
         Returns:
             Optional[Environment]: Configured Jinja2 environment or None if no templates found
         """
@@ -207,22 +207,22 @@ class TestGenerator:
             Path(__file__).parent / "templates",
             Path(__file__).parent / "test_templates"
         ]
-        
+
         # Create a list of paths that exist
         existing_paths = [p for p in template_paths if p.exists()]
-        
+
         if not existing_paths:
             logger.warning("No template directories found, using inline templates")
             # We'll use string templates later
             return None
-        
+
         return Environment(
             loader=FileSystemLoader(existing_paths),
             autoescape=select_autoescape(["html", "xml"]),
             trim_blocks=True,
             lstrip_blocks=True
         )
-    
+
     def _load_json_file(self) -> Dict[str, Any]:
         """
         Load and parse the JSON file with test parameters.
@@ -232,57 +232,57 @@ class TestGenerator:
         """
         logger.info(f"Loading test parameters from {self.config.json_file_path}")
         json_data = load_json_file(self.config.json_file_path)
-        
+
         # Provide more detailed debug information if enabled
         if self.config.debug:
             import json
             logger.debug(f"JSON data structure:\n{json.dumps(json_data, indent=2)}")
-            
+
             # Check for parametrized test data structures
             if "test_file_parameters" in json_data:
                 params = json_data["test_file_parameters"]
-                
+
                 # Check for 'values' array in independent variable (indicates parametrized test)
                 if "independent_variable" in params and "values" in params["independent_variable"]:
                     value_count = len(params["independent_variable"]["values"])
                     logger.debug(f"Found {value_count} parameter sets for parametrized testing")
-                    
+
                 # Check for 'values' array in dependent variable expected values
                 if ("dependent_variable" in params and "expected_value" in params["dependent_variable"] and 
                     "values" in params["dependent_variable"]["expected_value"]):
                     expected_count = len(params["dependent_variable"]["expected_value"]["values"])
                     logger.debug(f"Found {expected_count} expected values for parametrized testing")
-        
+
         return json_data
-    
+
     def _parse_test_parameters(self, json_data: Dict[str, Any]) -> TestFileParameters:
         """
         Parse and validate test parameters from JSON data.
-        
+
         Args:
             json_data: Dictionary with JSON data
-            
+
         Returns:
             TestFileParameters: Validated parameters
         """
         logger.info("Parsing test parameters")
         return TestFileParameters(json_data)
-    
+
     def _get_template(self) -> Union[Template, str]:
         """
         Get the appropriate template for the test framework.
-        
+
         Returns:
             Union[Template, str]: Template object or string template if engine not available
         """
         harness = self.config.harness.lower()
-        
+
         if self.template_engine:
             try:
                 return self.template_engine.get_template(f"{harness}_test.py.j2")
             except Exception as e:
                 logger.warning(f"Error loading template for {harness}: {e}")
-        
+
         # Fall back to inline templates
         if harness == "unittest":
             return UNITTEST_TEMPLATE
@@ -291,23 +291,23 @@ class TestGenerator:
         else:
             logger.error(f"Unsupported test harness: {harness}")
             raise ValueError(f"Unsupported test harness: {harness}")
-    
+
     def _render_template(self, template: Union[Template, str]) -> str:
         """
         Render the template with test parameters.
-        
+
         Args:
             template: Template object or string template
-            
+
         Returns:
             str: Rendered test file
         """
         logger.info("Rendering test file template")
-        
+
         # Check if test_file_params is initialized
         if self.test_file_params is None:
             raise ValueError("Test file parameters not initialized. Call generate_test_file() first.")
-        
+
         # Check if the expected value is an exception class
         is_exception_test = False
         expected_value = None
@@ -317,15 +317,15 @@ class TestGenerator:
             expected_value = ev.value if ev else None
             if isinstance(expected_value, str) and "Error" in expected_value:
                 is_exception_test = True
-        
+
         # Sanitize variable names for Python
         independent_variable = self.test_file_params.independent_variable
         independent_var_name = sanitize_variable_name(independent_variable.name)
-            
+
         # Generate timestamp for the template
         import datetime
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        
+
         # Prepare context for template rendering
         context = {
             "config": self.config,
@@ -347,11 +347,11 @@ class TestGenerator:
             "debug": self.config.debug,
             "test_params": self.config.test_params
         }
-        
+
         # Add debug information if enabled
         if self.config.debug:
             logger.debug(f"Template context keys: {list(context.keys())}")
-            
+
             # Check if this is a parametrized test
             if hasattr(independent_variable, 'values'):
                 values = getattr(independent_variable, 'values', None)
@@ -363,7 +363,7 @@ class TestGenerator:
                         logger.debug("Auto-enabling parametrized testing based on data structure")
                         self.config.parametrized = True
                         context["parametrized"] = True
-        
+
         # Render template
         result_content: str = ""
         if hasattr(template, "render"):
@@ -372,22 +372,22 @@ class TestGenerator:
         else:
             # String template (basic formatting)
             result_content = template.format(**context)
-            
+
         # Replace the timestamp placeholder with the actual timestamp
         result_content = result_content.replace("{{timestamp}}", timestamp)
-        
+
         return result_content
-    
+
     def generate_test_file(self) -> str:
         """
         Generate a test file based on JSON input.
-        
+
         Returns:
             str: Generated test file content
         """
         if self.config.debug:
             logger.debug(f"Starting test file generation with config: {self.config}")
-            
+
             # Show configuration settings relevant to generation
             debug_settings = [
                 f"Harness: {self.config.harness}",
@@ -397,29 +397,29 @@ class TestGenerator:
                 f"JSON file: {self.config.json_file_path}"
             ]
             logger.debug("\n".join(debug_settings))
-        
+
         # Load JSON data
         json_data = self._load_json_file()
-        
+
         # Parse test parameters
         self.test_file_params = self._parse_test_parameters(json_data)
         if self.test_file_params is None:
             raise ValueError("Failed to parse test parameters")
-        
+
         # Get template
         template = self._get_template()
         if template is None:
             raise ValueError("Failed to get template")
-        
+
         if self.config.debug:
             logger.debug(f"Using template for {self.config.harness}")
-            
+
         # Render template
         content = self._render_template(template)
-        
+
         if self.config.debug:
             logger.debug(f"Generated test content with {content.count(chr(10))+1} lines")
-            
+
             # Analyze the generated content for debug purposes
             if self.config.parametrized:
                 # For pytest
@@ -428,35 +428,35 @@ class TestGenerator:
                 # For unittest
                 elif "self.subTest" in content:
                     logger.debug("Generated content includes unittest parametrization with subTest")
-                    
+
             # Check for debugging code in the generated file
             if self.config.debug and "logger.debug" in content:
                 logger.debug("Generated test includes debug logging statements")
-                
+
         return content
-    
+
     def write_test_file(self, content: str) -> Path:
         """
         Write the generated test file to disk.
-        
+
         Args:
             content: Test file content
-            
+
         Returns:
             Path: Path to the output file
         """
         # Create output directory if it doesn't exist
         output_dir = self.config.output_dir
         output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Create file path
         test_name = convert_to_snake_case(self.config.name)
         file_path = output_dir / f"test_{test_name}.py"
-        
+
         # Write file
         file_path.write_text(content)
         logger.info(f"Test file written to {file_path}")
-        
+
         return file_path
 
 
@@ -477,21 +477,21 @@ import datetime
 
 class Test{test_class_name}(unittest.TestCase):
     """Test case for {test_title}."""
-    
+
     def setUp(self):
         """Set up test fixtures."""
         pass
-    
+
     def tearDown(self):
         """Tear down test fixtures."""
         pass
-    
+
     def test_{test_func_name}(self):
         """
         Background: {background.orientation}
         Test Purpose: {background.purpose}
         Hypothesis: {background.hypothesis}
-        
+
         Args:
             Independent Variable: 
                 {independent_variable.name}: {independent_variable.description}
@@ -525,11 +525,11 @@ class Test{test_class_name}(unittest.TestCase):
         {% for step in test_procedure.steps %}
         # {{ step }}
         {% endfor %}
-        
+
         # TODO: Implement code that does the above steps
         raise NotImplementedError(f"Implementation for test 'test_{test_func_name}' cannnot be created programmatically. Follow the steps in the docstring and function body to build a working test.")
         {% endif %}
-    
+
     def dump_test_to_json(self):
         """Dump test information to JSON file for record keeping."""
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -550,7 +550,7 @@ class Test{test_class_name}(unittest.TestCase):
             "timestamp": timestamp,
             "generated_on": timestamp
         }
-        
+
         filename = f"test_{test_func_name}_results_{timestamp}.json"
         with open(filename, "w") as f:
             json.dump(test_data, f, indent=2)
@@ -560,17 +560,17 @@ class Test{test_class_name}(unittest.TestCase):
 if __name__ == "__main__":
     # Initialize the test suite
     test_suite = unittest.TestSuite()
-    
+
     # Add the test to the suite
     test_case = Test{test_class_name}("test_{test_func_name}")
     test_suite.addTest(test_case)
-    
+
     # Create test runner
     runner = unittest.TextTestRunner()
-    
+
     # Run the test and dump results
     result = runner.run(test_suite)
-    
+
     # Save test results to JSON
     filename = test_case.dump_test_to_json()
     print(f"Test results saved to {filename}")
@@ -630,7 +630,7 @@ def result_logger():
             """Log the actual test result."""
             global test_results
             test_results["dependent_variable"]["actual"] = str(actual_value)
-    
+
     return ResultLogger()
 
 def test_{test_func_name}(setup_test, result_logger):
@@ -638,7 +638,7 @@ def test_{test_func_name}(setup_test, result_logger):
     Background: {background.orientation}
     Test Purpose: {background.purpose}
     Hypothesis: {background.hypothesis}
-    
+
     Args:
         Independent Variable: 
             {independent_variable.name}: {independent_variable.description}
@@ -651,7 +651,7 @@ def test_{test_func_name}(setup_test, result_logger):
     """
     # Define independent variable
     {{ independent_var_name }} = {{ independent_variable.value }}
-    
+
     # Define dependent variable
     {{ dependent_variable.name | lower | replace(' ', '_') }} = {{ expected_value }}
 
@@ -659,7 +659,7 @@ def test_{test_func_name}(setup_test, result_logger):
     {% for var in control_variables %}
     {{ var.name | lower | replace(' ', '_') }} = {{ var.value }}
     {% endfor %}
-    
+
     try:
         {% if is_exception_test %}
         # This is an exception test that expects {{ expected_value }}
@@ -667,10 +667,10 @@ def test_{test_func_name}(setup_test, result_logger):
         # {{ step }}
         {% endfor %}
         # TODO: Implement code that does the above steps
-        
+
         # Log the expected exception
         result_logger.log_result("Expected {{ expected_value }} but none raised")
-        
+
         # Raise NotImplementedError for now
         raise NotImplementedError(f"Implementation for test 'test_{test_func_name}' cannnot be created programmatically. Follow the steps in the docstring and function body to build a working test.")
         {% else %}
@@ -678,11 +678,11 @@ def test_{test_func_name}(setup_test, result_logger):
         {% for step in test_procedure.steps %}
         # {{ step }}
         {% endfor %}
-        
+
         # Log the actual result (to be filled in by implementation)
         actual_value = "Not implemented yet"
         result_logger.log_result(actual_value)
-        
+
         # TODO: Implement code that does the above steps
         raise NotImplementedError(f"Implementation for test 'test_{test_func_name}' cannnot be created programmatically. Follow the steps in the docstring and function body to build a working test.")
         {% endif %}
@@ -701,7 +701,7 @@ def test_{test_func_name}(setup_test, result_logger):
 def dump_test_to_json() -> str:
     """Dump test information to JSON file for record keeping."""
     global test_results
-    
+
     filename = f"test_{test_func_name}_results_{test_results['timestamp']}.json"
     with open(filename, "w") as f:
         json.dump(test_results, f, indent=2)
@@ -711,13 +711,13 @@ def dump_test_to_json() -> str:
 # Create a proper pytest plugin to handle our hooks
 class ResultCollectorPlugin:
     """Pytest plugin to collect and save test results."""
-    
+
     @pytest.hookimpl(tryfirst=True, hookwrapper=True)
     def pytest_runtest_makereport(self, item, call):
         """Capture test results."""
         outcome = yield
         report = outcome.get_result()
-        
+
         if report.when == "call":
             global test_results
             if report.outcome == "passed":
@@ -730,7 +730,7 @@ class ResultCollectorPlugin:
                 test_results["outcome"] = "skipped"
                 if hasattr(report, "longrepr"):
                     test_results["skip_reason"] = str(report.longrepr)
-                    
+
     def pytest_sessionfinish(self, session):
         """Save results after all tests complete."""
         print("\\nSaving test results to JSON...")
@@ -741,9 +741,9 @@ class ResultCollectorPlugin:
 if __name__ == "__main__":
     # Create our plugin
     result_collector = ResultCollectorPlugin()
-    
+
     # Run the test with our plugin registered
     exit_code = pytest.main(["-v", __file__], plugins=[result_collector])
-    
+
     sys.exit(exit_code)
 '''

@@ -1,6 +1,6 @@
-# material.py: last updated 09:35 AM on April 17, 2025
+# material.py: last updated 06:01 PM on April 17, 2025
 
-**File Path:** `WIP/test_generator/schemas/material.py`
+**File Path:** `/home/kylerose1946/claudes_toolbox/WIP/test_generator/schemas/material.py`
 
 ## Table of Contents
 

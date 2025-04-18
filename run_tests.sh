@@ -93,31 +93,36 @@ if $RUN_TESTS; then
     fi
 fi
 
-# Run mypy type checking if requested
-if $RUN_MYPY; then
-    echo -e "\n==== Running mypy type checking ===="
-    mypy --config-file mypy.ini .
-    MYPY_EXIT_CODE=$?
+# Run linting tools if requested
+if $RUN_MYPY || $RUN_FLAKE8; then
+    echo -e "\n==== Running linting tools ===="
+    python utils/for_tests/lint_report.py
+    LINT_EXIT_CODE=$?
     
-    if [ $MYPY_EXIT_CODE -eq 0 ]; then
-        echo -e "\n✅ Type checking passed!"
+    if [ $LINT_EXIT_CODE -eq 0 ]; then
+        echo -e "\n✅ All linting checks passed!"
     else
-        echo -e "\n❌ Type checking failed with exit code $MYPY_EXIT_CODE"
+        echo -e "\n❌ Linting failed with exit code $LINT_EXIT_CODE"
         OVERALL_EXIT=1
     fi
-fi
-
-# Run flake8 linting if requested
-if $RUN_FLAKE8; then
-    echo -e "\n==== Running flake8 linting ===="
-    flake8
-    FLAKE8_EXIT_CODE=$?
     
-    if [ $FLAKE8_EXIT_CODE -eq 0 ]; then
-        echo -e "\n✅ Linting passed!"
-    else
-        echo -e "\n❌ Linting failed with exit code $FLAKE8_EXIT_CODE"
-        OVERALL_EXIT=1
+    # Show the latest lint report
+    if [ -f "test_reports/latest_lint_report.md" ]; then
+        echo -e "\nLatest lint report is available at: test_reports/latest_lint_report.md"
+        
+        # If we have a markdown viewer, show the report
+        if command -v glow &> /dev/null; then
+            echo -e "\nShowing lint report preview:"
+            glow test_reports/latest_lint_report.md
+        elif command -v bat &> /dev/null; then
+            echo -e "\nShowing lint report preview:"
+            bat test_reports/latest_lint_report.md
+        elif command -v less &> /dev/null; then
+            echo -e "\nShowing lint report preview (press q to exit):"
+            less test_reports/latest_lint_report.md
+        else
+            echo -e "\nTo view the full lint report, open test_reports/latest_lint_report.md in a text editor."
+        fi
     fi
 fi
 

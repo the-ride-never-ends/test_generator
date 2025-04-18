@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 import sys
 import time
-from typing import Dict, Tuple, Any
+from typing import Dict, Tuple, Any, List, cast
 import unittest
 
 
@@ -18,7 +18,7 @@ class TestResultCollector:
     def __init__(self, start_time: float):
         """Initialize the collector with a start time."""
         self.start_time = start_time
-        self.results = {
+        self.results: Dict[str, Any] = {
             "summary": {
                 "tests": 0,
                 "errors": 0,
@@ -43,22 +43,26 @@ class TestResultCollector:
         # Calculate duration
         duration = time.time() - self.start_time
 
+        # Get the summary dict
+        summary = cast(Dict[str, Any], self.results["summary"])
+        test_cases = cast(List[Dict[str, Any]], self.results["test_cases"])
+
         # Update summary
-        self.results["summary"]["tests"] = result.testsRun
-        self.results["summary"]["errors"] = len(result.errors)
-        self.results["summary"]["failures"] = len(result.failures)
-        self.results["summary"]["skipped"] = len(result.skipped)
-        self.results["summary"]["expected_failures"] = len(result.expectedFailures)
-        self.results["summary"]["unexpected_successes"] = len(result.unexpectedSuccesses)
+        summary["tests"] = result.testsRun
+        summary["errors"] = len(result.errors)
+        summary["failures"] = len(result.failures)
+        summary["skipped"] = len(result.skipped)
+        summary["expected_failures"] = len(getattr(result, 'expectedFailures', []))
+        summary["unexpected_successes"] = len(getattr(result, 'unexpectedSuccesses', []))
 
         # Calculate success rate
         success_count = result.testsRun - len(result.errors) - len(result.failures)
-        self.results["summary"]["success_rate"] = (success_count / result.testsRun) * 100 if result.testsRun > 0 else 0
-        self.results["summary"]["duration"] = round(duration, 2)
+        summary["success_rate"] = (success_count / result.testsRun) * 100 if result.testsRun > 0 else 0
+        summary["duration"] = round(duration, 2)
 
         # Process failures
         for test, traceback in result.failures:
-            self.results["test_cases"].append({
+            test_cases.append({
                 "id": str(test.id()),
                 "name": test._testMethodName,
                 "module": test.__class__.__module__,
@@ -70,7 +74,7 @@ class TestResultCollector:
 
         # Process errors
         for test, traceback in result.errors:
-            self.results["test_cases"].append({
+            test_cases.append({
                 "id": str(test.id()),
                 "name": test._testMethodName,
                 "module": test.__class__.__module__,
@@ -82,7 +86,7 @@ class TestResultCollector:
 
         # Process skipped tests
         for test, reason in result.skipped:
-            self.results["test_cases"].append({
+            test_cases.append({
                 "id": str(test.id()),
                 "name": test._testMethodName,
                 "module": test.__class__.__module__,
@@ -94,7 +98,7 @@ class TestResultCollector:
 
         # Process expected failures
         for test, traceback in getattr(result, 'expectedFailures', []):
-            self.results["test_cases"].append({
+            test_cases.append({
                 "id": str(test.id()),
                 "name": test._testMethodName,
                 "module": test.__class__.__module__,
@@ -106,7 +110,7 @@ class TestResultCollector:
 
         # Process unexpected successes
         for test in getattr(result, 'unexpectedSuccesses', []):
-            self.results["test_cases"].append({
+            test_cases.append({
                 "id": str(test.id()),
                 "name": test._testMethodName,
                 "module": test.__class__.__module__,
@@ -124,7 +128,7 @@ class TestResultCollector:
     def generate_json_report(self, output_path: Path) -> None:
         """
         Generate a JSON report of the test results.
-        
+
         Args:
             output_path: Path to write the report to
         """
@@ -138,34 +142,34 @@ class TestResultCollector:
         Args:
             output_path: Path to write the report to
         """
-        summary = self.results["summary"]
-        test_cases = self.results["test_cases"]
+        summary_dict = cast(Dict[str, Any], self.results["summary"])
+        test_cases_list = cast(List[Dict[str, Any]], self.results["test_cases"])
 
         # Format timestamp
-        timestamp = datetime.datetime.fromisoformat(summary["timestamp"])
+        timestamp = datetime.datetime.fromisoformat(str(summary_dict["timestamp"]))
         formatted_time = timestamp.strftime("%Y-%m-%d %H:%M:%S")
 
         # Build markdown content
-        content = [
+        content: List[str] = [
             "# Test Generator Mk2 - Test Report",
             f"Generated on: {formatted_time}",
             "",
             "## Summary",
             "",
-            f"- **Tests Run**: {summary['tests']}",
-            f"- **Passed**: {summary['tests'] - summary['failures'] - summary['errors']}",
-            f"- **Failures**: {summary['failures']}",
-            f"- **Errors**: {summary['errors']}",
-            f"- **Skipped**: {summary['skipped']}",
-            f"- **Expected Failures**: {summary['expected_failures']}",
-            f"- **Unexpected Successes**: {summary['unexpected_successes']}",
-            f"- **Success Rate**: {summary['success_rate']:.2f}%",
-            f"- **Duration**: {summary['duration']} seconds",
+            f"- **Tests Run**: {summary_dict['tests']}",
+            f"- **Passed**: {summary_dict['tests'] - summary_dict['failures'] - summary_dict['errors']}",
+            f"- **Failures**: {summary_dict['failures']}",
+            f"- **Errors**: {summary_dict['errors']}",
+            f"- **Skipped**: {summary_dict['skipped']}",
+            f"- **Expected Failures**: {summary_dict['expected_failures']}",
+            f"- **Unexpected Successes**: {summary_dict['unexpected_successes']}",
+            f"- **Success Rate**: {summary_dict['success_rate']:.2f}%",
+            f"- **Duration**: {summary_dict['duration']} seconds",
             "",
         ]
 
         # Add test details if there are any issues
-        if test_cases:
+        if test_cases_list:
             content.extend([
                 "## Test Details",
                 "",
@@ -173,16 +177,16 @@ class TestResultCollector:
                 "|--------|--------|-------|------|",
             ])
 
-            for test_case in test_cases:
-                status = test_case["status"]
-                module = test_case["module"]
-                cls = test_case["class"]
-                name = test_case["name"]
+            for test_case in test_cases_list:
+                status = str(test_case.get("status", ""))
+                module = str(test_case.get("module", ""))
+                cls = str(test_case.get("class", ""))
+                name = str(test_case.get("name", ""))
                 
                 content.append(f"| {status} | {module} | {cls} | {name} |")
 
             # Add failure/error details
-            failures_or_errors = [tc for tc in test_cases if tc["status"] in ("FAIL", "ERROR")]
+            failures_or_errors = [tc for tc in test_cases_list if tc.get("status") in ("FAIL", "ERROR")]
             if failures_or_errors:
                 content.extend([
                     "",
@@ -191,13 +195,20 @@ class TestResultCollector:
                 ])
 
                 for tc in failures_or_errors:
+                    tc_status = str(tc.get("status", ""))
+                    tc_module = str(tc.get("module", ""))
+                    tc_class = str(tc.get("class", ""))
+                    tc_name = str(tc.get("name", ""))
+                    tc_message = str(tc.get("message", ""))
+                    tc_traceback = str(tc.get("traceback", ""))
+                    
                     content.extend([
-                        f"### {tc['status']}: {tc['module']}.{tc['class']}.{tc['name']}",
+                        f"### {tc_status}: {tc_module}.{tc_class}.{tc_name}",
                         "",
-                        f"**Message**: {tc['message']}",
+                        f"**Message**: {tc_message}",
                         "",
                         "```",
-                        tc["traceback"],
+                        tc_traceback,
                         "```",
                         ""
                     ])
@@ -229,7 +240,7 @@ class TestDiscoverer:
             Tuple containing success status and test results
         """
         # Discover tests
-        test_suite = unittest.defaultTestLoader.discover(self.test_dir)
+        test_suite = unittest.defaultTestLoader.discover(str(self.test_dir))
 
         # Create result collector
         start_time = time.time()

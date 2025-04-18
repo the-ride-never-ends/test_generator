@@ -1,6 +1,6 @@
-# generator.py: last updated 09:35 AM on April 17, 2025
+# generator.py: last updated 06:01 PM on April 17, 2025
 
-**File Path:** `WIP/test_generator/generator.py`
+**File Path:** `/home/kylerose1946/claudes_toolbox/WIP/test_generator/generator.py`
 
 ## Module Description
 
@@ -139,7 +139,7 @@ Get the appropriate template for the test framework.
 
 **Returns:**
 
-- `Union[(str, None)]`: Template string or None if template engine is not available
+- `Union[(Template, str)]`: Template object or string template if engine not available
 
 ### `_initialize_template_engine`
 
@@ -151,7 +151,7 @@ Initialize the Jinja2 template engine.
 
 **Returns:**
 
-- `Environment`: Configured Jinja2 environment
+- `Optional[Environment]`: Configured Jinja2 environment or None if no templates found
 
 ### `_load_json_file`
 
@@ -191,7 +191,7 @@ Render the template with test parameters.
 
 **Parameters:**
 
-- `template` (`str`): Template string or Jinja2 template
+- `template` (`Union[(Template, str)]`): Template object or string template
 
 **Returns:**
 
