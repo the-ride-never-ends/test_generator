@@ -1,5 +1,5 @@
 """
-Test Generator Mk2 - Generate boilerplate code for Python tests.
+Test Generator - Generate boilerplate code for Python tests.
 """
 from configs import Configs
 from cli import CLI

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Core test generation logic for Test Generator Mk2.
+Core test generation logic for Test Generator.
 """
 from __future__ import annotations
 

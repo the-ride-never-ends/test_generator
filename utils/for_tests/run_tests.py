@@ -151,7 +151,7 @@ class TestResultCollector:
 
         # Build markdown content
         content: List[str] = [
-            "# Test Generator Mk2 - Test Report",
+            "# Test Generator - Test Report",
             f"Generated on: {formatted_time}",
             "",
             "## Summary",

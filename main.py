@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Main entry point for Test Generator Mk2.
+Main entry point for Test Generator.
 """
 from __future__ import annotations
 

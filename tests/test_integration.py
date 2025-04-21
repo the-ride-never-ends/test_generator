@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Integration tests for the Test Generator Mk2.
+Integration tests for the Test Generator.
 """
 import json
 import os
@@ -16,7 +16,7 @@ from cli import CLI
 
 
 class TestIntegration(unittest.TestCase):
-    """Integration tests for Test Generator Mk2."""
+    """Integration tests for Test Generator."""
 
     def setUp(self) -> None:
         """Set up test environment."""
@@ -82,7 +82,7 @@ class TestIntegration(unittest.TestCase):
         # Create command-line arguments
         args = [
             "--name", "IntegrationTest",
-            "--description", "Integration test for Test Generator Mk2",
+            "--description", "Integration test for Test Generator",
             "--test_parameter_json", self.temp_json.name,
             "--output_dir", self.temp_dir.name,
             "--harness", "unittest"
@@ -120,7 +120,7 @@ class TestIntegration(unittest.TestCase):
         # Create command-line arguments
         args = [
             "--name", "IntegrationTest",
-            "--description", "Integration test for Test Generator Mk2",
+            "--description", "Integration test for Test Generator",
             "--test_parameter_json", self.temp_json.name,
             "--output_dir", self.temp_dir.name,
             "--harness", "pytest"

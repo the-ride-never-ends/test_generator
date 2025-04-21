@@ -33,3 +33,7 @@ __pycache__/
 *.ini
 .flake8
 .mypy_cache
+
+# Claude files
+CLAUDE.md
+SAD.md

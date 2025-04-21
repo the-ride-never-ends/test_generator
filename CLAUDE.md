@@ -2,6 +2,12 @@
 
 This file provides guidance to Claude Code when working with the Test Generator project.
 
+#### Filepaths to Important Documentation
+- README.md: '/home/kylerose1946/claudes_toolbox/documentation_generator/README.md'
+- CHANGELOG.md: '/home/kylerose1946/claudes_toolbox/documentation_generator/CHANGELOG.md'
+- TODO.md '/home/kylerose1946/claudes_toolbox/documentation_generator/TODO.md'
+
+
 ## Development Status - IMPORTANT
 
 As of April 17, 2025, I have implemented the following features from Phase 2 and Phase 4 of the TODO list:
@@ -79,7 +85,7 @@ The system enforces strict validation to ensure high-quality test generation:
 ### Generate a Test File - API
 
 ```python
-from test_generator_mk2.cli import CLI
+from test_generator.cli import CLI
 
 cli = CLI()
 args_dict = cli.parse_args()
@@ -91,19 +97,19 @@ cli.run()
 
 ```bash
 # Basic test generation
-python -m test_generator_mk2 --name "Example Test" --description "Test Description" --test_parameter_json params.json
+python -m test_generator --name "Example Test" --description "Test Description" --test_parameter_json params.json
 
 # Generate with fixtures
-python -m test_generator_mk2 --name "Fixture Test" --test_parameter_json params.json --has-fixtures
+python -m test_generator --name "Fixture Test" --test_parameter_json params.json --has-fixtures
 
 # Generate parametrized test
-python -m test_generator_mk2 --name "Parametrized Test" --test_parameter_json params.json --parametrized
+python -m test_generator --name "Parametrized Test" --test_parameter_json params.json --parametrized
 
 # Generate with debug output
-python -m test_generator_mk2 --name "Debug Test" --test_parameter_json params.json --debug
+python -m test_generator --name "Debug Test" --test_parameter_json params.json --debug
 
 # Generate conditional test
-python -m test_generator_mk2 --name "Conditional Test" --test_parameter_json params.json --test-params '{"input_type": "string"}'
+python -m test_generator --name "Conditional Test" --test_parameter_json params.json --test-params '{"input_type": "string"}'
 ```
 
 ### Add a New Schema
@@ -197,5 +203,3 @@ Always add tests for new features and maintain >90% test coverage.
 
 Documentation Generator automatically extracts code structure, docstrings, and type annotations from Python source code to produce comprehensive documentation in Markdown format. It supports multiple docstring styles (Google, NumPy, and reStructuredText) and preserves type hints from source code annotations. The tool can now generate comprehensive class inheritance documentation with method override detection and inheritance diagrams.
 
-#### Current Filepath to README.md
-'/home/kylerose1946/claudes_toolbox/documentation_generator/README.md'

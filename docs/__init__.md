@@ -4,6 +4,6 @@
 
 ## Module Description
 
-Test Generator Mk2 - Generate boilerplate code for Python tests.
+Test Generator - Generate boilerplate code for Python tests.
 
 ## Table of Contents

@@ -1,3 +1,3 @@
 """
-Test package for Test Generator Mk2.
+Test package for Test Generator.
 """

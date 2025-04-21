@@ -1,10 +1,10 @@
 {
     "test_file_parameters": {
         "background": {
+            "citation_path": "path/to/TODO.md",
+            "citation": "Optimize connection pool size for PostgreSQL so that query response time is under 200 milliseconds.",
             "orientation": "Previous performance tests showed varying query performance with different connection pool sizes.",
             "purpose": "Determine the optimal connection pool size for maximum database query performance.",
-            "citation_path": "path/to/citation1.md",
-            "citation": "Optimize connection pool size for PostgreSQL",
             "hypothesis": "A larger connection pool will improve performance up to a certain threshold, after which contention for database resources will cause performance degradation."
         },
         "test_title": "The Effect of Connection Pool Size on Database Query Performance",
@@ -16,24 +16,23 @@
             "value": 10
         },
         "dependent_variable": {
-            "name": "Query Response Time",
             "description": "Average time in milliseconds taken to execute a standard query",
+            "name": "Query Response Time",
             "statistical_type": "CONTINUOUS",
             "unit": "milliseconds",
             "expected_value": {
-                "value": 100.0,
+                "value": 200.0,
                 "validation_procedures": [
                     {
-                        "description": "Check if the response time is within expected range",
-                        "name": "range",
+                        "description": "Check if the response time is equal to or less than the expected value",
+                        "name": "inequality_less_than_or_equal",
                         "kwargs": {
-                            "min": 50.0,
-                            "max": 200.0
+                            "benchmark_target": 200.0
                         },
                         "steps": [
                             "Run the benchmark query",
                             "Measure the response time",
-                            "Compare with expected range"
+                            "Compare with benchmark_target"
                         ]
                     }
                 ]
@@ -53,6 +52,13 @@
                 "statistical_type": "ORDINAL",
                 "unit": "level",
                 "value": "medium"
+            },
+            {
+                "name": "Query Return Size",
+                "description": "Size of the data returned by the query",
+                "statistical_type": "CONTINUOUS",
+                "unit": "GB",
+                "value": 0.100
             }
         ],
         "test_materials": [
@@ -78,13 +84,13 @@
                 }
             }
         ],
-        "test_method": {
+        "test_procedure": {
             "data_collection": "Automated benchmark metrics with detailed timing breakdown",
-            "analysis_technique": "Mean response time with 95% confidence intervals",
+            "analysis_technique": "Arithmetic mean response time with a 95% confidence level, with 5% margin of error",
             "steps": [
                 "Set up database with test data",
                 "Configure client with specified connection pool size",
-                "Run benchmark query suite 100 times",
+                "Run benchmark query suite 385 times",
                 "Record average query response time",
                 "Analyze results for statistical significance",
                 "Clean up test resources"

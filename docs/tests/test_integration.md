@@ -4,7 +4,7 @@
 
 ## Module Description
 
-Integration tests for the Test Generator Mk2.
+Integration tests for the Test Generator.
 
 ## Table of Contents
 
@@ -20,7 +20,7 @@ Integration tests for the Test Generator Mk2.
 class TestIntegration(unittest.TestCase)
 ```
 
-Integration tests for Test Generator Mk2.
+Integration tests for Test Generator.
 
 **Methods:**
 

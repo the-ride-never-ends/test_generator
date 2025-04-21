@@ -142,7 +142,7 @@ class TestCoverageReporting(unittest.TestCase):
         with open(md_path, 'r') as f:
             content = f.read()
 
-        self.assertIn("# Test Generator Mk2 - Test Report", content)
+        self.assertIn("# Test Generator - Test Report", content)
         self.assertIn("- **Tests Run**: 5", content)
         self.assertIn("- **Success Rate**: 100.00%", content)
 

@@ -1,10 +1,10 @@
-# Test Generator Mk2
+# Test Generator
 
-A tool for generating structured Python tests from JSON specifications using a scientific approach.
+Generate boilerplate code for Python tests based on a specification JSON.
 
 ## Overview
 
-Test Generator Mk2 creates test boilerplate code with a scientific approach to testing:
+Test Generator creates test boilerplate code with a scientific approach to testing:
 - Clearly defined hypotheses
 - Independent and dependent variables
 - Controlled variables
@@ -28,17 +28,17 @@ Test Generator Mk2 creates test boilerplate code with a scientific approach to t
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd claudes_toolbox/WIP/test_generator_mk2
+cd claudes_toolbox/WIP/test_generator
 
 # Install dependencies
-pip install -r requirements.txt
+bash install.sh
 ```
 
 ## Command-line Usage
 
 ```bash
 # Basic test generation
-python -m test_generator_mk2 \
+source venv/bin/activate && python -m test_generator \
   --name "Connection Pool Performance" \
   --description "Tests the impact of connection pool size on query performance" \
   --test_parameter_json path/to/parameters.json \
@@ -46,21 +46,21 @@ python -m test_generator_mk2 \
   --harness unittest
 
 # Generate parametrized test
-python -m test_generator_mk2 \
+python -m test_generator \
   --name "String Handling Test" \
   --description "Tests string operations with multiple inputs" \
   --test_parameter_json string_tests.json \
   --parametrized
 
 # Generate with debug output
-python -m test_generator_mk2 \
+python -m test_generator \
   --name "Database Query Test" \
   --description "Tests query performance with debugging" \
   --test_parameter_json db_test.json \
   --debug
 
 # Generate conditional test
-python -m test_generator_mk2 \
+python -m test_generator \
   --name "API Response Test" \
   --description "Tests API responses with conditions" \
   --test_parameter_json api_test.json \
@@ -95,7 +95,8 @@ See the [System Architecture Document](./SAD.md) for more details.
 
 ## Test Parameter JSON Format
 
-The test parameter JSON file defines all aspects of the test in a scientific structure:
+The test parameter JSON file defines all aspects of the test in a 'pre-hoc' reasoning structure.
+This is meant to force a user/LLM using it to think about what exactly needs to be :
 
 | Component | Description |
 |-----------|-------------|
@@ -110,13 +111,13 @@ The test parameter JSON file defines all aspects of the test in a scientific str
 
 Here's the structure from `_test_file_parameters_template.json`:
 
-```json
+```yaml
 {
     "test_file_parameters": {
         "background": {
             "orientation": "Division by zero is undefined and throws exceptions in most programming languages.",
             "purpose": "Test the behavior of division by zero in polynomial multiplication operations.",
-            "citation_path": "path/to/citation1.md",
+            "citation_path": "path/to/TODO.md",
             "citation": "Mathematics for Computer Science",
             "hypothesis": "Division by zero will raise a ZeroDivisionError exception and prevent the completion of polynomial multiplication."
         },
@@ -327,7 +328,7 @@ For framework-specific features:
 ### Project Structure
 
 ```
-test_generator_mk2/
+test_generator/
 ├── cli.py                   # Command-line interface
 ├── configs.py               # Configuration validation
 ├── generator.py             # Core generation logic

@@ -196,7 +196,7 @@ class LintResultCollector:
 
         # Build markdown content
         content: List[str] = [
-            "# Test Generator Mk2 - Linting Report",
+            "# Test Generator - Linting Report",
             f"Generated on: {formatted_time}",
             "",
             "## Summary",

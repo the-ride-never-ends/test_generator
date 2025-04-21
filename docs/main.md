@@ -4,6 +4,6 @@
 
 ## Module Description
 
-Main entry point for Test Generator Mk2.
+Main entry point for Test Generator.
 
 ## Table of Contents

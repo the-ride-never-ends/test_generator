@@ -4,7 +4,7 @@
 
 ## Module Description
 
-Command-line interface for the Test Generator Mk2.
+Command-line interface for the Test Generator.
 
 ## Table of Contents
 
@@ -38,7 +38,7 @@ Main entry point for the CLI.
 class CLI(object)
 ```
 
-Command-line interface for the Test Generator Mk2.
+Command-line interface for the Test Generator.
 
 Handles command-line arguments, configuration loading, and pipeline orchestration.
 

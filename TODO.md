@@ -1,4 +1,4 @@
-# Implementation Plan for Test Generator Mk2
+# Implementation Plan for Test Generator
 
 ## Phase 1: Core Refactoring
 

@@ -1,7 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/venv python
 # -*- coding: utf-8 -*-
 """
-Command-line interface for the Test Generator Mk2.
+Command-line interface for the Test Generator.
 """
 from __future__ import annotations
 
@@ -32,7 +32,7 @@ logger = logging.getLogger("test_generator")
 
 class CLI:
     """
-    Command-line interface for the Test Generator Mk2.
+    Command-line interface for the Test Generator.
 
     Handles command-line arguments, configuration loading, and pipeline orchestration.
     """
@@ -41,7 +41,7 @@ class CLI:
         """Initialize the CLI with an argument parser."""
         self.parser = self._create_parser()
         self.args: Optional[argparse.Namespace] = None
-        self.config: Optional[Configs] = None
+        self.configs: Optional[Configs] = None
         self.generator: Optional[TestGenerator] = None
 
     def _create_parser(self) -> argparse.ArgumentParser:
@@ -146,7 +146,7 @@ class CLI:
                 logger.setLevel(logging.DEBUG)
                 logger.debug("Debug mode enabled with enhanced logging")
 
-            self.config = Configs.model_validate(args_dict)
+            self.configs = Configs.model_validate(args_dict)
             return True
         except ValidationError as e:
             logger.error(f"Configuration validation error: {e}")
@@ -161,16 +161,16 @@ class CLI:
         """
         try:
             # Set up logging level (debug overrides verbose)
-            if self.config:
-                if self.config.debug:
+            if self.configs:
+                if self.configs.debug:
                     logger.setLevel(logging.DEBUG)
                     logger.debug("Debug mode enabled - showing enhanced debug output")
-                elif self.config.verbose:
+                elif self.configs.verbose:
                     logger.setLevel(logging.INFO)
 
             # Initialize generator
-            if self.config is not None:
-                self.generator = TestGenerator(self.config)
+            if self.configs is not None:
+                self.generator = TestGenerator(self.configs)
             else:
                 logger.error("Configuration is not available")
                 return 1
@@ -184,7 +184,7 @@ class CLI:
                 return 1
 
             # Log detailed information in debug mode
-            if self.config and self.config.debug:
+            if self.configs and self.configs.debug:
                 lines = test_file.count('\n')
                 logger.debug(f"Generated test file with {lines} lines")
 
@@ -195,11 +195,11 @@ class CLI:
                 return 1
 
             # Log additional details in debug mode
-            if self.config and self.config.debug:
-                logger.debug(f"Test file type: {self.config.harness}")
-                if self.config.parametrized:
+            if self.configs and self.configs.debug:
+                logger.debug(f"Test file type: {self.configs.harness}")
+                if self.configs.parametrized:
                     logger.debug("Test file uses parametrized testing")
-                if self.config.has_fixtures:
+                if self.configs.has_fixtures:
                     logger.debug("Test file includes fixture support")
 
             logger.info(f"Test file generated successfully at {output_path}")
@@ -207,7 +207,7 @@ class CLI:
 
         except Exception as e:
             logger.error(f"Error generating test file: {e}")
-            if self.config and (self.config.verbose or self.config.debug):
+            if self.configs and (self.configs.verbose or self.configs.debug):
                 import traceback
                 traceback.print_exc()
             return 1

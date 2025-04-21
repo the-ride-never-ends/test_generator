@@ -17,8 +17,21 @@ ROOT_DIR = Path(__file__).parent
 class Configs(BaseModel):
     """
     Configuration settings for test generator.
+    These directly correspond to the CLI arguments.
 
-    Validates and stores command-line arguments and settings.
+    Attributes:
+        version: Version of the test generator.
+        name: Name of the test
+        description: A short description of the test
+        json_file_path: The file path to the test parameters JSON file
+        output_dir: Path to output directory for tests
+        verbose: Enable verbose output
+        harness: Which python testing harness to use (unittest or pytest)
+        has_fixtures: Whether a test needs fixtures in order to run
+        parametrized: Whether to generate parametrized tests
+        debug: Enable debug mode with enhanced output
+        docstring_style: Docstring style to parse
+        test_params: Parameters for conditional test generation
     """
     version: str = Field(default=__version__, description="Version of the test generator")
     name: str = Field(..., description="Name of the test")

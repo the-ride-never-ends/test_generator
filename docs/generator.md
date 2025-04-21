@@ -4,7 +4,7 @@
 
 ## Module Description
 
-Core test generation logic for Test Generator Mk2.
+Core test generation logic for Test Generator.
 
 ## Table of Contents
 

@@ -88,7 +88,7 @@ def _display_json_report(report: Dict[str, Any], format_type: str) -> None:
     test_cases: List[Dict[str, Any]] = report["test_cases"]
 
     # Print summary header
-    print_color("\n=== Test Generator Mk2 - Test Report ===\n", "bold")
+    print_color("\n=== Test Generator - Test Report ===\n", "bold")
 
     # Print summary
     print_color("SUMMARY:", "bold")
@@ -173,7 +173,7 @@ def _display_markdown_report(report_path: Path) -> None:
 
 def main() -> None:
     """Main entry point."""
-    parser = argparse.ArgumentParser(description="View test reports for Test Generator Mk2.")
+    parser = argparse.ArgumentParser(description="View test reports for Test Generator.")
     parser.add_argument(
         "report_path",
         nargs="?",
