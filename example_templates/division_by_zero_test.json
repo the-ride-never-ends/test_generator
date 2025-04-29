@@ -1,10 +1,10 @@
 {
     "test_file_parameters": {
         "background": {
-            "orientation": "Division by zero is undefined and throws exceptions in most programming languages.",
-            "purpose": "Test the behavior of division by zero in polynomial multiplication operations.",
             "citation_path": "path/to/citation1.md",
             "citation": "Mathematics for Computer Science",
+            "orientation": "Division by zero is undefined and throws exceptions in most programming languages.",
+            "purpose": "Test the behavior of division by zero in polynomial multiplication operations.",
             "hypothesis": "Division by zero will raise a ZeroDivisionError exception and prevent the completion of polynomial multiplication."
         },
         "test_title": "The Effects of Division by Zero on Polynomial Multiplication",

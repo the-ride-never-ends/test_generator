@@ -1,10 +1,10 @@
 {
     "test_file_parameters": {
         "background": {
-            "orientation": "String manipulation functions should handle various input types correctly.",
-            "purpose": "Test string capitalization with different input types and edge cases.",
             "citation_path": "SAD.md",
             "citation": "Project must have the ability for string capitalization",
+            "orientation": "String manipulation functions should handle various input types correctly.",
+            "purpose": "Test string capitalization with different input types and edge cases.",
             "hypothesis": "The capitalize() method will correctly capitalize the first character of a string while making the rest lowercase, handling edge cases like empty strings and numbers."
         },
         "test_title": "String Capitalization with Multiple Input Types",

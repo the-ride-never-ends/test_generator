@@ -1,10 +1,10 @@
 {
     "test_file_parameters": {
         "background": {
-            "orientation": "Database operations should be properly isolated during testing.",
-            "purpose": "Test database record insertion and retrieval with proper test isolation.",
             "citation_path": "TODO.md",
             "citation": "Ensure database record isolation during tests",
+            "orientation": "Database operations should be properly isolated during testing.",
+            "purpose": "Test database record insertion and retrieval with proper test isolation.",
             "hypothesis": "Using a database fixture will allow proper isolation of database tests and prevent test interference."
         },
         "test_title": "Database Record Isolation with SQLite",
@@ -56,8 +56,8 @@
         "test_materials": [
             {
                 "description": "SQLite database",
-                "name": "sqlite3",
-                "type": "library",
+                "name": "sqlite_database",
+                "type": "mock",
                 "version": "built-in"
             },
             {
