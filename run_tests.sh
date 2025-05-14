@@ -4,9 +4,14 @@
 # Ensure we're in the right directory
 cd "$(dirname "$0")"
 
-# Activate virtual environment if it exists
+# Activate virtual environment
 if [ -d "venv" ]; then
     source venv/bin/activate
+elif [ -d ".venv" ]; then
+    source .venv/bin/activate
+else
+    echo "No virtual environment found. Please run the install script first."
+    exit 1
 fi
 
 # Create reports directory if it doesn't exist
@@ -75,7 +80,7 @@ OVERALL_EXIT=0
 # Run the tests if requested
 if $RUN_TESTS; then
     echo "Running tests for Test Generator..."
-    python utils/for_tests/run_tests.py $VERBOSITY_ARG
+    source venv/bin/activate && python utils/for_tests/run_tests.py $VERBOSITY_ARG
     
     # Get the exit code
     TEST_EXIT_CODE=$?

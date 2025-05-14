@@ -9,14 +9,15 @@ import sys
 import tempfile
 import unittest
 
+# Adjust the import path to properly import the configs module
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 
 from pydantic import ValidationError
 
 
 from configs import Configs
 
-# Adjust the import path to properly import the configs module
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
 
 class TestConfigs(unittest.TestCase):

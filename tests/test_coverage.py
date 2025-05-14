@@ -9,12 +9,11 @@ import unittest
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-
-from utils.for_tests.run_tests import TestResultCollector, TestDiscoverer
-
-
 # Add the parent directory to sys.path
 sys.path.insert(0, str(Path(__file__).parent.parent))
+
+
+from utils.for_tests.run_tests import TestResultCollector, TestDiscoverer
 
 
 class TestCoverageReporting(unittest.TestCase):

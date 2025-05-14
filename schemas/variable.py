@@ -6,7 +6,7 @@ from pydantic import BaseModel, computed_field, Field
 
 from .statistical_type import StatisticalType
 from .expected_value import ExpectedValue
-from utils.common.convert_to_snake_case import convert_to_snake_case
+from utils.common import convert_to_snake_case
 
 
 class ParameterValue(BaseModel):

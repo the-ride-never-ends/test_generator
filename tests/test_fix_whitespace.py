@@ -4,12 +4,14 @@
 Tests for the fix_whitespace script.
 """
 import os
+import sys
 import tempfile
 import unittest
 from pathlib import Path
 
+
 # Add the parent directory to sys.path
-import sys
+
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from utils.for_tests.fix_whitespace import (

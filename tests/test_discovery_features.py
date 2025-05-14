@@ -5,19 +5,19 @@ Tests for test discovery features.
 """
 import json
 import os
+from pathlib import Path
 import sys
 import tempfile
 import unittest
-from pathlib import Path
 from unittest.mock import MagicMock, patch
-
-
-from configs import Configs
-from utils.for_tests.run_tests import TestDiscoverer
 
 
 # Adjust the import path to properly import the generator module
 sys.path.insert(0, str(Path(__file__).parent.parent))
+
+
+from configs import Configs
+from utils.for_tests.run_tests import TestDiscoverer
 
 
 class TestDiscoveryFeatures(unittest.TestCase):

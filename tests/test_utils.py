@@ -10,14 +10,13 @@ import sys
 import tempfile
 import unittest
 
+# Add the parent directory to sys.path
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 
 from utils.common.convert_to_snake_case import convert_to_snake_case
 from utils.common.convert_to_pascal_case import convert_to_pascal_case
 from utils.common.load_json_file import load_json_file
-
-
-# Adjust the import path to properly import util modules
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
 
 class TestConvertToSnakeCase(unittest.TestCase):

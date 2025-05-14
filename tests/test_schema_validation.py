@@ -8,6 +8,10 @@ import sys
 import unittest
 
 
+# Add the parent directory to sys.path
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+
 from schemas.expected_value import ExpectedValue
 from schemas.imports import Imports
 from schemas.material import Material
@@ -16,10 +20,6 @@ from schemas.statistical_type import StatisticalType
 from schemas.test_title import TestTitle
 from schemas.validation_procedure import ValidationProcedure
 from schemas.variable import Variable
-
-
-# Add the parent directory to sys.path
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
 
 class TestValidationProcedures(unittest.TestCase):

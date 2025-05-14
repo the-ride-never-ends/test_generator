@@ -4,16 +4,19 @@
 Tests for debug mode with enhanced output.
 """
 import json
+import logging
 import os
+from pathlib import Path
+import sys
 import tempfile
 import unittest
-import logging
-from pathlib import Path
 from unittest.mock import patch, MagicMock, call
 
 # Adjust the import path to properly import the generator module
-import sys
+
 sys.path.insert(0, str(Path(__file__).parent.parent))
+
+
 from configs import Configs
 from generator import TestGenerator
 from cli import CLI

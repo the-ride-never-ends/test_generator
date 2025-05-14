@@ -11,13 +11,12 @@ import tempfile
 import unittest
 from unittest.mock import patch, MagicMock
 
+# Adjust the import path to properly import the generator module
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 
 from configs import Configs
 from generator import TestGenerator
-
-
-# Adjust the import path to properly import the generator module
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
 
 class TestConditionalGeneration(unittest.TestCase):

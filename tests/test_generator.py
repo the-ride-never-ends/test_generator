@@ -12,14 +12,17 @@ import unittest
 from unittest.mock import patch, MagicMock
 
 
+# Adjust the import path to properly import the generator module
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+
+
 from configs import Configs
 from generator import TestGenerator, TestFileParameters
 from schemas.statistical_type import StatisticalType
 from schemas.variable import Variable
 
 
-# Adjust the import path to properly import the generator module
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
 
 class TestTestFileParameters(unittest.TestCase):
