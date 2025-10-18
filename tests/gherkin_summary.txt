@@ -1,0 +1,61 @@
+╔═══════════════════════════════════════════════════════════════════════════╗
+║              GHERKIN SPECIFICATIONS FOR TEST GENERATOR                    ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+PUBLIC CALLABLES COVERED:
+┌───────────────────────────────────────────────────────────────────────────┐
+│ Module: cli                                                               │
+├───────────────────────────────────────────────────────────────────────────┤
+│ ✓ CLI.parse_args()        - Parse command-line arguments                 │
+│ ✓ CLI.validate_config()   - Validate configuration                       │
+│ ✓ CLI.run()               - Execute test generation                      │
+│ ✓ main()                  - Main entry point                             │
+└───────────────────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────────────────────────┐
+│ Module: generator                                                         │
+├───────────────────────────────────────────────────────────────────────────┤
+│ ✓ TestGenerator.__init__()      - Initialize generator                   │
+│ ✓ TestGenerator.generate_test_file() - Generate test content             │
+│ ✓ TestGenerator.write_test_file()    - Write test to disk                │
+│ ✓ TestFileParameters.__init__()      - Parse JSON parameters             │
+└───────────────────────────────────────────────────────────────────────────┘
+
+FEATURE FILES:
+┌─────────────────────────────────┬──────────┬────────────────────────────┐
+│ File                            │ Scenarios│ Coverage                   │
+├─────────────────────────────────┼──────────┼────────────────────────────┤
+│ cli.feature                     │    13    │ CLI interface behaviors    │
+│ test_generator.feature          │    22    │ Test generation logic      │
+│ test_file_parameters.feature    │    24    │ JSON parsing & validation  │
+│ test_generation_workflow.feature│    20    │ End-to-end workflows       │
+├─────────────────────────────────┼──────────┼────────────────────────────┤
+│ TOTAL                           │    79    │ Complete API coverage      │
+└─────────────────────────────────┴──────────┴────────────────────────────┘
+
+KEY BEHAVIORS SPECIFIED:
+  ✓ Argument parsing and validation
+  ✓ Configuration management with debug mode
+  ✓ Test file generation for unittest and pytest
+  ✓ Exception-based test generation
+  ✓ Parametrized test generation (explicit and auto-detected)
+  ✓ Fixture support
+  ✓ Template rendering and selection
+  ✓ Variable name sanitization
+  ✓ JSON result file generation
+  ✓ Error handling and validation
+  ✓ File system operations
+  ✓ Conditional test generation
+  ✓ Custom output directories
+
+STATISTICS:
+  • Total Feature Files: 4
+  • Total Scenarios: 79
+  • Total Lines: 645
+  • Focus: Externally confirmable behavior
+  • Format: Standard Gherkin (Given-When-Then)
+
+DOCUMENTATION:
+  • GHERKIN_SPECS.md - Complete overview and usage guide
+  • All feature files include descriptive titles and user stories
+  • Each scenario focuses on observable, verifiable outcomes
